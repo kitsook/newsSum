@@ -304,6 +304,29 @@ class MingPaoHK(BaseSource):
 
         return resultList
 
+class OrientalDailyRSS(BaseSource):
+
+    def getId(self):
+        return 'orientaldailyrss'
+
+    def getDesc(self):
+        return '東方日報RSS(香港)'
+
+    def getArticles(self):
+        resultList = []
+        sections = [('要聞港聞','http://orientaldaily.on.cc/rss/news.xml'),
+                    ('兩岸國際','http://orientaldaily.on.cc/rss/china_world.xml'),
+                    ('財經','http://orientaldaily.on.cc/rss/finance.xml'),
+                    ('娛樂','http://orientaldaily.on.cc/rss/entertainment.xml'),
+                    ('副刊','http://orientaldaily.on.cc/rss/lifestyle.xml'),]
+
+        try:
+            resultList = self.parseRSS(sections)
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
+
 class OrientalDaily(BaseSource):
 
     def getId(self):
