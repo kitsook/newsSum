@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+      .wrapper {
+        position:relative;
+        margin:0 auto;
+        overflow:hidden;
+        padding:5px;
+        height:50px;
+      }
+
+      .list {
+        position:absolute;
+        left:0px;
+        top:0px;
+        min-width:3000px;
+        margin-left:12px;
+        margin-top:0px;
+      }
+
+      .list li {
+        display:table-cell;
+        position:relative;
+        text-align:center;
+        cursor:grab;
+        cursor:-webkit-grab;
+        color:#efefef;
+        vertical-align:middle;
+      }
+
+      .scroller {
+        text-align:center;
+        cursor:pointer;
+        display:none;
+        padding:7px;
+        padding-top:11px;
+        white-space:no-wrap;
+        vertical-align:middle;
+        background-color:#fff;
+      }
+
+      .scroller-right{
+        float:right;
+      }
+
+      .scroller-left {
+        float:left;
+      }
+
+      .source-list label {
+        padding-left:10px;
+        padding-right:10px;
+      }
+
+      .table a {
+        text-decoration: none;
+      }
+
+      .abs-text {
+        color:#444444;
+      }
+      .abs-text {
+        display:inline-block;
+        margin-bottom:20px;
+      }
+
+    </style>
+
+    <script>
+
+      function setupTab() {
+        var scrollBarWidths = 40;
+        var widthOfList = function(){
+          var itemsWidth = 0;
+          $('.list li').each(function(){
+            var itemWidth = $(this).outerWidth();
+            itemsWidth+=itemWidth;
+          });
+          return itemsWidth;
+        };
+        var getLeftPosi = function(){
+          return $('.list').position().left;
+        };
+        var widthOfHidden = function(){
+          return (($('.wrapper').outerWidth())-widthOfList()-getLeftPosi())-scrollBarWidths;
+        };
+        var reAdjust = function(){
+          if (($('.wrapper').outerWidth()) < widthOfList()) {
+            $('.scroller-right').show();
+          } else {
+            $('.scroller-right').hide();
+          }
+
+          if (getLeftPosi()<0) {
+            $('.scroller-left').show();
+          } else {
+            $('.item').animate({left:"-="+getLeftPosi()+"px"},'slow');
+            $('.scroller-left').hide();
+          }
+        }
+
+        reAdjust();
+
+        $(window).on('resize',function(e){
+          reAdjust();
+        });
+        $('.scroller-right').click(function() {
+          $('.scroller-left').fadeIn('slow');
+          $('.scroller-right').fadeOut('slow');
+          $('.list').animate({left:"+="+widthOfHidden()+"px"},'slow',function(){
+          });
+        });
+
+        $('.scroller-left').click(function() {
+          $('.scroller-right').fadeIn('slow');
+          $('.scroller-left').fadeOut('slow');
+          $('.list').animate({left:"-="+getLeftPosi()+"px"},'slow',function(){
+          });
+        });
+      }
+
+      function getSubscription() {
+        var subs = {};
+        if (typeof(Storage) !== "undefined") {
+          subs = JSON.parse(localStorage.getItem('subs'));
+          if (!subs) { subs = {}; }
+        }
+        return subs;
+      }
+      function addSubscription(src) {
+        if (typeof(Storage) !== "undefined") {
+          var subs = JSON.parse(localStorage.getItem('subs'));
+          if (!subs) { subs = {}; }
+          subs[src] = 1;
+          localStorage.setItem('subs', JSON.stringify(subs));
+        }
+      }
+      function removeSubscription(src) {
+        if (typeof(Storage) !== "undefined") {
+          var subs = JSON.parse(localStorage.getItem('subs'));
+          if (!subs) { subs = {}; }
+          delete subs[src];
+          localStorage.setItem('subs', JSON.stringify(subs));
+        }
+      }
+
+      function getLastSrc() {
+        var last = 'config';
+        if (typeof(Storage) !== "undefined" && localStorage.getItem('last')) {
+          last = localStorage.getItem('last');
+        }
+        return last;
+      }
+      function saveLastSrc(srcId) {
+        if (typeof(Storage) !== "undefined") {
+          localStorage.setItem('last', srcId);
+        }
+      }
+
+      function createTab(srcId, srcDesc) {
+        $waitingRow =
+          $('<tr/>', {'id': 'waitingrow-'+srcId} )
+            .append($('<td align="center"><span class="glyphicon glyphicon-time"></span>&nbsp;Loading...</td>'));
+
+        // tab header
+        $('<li/>', {
+          id: 'tabHeader-'+srcId,
+        }).append(
+            $('<a/>', {
+              'data-toggle': 'tab',
+              href: '#tab-'+srcId,
+            }).text(srcDesc)
+          ).appendTo('#tabHeader').click(function() {
+            saveLastSrc(srcId);
+          });
+
+        // tab content
+        $('<div/>', {
+          id: 'tab-'+srcId,
+          class: 'tab-pane fade',
+        }).append(
+          $('<table/>', {
+            'class': 'table table-striped',
+            'id': 'table-'+srcId,
+          }).append($waitingRow)
+        ).appendTo('#tabArea');
+
+        // $('#tagHeader-'+srcId).click(function() {
+        //   saveLastSrc(srcId);
+        // });
+
+        // fetch and parse JSON
+        $.getJSON(srcId, function(data) {
+
+          $('#waitingrow-'+srcId).remove();
+
+          $.each(data, function(id, val) {
+            var $newCell = $('<td/>');
+            if (val['url']) {
+              $newCell.append($('<h5>').text($('<div/>').html(val['title']).text()));
+            } else {
+              $newCell.append($('<h4>').text($('<div/>').html(val['title']).text()));
+            }
+            if (val['abstract']) {
+              $newCell.append($('<span>', {'class': 'abs-text'}).text($('<div/>').html(val['abstract']).text()))
+            }
+
+            if (val['url']) {
+              $newCell = $('<a/>', {
+                'href': val['url'],
+              }).append($newCell);
+            }
+            $('#table-'+srcId).append($('<tr/>').append($newCell));
+
+          });
+        });
+
+        // refresh tab headers
+        $(window).trigger('resize');
+      }
+      function removeTab(srcId) {
+        $('#tabHeader-'+srcId).remove();
+        $('#tab-'+srcId).remove();
+        // refresh tab headers
+        $(window).trigger('resize');
+      }
+
+      function listAvailableSrc(srcDict) {
+        var subs = getSubscription();
+
+        $('#config ul').empty();
+        for (var s in srcDict) {
+          $('#config ul').append(
+            $('<li class="list-group-item">')
+            .append(
+              $('<input>')
+                .prop({'type': 'checkbox', 'id': 'src-chk-' + srcDict[s]})
+                .prop('checked', subs[srcDict[s]])
+            )
+            .append(
+              $('<label>').text(s)
+            )
+          );
+
+          // listener on checkbox
+          $('#src-chk-'+srcDict[s]).change({srcId: srcDict[s], srcDesc: s}, function(param) {
+            if (this.checked) {
+              addSubscription(param.data.srcId);
+              createTab(param.data.srcId, param.data.srcDesc);
+            } else {
+              removeSubscription(param.data.srcId);
+              removeTab(param.data.srcId);
+            }
+          });
+
+          // create tab if checked
+          if (subs[srcDict[s]]) {
+            createTab(srcDict[s], s);
+          }
+        }
+
+        // set last viewed tab
+        lastViewed = getLastSrc();
+        if ($('.nav-tabs a[href="#tab-' + lastViewed + '"]').length > 0) {
+          $('.nav-tabs a[href="#tab-' + lastViewed + '"]').tab('show');
+        }
+      }
+
+      function sortObj(obj) {
+        var sorted = [];
+        for (var att in obj) {
+          sorted.push([att, obj[att]]);
+        }
+        sorted.sort(function(a,b) { return a[0] > b[0]; });
+        var result = {};
+        for (var i = 0; i < sorted.length; i++) {
+          result[sorted[i][0]] = sorted[i][1];
+        }
+        return result;
+      }
+    </script>
+
+    <script>
+      $(function() {
+
+        // register click event for the config menu
+        $('#tabHeader-config').click(function() {
+          saveLastSrc('config');
+        });
+
+        setupTab();
+
+        var allSources = {};
+        $.getJSON('/list', function(data) {
+          $.each(data, function(id, val) {
+            var src = val['desc'];
+            var path = val['path'];
+            allSources[src] = path;
+          });
+          allSources = sortObj(allSources);
+
+          listAvailableSrc(allSources);
+        });
+
+      });
+
+    </script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <h3>newsSum</h3>
+      <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
+      <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
+      <div class="wrapper">
+        <ul id="tabHeader" class="nav nav-tabs list">
+          <li class="active" id='tabHeader-config'><a data-toggle="tab" href="#config">&#9776;</a></li>
+        </ul>
+      </div>
+
+      <div id="tabArea" class="tab-content">
+        <div id="config" class="tab-pane fade in active">
+          <h4>Sources</h4>
+          <ul class="list-group source-list">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
