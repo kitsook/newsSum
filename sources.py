@@ -5,40 +5,40 @@ from lxml import html
 from lxml import etree
 
 from logger import logger
-from fetcher import readHttpPage
+from fetcher import read_http_page
 
 class BaseSource:
 
-    def createSection(self, title):
+    def create_section(self, title):
         return {'title': title}
 
-    def createArticle(self, title, url, abstract=None):
+    def create_article(self, title, url, abstract=None):
         return {'title': title, 'url': url, 'abstract': abstract}
 
-    def parseRSS(self, sections):
+    def parse_rss(self, sections):
         resultList = []
         for (title, url) in sections:
             # for each section, insert a title...
-            resultList.append(self.createSection(title))
+            resultList.append(self.create_section(title))
             # ... then parse the page and extract article links
-            doc = etree.fromstring(readHttpPage(url))
+            doc = etree.fromstring(read_http_page(url))
             for entry in doc.xpath('//rss/channel/item'):
                 title = entry.xpath('title')[0].text
                 link = entry.xpath('link')[0].text
                 abstract = entry.xpath('description')[0].text
-                resultList.append(self.createArticle(title.strip(), link, abstract))
+                resultList.append(self.create_article(title.strip(), link, abstract))
         return resultList
 
 
 class TheProvince(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'theprovince'
 
-    def getDesc(self):
+    def get_desc(self):
         return 'The Province'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('Vancouver', 'http://www.theprovince.com/scripts/Sp6Query.aspx?catalog=VAPR&tags=category|news|subcategory|metro%20vancouver'),
                     ('Fraser Valley', 'http://www.theprovince.com/scripts/Sp6Query.aspx?catalog=VAPR&tags=category|news|subcategory|fraser%20valley'),
@@ -49,25 +49,25 @@ class TheProvince(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = etree.fromstring(readHttpPage(url))
+                doc = etree.fromstring(read_http_page(url))
                 for entry in doc.xpath('//ns:entry[@Status="FREE"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'}):
                     title = entry.xpath('ns:title[@type="html"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].text
                     link = 'http://www.theprovince.com' + entry.xpath('ns:link[@type="text/html"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].get('href')
                     abstract = entry.xpath('ns:link[@type="text/html"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].get('Abstract')
-                    resultList.append(self.createArticle(title.strip(), link, abstract))
+                    resultList.append(self.create_article(title.strip(), link, abstract))
 
             for (title, url) in relSections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = etree.fromstring(readHttpPage(url))
+                doc = etree.fromstring(read_http_page(url))
                 for entry in doc.xpath('//ns:entry[@Status="FREE"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'}):
                     title = entry.xpath('ns:title[@type="html"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].text
                     link = 'http://www.theprovince.com' + entry.xpath('ns:link[@type="text/xml"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].get('href')
                     abstract = entry.xpath('ns:link[@type="text/xml"]', namespaces={'ns': 'http://www.w3.org/2005/Atom'})[0].get('Abstract')
-                    resultList.append(self.createArticle(title.strip(), link, abstract))
+                    resultList.append(self.create_article(title.strip(), link, abstract))
 
         except Exception as e:
             logger.exception('Problem processing url')
@@ -76,13 +76,13 @@ class TheProvince(BaseSource):
 
 class VancouverSun(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'vancouversun'
 
-    def getDesc(self):
+    def get_desc(self):
         return 'Vancouver Sun'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('News Home Page', 'http://rss.canada.com/get/?F229'),
                     ('Regional', 'http://rss.canada.com/get/?F259'),
@@ -90,7 +90,7 @@ class VancouverSun(BaseSource):
                     ('World', 'http://rss.canada.com/get/?F7432'),]
 
         try:
-            resultList = self.parseRSS(sections)
+            resultList = self.parse_rss(sections)
         except Exception as e:
             logger.exception('Problem processing url')
 
@@ -98,19 +98,19 @@ class VancouverSun(BaseSource):
 
 class BBCWorld(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'bbcworld'
 
-    def getDesc(self):
+    def get_desc(self):
         return 'BBC World'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('World', 'http://feeds.bbci.co.uk/news/world/rss.xml'),
                     ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
 
         try:
-            resultList = self.parseRSS(sections)
+            resultList = self.parse_rss(sections)
         except Exception as e:
             logger.exception('Problem processing url')
 
@@ -118,13 +118,13 @@ class BBCWorld(BaseSource):
 
 class AppleDaily(BaseSource):
 
-    def getId(self):
+    def get_id(self):
             return 'appledaily'
 
-    def getDesc(self):
+    def get_desc(self):
         return '蘋果日報(香港)'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('要聞港聞', 'http://hk.apple.nextmedia.com/news/index/'),
                     ('兩岸國際', 'http://hk.apple.nextmedia.com/international/index/'),
@@ -135,12 +135,12 @@ class AppleDaily(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(readHttpPage(url))
+                doc = html.document_fromstring(read_http_page(url))
                 for option in doc.get_element_by_id('article_ddl').xpath('//option'):
                     if option.text and option.get('value'):
-                        resultList.append(self.createArticle(option.text.strip(), option.get('value')))
+                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
         except Exception as e:
             logger.exception('Problem processing url')
@@ -149,13 +149,13 @@ class AppleDaily(BaseSource):
 
 class SingTaoVancouver(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'singtaovancouver'
 
-    def getDesc(self):
+    def get_desc(self):
         return '星島日報(溫哥華)'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('要聞', 'http://vancouver.singtao.ca/category/%E8%A6%81%E8%81%9E/?variant=zh-hk'),
                     ('省市', 'http://vancouver.singtao.ca/category/%E7%9C%81%E5%B8%82/?variant=zh-hk'),
@@ -173,12 +173,12 @@ class SingTaoVancouver(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(readHttpPage(url))
+                doc = html.document_fromstring(read_http_page(url))
                 for option in doc.get_element_by_id('news').xpath('//option'):
                     if option.text and option.get('value'):
-                        resultList.append(self.createArticle(option.text.strip(), option.get('value')))
+                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
 
         except Exception as e:
@@ -188,13 +188,13 @@ class SingTaoVancouver(BaseSource):
 
 class SingTaoToronto(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'singtaotoronto'
 
-    def getDesc(self):
+    def get_desc(self):
         return '星島日報(多倫多)'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('要聞', 'http://toronto.singtao.ca/category/%e8%a6%81%e8%81%9e/?variant=zh-hk'),
                     ('城市', 'http://toronto.singtao.ca/category/%e5%9f%8e%e5%b8%82/?variant=zh-hk'),
@@ -210,12 +210,12 @@ class SingTaoToronto(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(readHttpPage(url))
+                doc = html.document_fromstring(read_http_page(url))
                 for option in doc.get_element_by_id('news').xpath('//option'):
                     if option.text and option.get('value'):
-                        resultList.append(self.createArticle(option.text.strip(), option.get('value')))
+                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
 
         except Exception as e:
@@ -225,18 +225,18 @@ class SingTaoToronto(BaseSource):
 
 class MingPaoVancouver(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'mingpaovancouver'
 
-    def getDesc(self):
+    def get_desc(self):
         return '明報加西版(溫哥華)'
 
-    def getArticles(self):
+    def get_articles(self):
         # get date first
         dateUrl = 'http://www.mingpaocanada.com/Van/'
         theDate = datetime.datetime.today().strftime('%Y%m%d')
         try:
-            doc = html.document_fromstring(readHttpPage(dateUrl))
+            doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
                 if aLink.text_content().encode('utf-8') == '明報首頁':
                     href = aLink.attrib['href']
@@ -262,12 +262,12 @@ class MingPaoVancouver(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(readHttpPage(url))
+                doc = html.document_fromstring(read_http_page(url))
                 for topic in doc.xpath('//a[contains(@class, "ListContentLargeLink") or contains(@class, "ListContentSmallLink")]'):
                     if topic.text and topic.get('href'):
-                        resultList.append(self.createArticle(topic.text.strip(), baseUrl+topic.get('href')))
+                        resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
 
         except Exception as e:
@@ -277,13 +277,13 @@ class MingPaoVancouver(BaseSource):
 
 class MingPaoHK(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'mingpaohk'
 
-    def getDesc(self):
+    def get_desc(self):
         return '明報(香港)'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('要聞','http://news.mingpao.com/rss/pns/s00001.xml'),
                     ('港聞','http://news.mingpao.com/rss/pns/s00002.xml'),
@@ -298,7 +298,7 @@ class MingPaoHK(BaseSource):
                     ('偵查報道','http://news.mingpao.com/rss/pns/s00287.xml'),]
 
         try:
-            resultList = self.parseRSS(sections)
+            resultList = self.parse_rss(sections)
         except Exception as e:
             logger.exception('Problem processing url')
 
@@ -306,13 +306,13 @@ class MingPaoHK(BaseSource):
 
 class OrientalDailyRSS(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'orientaldailyrss'
 
-    def getDesc(self):
+    def get_desc(self):
         return '東方日報RSS(香港)'
 
-    def getArticles(self):
+    def get_articles(self):
         resultList = []
         sections = [('要聞港聞','http://orientaldaily.on.cc/rss/news.xml'),
                     ('兩岸國際','http://orientaldaily.on.cc/rss/china_world.xml'),
@@ -321,7 +321,7 @@ class OrientalDailyRSS(BaseSource):
                     ('副刊','http://orientaldaily.on.cc/rss/lifestyle.xml'),]
 
         try:
-            resultList = self.parseRSS(sections)
+            resultList = self.parse_rss(sections)
         except Exception as e:
             logger.exception('Problem processing url')
 
@@ -329,18 +329,18 @@ class OrientalDailyRSS(BaseSource):
 
 class OrientalDaily(BaseSource):
 
-    def getId(self):
+    def get_id(self):
         return 'orientaldaily'
 
-    def getDesc(self):
+    def get_desc(self):
         return '東方日報(香港)'
 
-    def getArticles(self):
+    def get_articles(self):
         # get date first
         dateUrl = 'http://orientaldaily.on.cc/'
         theDate = datetime.datetime.today().strftime('%Y%m%d')
         try:
-            doc = html.document_fromstring(readHttpPage(dateUrl))
+            doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('topMenu').xpath('//ul[contains(@class, "menuList clear")]/li/a[contains(@class, "news")]'):
                 href = aLink.attrib['href']
                 match = re.match('\/cnt\/news\/([0-9]{8})\/index\.html', href)
@@ -363,12 +363,12 @@ class OrientalDaily(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.createSection(title))
+                resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(readHttpPage(url))
+                doc = html.document_fromstring(read_http_page(url))
                 for topic in doc.get_element_by_id('articleList').xpath('//ul[contains(@class, "commonBigList")]/li/a'):
                     if topic.text and topic.get('href'):
-                        resultList.append(self.createArticle(topic.text.strip(), baseUrl+topic.get('href')))
+                        resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
 
         except Exception as e:
