@@ -3,6 +3,7 @@ import sys
 import inspect
 
 import webapp2
+from google.appengine.api import memcache
 
 from logger import logger
 import sources
@@ -25,13 +26,19 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self):
         articles = []
+        encodedArticles = json.dumps(articles)
 
         thePath = self.request.path.strip('/')
         if thePath in allSources:
-            articles.extend(allSources[thePath].get_articles())
+            # try to retrieve from cache
+            encodedArticles = memcache.get(thePath)
+            if (encodedArticles == None):
+                articles.extend(allSources[thePath].get_articles())
+                encodedArticles = json.dumps(articles)
+                memcache.add(key=thePath, value=encodedArticles, time=900)
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.write(json.dumps(articles))
+        self.response.write(encodedArticles)
 
 class ListSource(webapp2.RequestHandler):
 
