@@ -110,7 +110,7 @@
           reAdjust();
         });
 
-        function doShiftRight() {
+        var doShiftRight = function() {
           $('.scroller-left').fadeIn('slow');
           $('.list').animate({left:"-="+shiftRightBy()+"px"},'slow',function(){
             hiddenRight() > 0? $('.scroller-right').fadeIn('slow') : $('.scroller-right').fadeOut('slow');
@@ -119,7 +119,7 @@
         };
         $('.scroller-right').one('click', doShiftRight);
 
-        function doShiftLeft() {
+        var doShiftLeft = function() {
           $('.scroller-right').fadeIn('slow');
           var shiftBy = shiftLeftBy();
           hiddenLeft() > shiftBy? $('.scroller-left').fadeIn('slow') : $('.scroller-left').fadeOut('slow');
