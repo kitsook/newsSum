@@ -290,7 +290,6 @@ class MingPaoVancouver(BaseSource):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
-
         except Exception as e:
             logger.exception('Problem processing url')
 

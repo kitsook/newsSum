@@ -50,7 +50,7 @@
           );
       }
 
-      function setupTab() {
+      function setScrollableTab() {
         var widthOfList = function(){
           var itemsWidth = 0;
           $('.list li').each(function(){
@@ -75,7 +75,7 @@
               accWidth += $(this).outerWidth(true);
             };
           });
-          return accWidth < 0? $('.wrapper').outerWidth()/2 : accWidth;
+          return accWidth <= 0? $('.wrapper').outerWidth()/2 : accWidth;
         };
         var shiftRightBy = function() {
           var tail = hiddenRight();
@@ -109,20 +109,25 @@
         $(window).on('resize',function(e){
           reAdjust();
         });
-        $('.scroller-right').click(function() {
+
+        function doShiftRight() {
           $('.scroller-left').fadeIn('slow');
           $('.list').animate({left:"-="+shiftRightBy()+"px"},'slow',function(){
             hiddenRight() > 0? $('.scroller-right').fadeIn('slow') : $('.scroller-right').fadeOut('slow');
+            $('.scroller-right').one('click', doShiftRight);
           });
-        });
+        };
+        $('.scroller-right').one('click', doShiftRight);
 
-        $('.scroller-left').click(function() {
+        function doShiftLeft() {
           $('.scroller-right').fadeIn('slow');
           var shiftBy = shiftLeftBy();
           hiddenLeft() > shiftBy? $('.scroller-left').fadeIn('slow') : $('.scroller-left').fadeOut('slow');
           $('.list').animate({left:"+="+shiftBy+"px"},'slow',function(){
+            $('.scroller-left').one('click', doShiftLeft);
           });
-        });
+        };
+        $('.scroller-left').one('click', doShiftLeft);
       }
 
       function getSubscription() {
@@ -290,7 +295,7 @@
           saveLastSrc('config');
         });
 
-        setupTab();
+        setScrollableTab();
 
         var allSources = {};
         $.getJSON('/list', function(data) {
