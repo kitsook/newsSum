@@ -33,7 +33,7 @@ def get_sources():
 
     for item in inspect.getmembers(sys.modules['sources'], inspect.isclass):
         cls = item[1]
-        if (cls.__name__ != 'BaseSource' and issubclass(cls, sources.BaseSource)):
+        if (cls.__name__ != 'BaseSource' and cls.__name__ != 'RSSBase'  and issubclass(cls, sources.BaseSource)):
             obj = cls()
             if hasattr(obj, 'get_id') and hasattr(obj, 'get_desc') and hasattr(obj, 'get_articles'):
                 result[obj.get_id()] = obj
