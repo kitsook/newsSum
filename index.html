@@ -278,7 +278,7 @@
         for (var att in obj) {
           sorted.push([att, obj[att]]);
         }
-        sorted.sort(function(a,b) { return a[0] > b[0]; });
+        sorted.sort(function(a,b) { return a[0].localeCompare(b[0]); });
         var result = {};
         for (var i = 0; i < sorted.length; i++) {
           result[sorted[i][0]] = sorted[i][1];
