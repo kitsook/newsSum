@@ -28,7 +28,7 @@ from lxml import etree
 from logger import logger
 from fetcher import read_http_page
 
-class BaseSource:
+class BaseSource():
 
     def create_section(self, title):
         return {'title': title}
@@ -36,9 +36,14 @@ class BaseSource:
     def create_article(self, title, url, abstract=None):
         return {'title': title, 'url': url, 'abstract': abstract}
 
-    def parse_rss(self, sections):
+class RSSBase(BaseSource):
+
+    def get_rss_links(self):
+        return [];
+
+    def get_articles(self):
         resultList = []
-        for (title, url) in sections:
+        for (title, url) in self.get_rss_links():
             # for each section, insert a title...
             resultList.append(self.create_section(title))
             # ... then parse the page and extract article links
@@ -49,7 +54,6 @@ class BaseSource:
                 abstract = entry.xpath('description')[0].text
                 resultList.append(self.create_article(title.strip(), link, abstract))
         return resultList
-
 
 class TheProvince(BaseSource):
 
@@ -95,7 +99,7 @@ class TheProvince(BaseSource):
 
         return resultList
 
-class VancouverSun(BaseSource):
+class VancouverSun(RSSBase):
 
     def get_id(self):
         return 'vancouversun'
@@ -103,21 +107,32 @@ class VancouverSun(BaseSource):
     def get_desc(self):
         return 'Vancouver Sun'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('News Home Page', 'http://rss.canada.com/get/?F229'),
-                    ('Regional', 'http://rss.canada.com/get/?F259'),
-                    ('National', 'http://rss.canada.com/get/?F7431'),
-                    ('World', 'http://rss.canada.com/get/?F7432'),]
+    def get_rss_links(self):
+        return [('News Home Page', 'http://rss.canada.com/get/?F229'),
+                ('Regional', 'http://rss.canada.com/get/?F259'),
+                ('National', 'http://rss.canada.com/get/?F7431'),
+                ('World', 'http://rss.canada.com/get/?F7432'),]
 
-        try:
-            resultList = self.parse_rss(sections)
-        except Exception as e:
-            logger.exception('Problem processing url')
+class CBCNews(RSSBase):
+    def get_id(self):
+        return 'cbcnews'
 
-        return resultList
+    def get_desc(self):
+        return 'CBC News'
 
-class BBCWorld(BaseSource):
+    def get_rss_links(self):
+        return [('Top Stories', 'http://rss.cbc.ca/lineup/topstories.xml'),
+                ('World', 'http://rss.cbc.ca/lineup/world.xml'),
+                ('Canada', 'http://rss.cbc.ca/lineup/canada.xml'),
+                ('Technology & Science', 'http://rss.cbc.ca/lineup/technology.xml'),
+                ('Politics', 'http://rss.cbc.ca/lineup/politics.xml'),
+                ('Business', 'http://rss.cbc.ca/lineup/business.xml'),
+                ('Health', 'http://rss.cbc.ca/lineup/health.xml'),
+                ('Art & Entertainment', 'http://rss.cbc.ca/lineup/arts.xml'),
+                ('Offbeat', 'http://rss.cbc.ca/lineup/offbeat.xml'),
+                ('Aboriginal', 'http://www.cbc.ca/cmlink/rss-cbcaboriginal'),]
+
+class BBCWorld(RSSBase):
 
     def get_id(self):
         return 'bbcworld'
@@ -125,17 +140,9 @@ class BBCWorld(BaseSource):
     def get_desc(self):
         return 'BBC World'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('World', 'http://feeds.bbci.co.uk/news/world/rss.xml'),
-                    ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
-
-        try:
-            resultList = self.parse_rss(sections)
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
+    def get_rss_links(self):
+        return [('World', 'http://feeds.bbci.co.uk/news/world/rss.xml'),
+                ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
 
 class AppleDaily(BaseSource):
 
@@ -295,7 +302,7 @@ class MingPaoVancouver(BaseSource):
 
         return resultList
 
-class MingPaoHK(BaseSource):
+class MingPaoHK(RSSBase):
 
     def get_id(self):
         return 'mingpaohk'
@@ -303,28 +310,20 @@ class MingPaoHK(BaseSource):
     def get_desc(self):
         return '明報(香港)'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('要聞','http://news.mingpao.com/rss/pns/s00001.xml'),
-                    ('港聞','http://news.mingpao.com/rss/pns/s00002.xml'),
-                    ('經濟','http://news.mingpao.com/rss/pns/s00004.xml'),
-                    ('娛樂','http://news.mingpao.com/rss/pns/s00016.xml'),
-                    ('社評‧筆陣','http://news.mingpao.com/rss/pns/s00003.xml'),
-                    ('觀點','http://news.mingpao.com/rss/pns/s00012.xml'),
-                    ('國際','http://news.mingpao.com/rss/pns/s00014.xml'),
-                    ('體育','http://news.mingpao.com/rss/pns/s00015.xml'),
-                    ('副刊','http://news.mingpao.com/rss/pns/s00005.xml'),
-                    ('深度報道','http://news.mingpao.com/rss/pns/s00285.xml'),
-                    ('偵查報道','http://news.mingpao.com/rss/pns/s00287.xml'),]
+    def get_rss_links(self):
+        return [('要聞','http://news.mingpao.com/rss/pns/s00001.xml'),
+                ('港聞','http://news.mingpao.com/rss/pns/s00002.xml'),
+                ('經濟','http://news.mingpao.com/rss/pns/s00004.xml'),
+                ('娛樂','http://news.mingpao.com/rss/pns/s00016.xml'),
+                ('社評‧筆陣','http://news.mingpao.com/rss/pns/s00003.xml'),
+                ('觀點','http://news.mingpao.com/rss/pns/s00012.xml'),
+                ('國際','http://news.mingpao.com/rss/pns/s00014.xml'),
+                ('體育','http://news.mingpao.com/rss/pns/s00015.xml'),
+                ('副刊','http://news.mingpao.com/rss/pns/s00005.xml'),
+                ('深度報道','http://news.mingpao.com/rss/pns/s00285.xml'),
+                ('偵查報道','http://news.mingpao.com/rss/pns/s00287.xml'),]
 
-        try:
-            resultList = self.parse_rss(sections)
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
-
-class OrientalDailyRSS(BaseSource):
+class OrientalDailyRSS(RSSBase):
 
     def get_id(self):
         return 'orientaldailyrss'
@@ -332,20 +331,12 @@ class OrientalDailyRSS(BaseSource):
     def get_desc(self):
         return '東方日報RSS(香港)'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('要聞港聞','http://orientaldaily.on.cc/rss/news.xml'),
-                    ('兩岸國際','http://orientaldaily.on.cc/rss/china_world.xml'),
-                    ('財經','http://orientaldaily.on.cc/rss/finance.xml'),
-                    ('娛樂','http://orientaldaily.on.cc/rss/entertainment.xml'),
-                    ('副刊','http://orientaldaily.on.cc/rss/lifestyle.xml'),]
-
-        try:
-            resultList = self.parse_rss(sections)
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
+    def get_rss_links(self):
+        return [('要聞港聞','http://orientaldaily.on.cc/rss/news.xml'),
+                ('兩岸國際','http://orientaldaily.on.cc/rss/china_world.xml'),
+                ('財經','http://orientaldaily.on.cc/rss/finance.xml'),
+                ('娛樂','http://orientaldaily.on.cc/rss/entertainment.xml'),
+                ('副刊','http://orientaldaily.on.cc/rss/lifestyle.xml'),]
 
 class OrientalDaily(BaseSource):
 
