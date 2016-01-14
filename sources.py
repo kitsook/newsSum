@@ -398,6 +398,40 @@ class MetroHK(RSSBase):
     def get_rss_links(self):
         return [('香港都市日報','http://www.metrohk.com.hk/desktopRSS.php'),]
 
+class SingPao(BaseSource):
+
+    def get_id(self):
+        return 'singpao'
+
+    def get_desc(self):
+        return '香港成報'
+
+    def get_articles(self):
+        resultList = []
+        sections = [('成報新聞', 'http://www.singpao.com/index.php/spnews/sphknews'),
+                    ('成報社評', 'http://www.singpao.com/index.php/spcpnews'),
+                    ('成報財經', 'http://www.singpao.com/index.php/spfinance'),
+                    ('成報娛樂', 'http://www.singpao.com/index.php/spent'),
+                    ('成報體育', 'http://www.singpao.com/index.php/spsport'),
+                    ('成報副刊', 'http://www.singpao.com/index.php/spmagazine'),]
+        baseUrl = 'http://www.singpao.com'
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.get_element_by_id('jsn-pos-mainbody-top').xpath('//a[contains(@class, "title")]'):
+                    if topic.text and topic.get('href'):
+                        resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
+
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
+
 class TheStandard(BaseSource):
 
     def get_id(self):
