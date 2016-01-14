@@ -29,6 +29,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -249,7 +250,7 @@
                 .prop('checked', subs[srcDict[s]])
             )
             .append(
-              $('<label>').text(s)
+              $('<label for="src-chk-'+srcDict[s]+'" style="display: inline-block">').text(s)
             )
           );
 
@@ -292,6 +293,7 @@
     </script>
 
     <script>
+
       $(function() {
 
         // register click event for the config menu
@@ -334,7 +336,7 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container" >
       <h3>newsSum</h3>
       <div class="scroller scroller-left"><i class="glyphicon glyphicon-chevron-left"></i></div>
       <div class="scroller scroller-right"><i class="glyphicon glyphicon-chevron-right"></i></div>
