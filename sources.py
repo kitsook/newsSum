@@ -386,3 +386,63 @@ class OrientalDaily(BaseSource):
             logger.exception('Problem processing url')
 
         return resultList
+
+class TheStandard(BaseSource):
+
+    def get_id(self):
+        return 'thestandard'
+
+    def get_desc(self):
+        return 'The Standard'
+
+    def get_articles(self):
+        # get date first
+        dateUrl = 'http://www.thestandard.com.hk/'
+        theDate = datetime.datetime.today().strftime('%Y%m%d')
+        try:
+            doc = html.document_fromstring(read_http_page(dateUrl))
+            comments = [element for element in doc.iter() if isinstance(element, html.HtmlComment)]
+            for comment in comments:
+                match = re.findall('\@today\@ ([0-9]{8})', comment.text)
+                if match:
+                    theDate = match[0]
+        except Exception as e:
+            logger.exception('Problem getting date')
+
+        resultList = []
+        sections = [('Editorial', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=17&d_str='+theDate),
+                    ('Top News', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=11&d_str='+theDate),
+                    ('Local', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=4&d_str='+theDate),
+                    ('Business', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=2&d_str='+theDate),
+                    ('China', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=3&d_str='+theDate),
+                    ('World', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=6&d_str='+theDate),
+                    ('Focus/ViewPoint', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=9&d_str='+theDate),
+                    ('CityTalk', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=5&d_str='+theDate),
+                    ('Sports', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=8&d_str='+theDate),
+                    ('People', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=7&d_str='+theDate),
+                    ('Central Station', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=21&d_str='+theDate),
+                    ('Weekend Glitz', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=12&d_str='+theDate),
+                    ('Money Glitz', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&d_str='+theDate),
+                    ('Technology', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=2&d_str='+theDate),
+                    ('Health & Beauty', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=3&d_str='+theDate),
+                    ('Education', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=4&d_str='+theDate),
+                    ('Motoring', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=6&d_str='+theDate),
+                    ('Property', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=7&d_str='+theDate),
+                    ('Home Decor', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=11&d_str='+theDate),
+                    ('Travel', 'http://www.thestandard.com.hk/news_sec.asp?we_cat=16&fc=12&d_str='+theDate),]
+
+        baseUrl = 'http://www.thestandard.com.hk/'
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.xpath('//a[contains(@class, "bodyHeadline") or contains(@class, "leadHeadline")]'):
+                    if topic.text and topic.get('href'):
+                        resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList

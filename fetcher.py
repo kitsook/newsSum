@@ -21,7 +21,7 @@
 from urllib2 import urlopen
 import urllib2
 
-URL_TIMEOUT = 60
+URL_TIMEOUT = 15
 
 def read_http_page(url):
     req = urllib2.Request(url)
