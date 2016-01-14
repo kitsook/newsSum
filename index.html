@@ -70,6 +70,21 @@
         return widthOfList()-$('.wrapper').outerWidth()-Math.abs(getLeftPosi());
       };
 
+      var lengthToActiveTab = function() {
+        var len = 0;
+        var found = false;
+        $('#tabHeader li').each(function() {
+          if (!found) {
+            len += $(this).outerWidth(true);
+           }
+          if ($(this).hasClass('active')) {
+            found = true;
+          }
+        });
+        len -= $('.wrapper').outerWidth();
+        return len > 0? len : 0;
+      };
+
       function setScrollableTab() {
         var minScroll = function() {
           var accWidth = 0;
@@ -274,6 +289,11 @@
         if ($('.nav-tabs a[href="#tab-' + lastViewed + '"]').length > 0) {
           $('.nav-tabs a[href="#tab-' + lastViewed + '"]').tab('show');
         }
+
+        var len = lengthToActiveTab();
+        $('.list').animate({left:"-="+len+"px"},'slow',function(){
+          $(window).trigger('resize');
+        });
       }
 
       function sortObj(obj) {
