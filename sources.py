@@ -214,7 +214,7 @@ class SingTaoVancouver(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
-                for option in doc.get_element_by_id('news').xpath('//option'):
+                for option in doc.get_element_by_id('news').xpath('option'):
                     if option.text and option.get('value'):
                         resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
@@ -251,7 +251,7 @@ class SingTaoToronto(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
-                for option in doc.get_element_by_id('news').xpath('//option'):
+                for option in doc.get_element_by_id('news').xpath('option'):
                     if option.text and option.get('value'):
                         resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
@@ -457,10 +457,12 @@ class TheStandard(BaseSource):
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             comments = [element for element in doc.iter() if isinstance(element, html.HtmlComment)]
+            prog = re.compile('\@today\@ ([0-9]{8})')
             for comment in comments:
-                match = re.findall('\@today\@ ([0-9]{8})', comment.text)
+                match = re.findall(prog, comment.text)
                 if match:
                     theDate = match[0]
+                    break
         except Exception as e:
             logger.exception('Problem getting date')
 
