@@ -144,6 +144,16 @@ class BBCWorld(RSSBase):
         return [('World', 'http://feeds.bbci.co.uk/news/world/rss.xml'),
                 ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
 
+class FTChinese(RSSBase):
+        def get_id(self):
+            return 'ftchinese'
+
+        def get_desc(self):
+            return 'FT中文网'
+
+        def get_rss_links(self):
+            return [('今日焦点', 'http://big5.ftchinese.com/rss/news'),]
+
 class AppleDaily(BaseSource):
 
     def get_id(self):
@@ -489,5 +499,31 @@ class TheStandard(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url')
+
+        return resultList
+
+class AM730(BaseSource):
+
+    def get_id(self):
+        return 'am730'
+
+    def get_desc(self):
+        return 'AM730'
+
+    def get_articles(self):
+        resultList = []
+        # build the list
+        listUrl = 'http://www.am730.com.hk/home'
+        baseUrl = 'http://www.am730.com.hk/'
+        try:
+            doc = html.document_fromstring(read_http_page(listUrl))
+            for optGroup in doc.get_element_by_id('listnews').xpath('optgroup'):
+                if optGroup.get('label'):
+                    resultList.append(self.create_section(optGroup.get('label')))
+                for opt in optGroup.xpath('option'):
+                    if opt.get('value') and opt.text:
+                        resultList.append(self.create_article(opt.text.strip(), baseUrl+opt.get('value')))
+        except Exception as e:
+            logger.exception('Problem getting date')
 
         return resultList
