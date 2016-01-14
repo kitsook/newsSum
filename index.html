@@ -29,8 +29,11 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 
     <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
 
@@ -50,24 +53,25 @@
           );
       }
 
+      var widthOfList = function(){
+        var itemsWidth = 0;
+        $('.list li').each(function(){
+          var itemWidth = $(this).outerWidth(true);
+          itemsWidth+=itemWidth;
+        });
+        return itemsWidth;
+      };
+      var getLeftPosi = function(){
+        return $('.list').position().left;
+      };
+      var hiddenLeft = function() {
+        return getLeftPosi() >= 0? 0 : Math.abs(getLeftPosi());
+      };
+      var hiddenRight = function() {
+        return widthOfList()-$('.wrapper').outerWidth()-Math.abs(getLeftPosi());
+      };
+
       function setScrollableTab() {
-        var widthOfList = function(){
-          var itemsWidth = 0;
-          $('.list li').each(function(){
-            var itemWidth = $(this).outerWidth(true);
-            itemsWidth+=itemWidth;
-          });
-          return itemsWidth;
-        };
-        var getLeftPosi = function(){
-          return $('.list').position().left;
-        };
-        var hiddenLeft = function() {
-          return getLeftPosi() >= 0? 0 : Math.abs(getLeftPosi());
-        };
-        var hiddenRight = function() {
-          return widthOfList()-$('.wrapper').outerWidth()-Math.abs(getLeftPosi());
-        };
         var minScroll = function() {
           var accWidth = 0;
           $('.list li').each(function(){
@@ -293,6 +297,21 @@
         // register click event for the config menu
         $('#tabHeader-config').click(function() {
           saveLastSrc('config');
+        });
+
+        $('.wrapper').on("swipeleft", function(){
+          var defaultSwipeAmt = $('.wrapper').outerWidth()/2;
+          var scrollBy = hiddenRight() > defaultSwipeAmt? defaultSwipeAmt : hiddenRight();
+          $('.list').animate({left:"-="+scrollBy+"px"},'slow',function(){
+            $(window).trigger('resize');
+          });
+        });
+        $('.wrapper').on("swiperight", function(){
+          var defaultSwipeAmt = $('.wrapper').outerWidth()/2;
+          var scrollBy = hiddenLeft() > defaultSwipeAmt? defaultSwipeAmt : hiddenLeft();
+          $('.list').animate({left:"+="+scrollBy+"px"},'slow',function(){
+            $(window).trigger('resize');
+          });
         });
 
         setScrollableTab();
