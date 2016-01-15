@@ -302,7 +302,7 @@ class MingPaoVancouver(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
+                doc = html.document_fromstring(unicode(read_http_page(url), 'big5', errors='ignore'))
                 for topic in doc.xpath('//a[contains(@class, "ListContentLargeLink") or contains(@class, "ListContentSmallLink")]'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
