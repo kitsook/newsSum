@@ -312,6 +312,60 @@ class MingPaoVancouver(BaseSource):
 
         return resultList
 
+class MingPaoToronto(BaseSource):
+
+    def get_id(self):
+        return 'mingpaotoronto'
+
+    def get_desc(self):
+        return '明報加東版(多倫多)'
+
+    def get_articles(self):
+        # get date first
+        dateUrl = 'http://www.mingpaocanada.com/TOR/'
+        theDate = datetime.datetime.today().strftime('%Y%m%d')
+        try:
+            doc = html.document_fromstring(read_http_page(dateUrl))
+            for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
+                if aLink.text_content().encode('utf-8') == '明報首頁':
+                    href = aLink.attrib['href']
+                    match = re.match('htm\/News\/([0-9]{8})\/main_r\.htm', href)
+                    if match and match.lastindex == 1:
+                        theDate = match.group(1)
+                    else:
+                        logger.info('no date found. using system date: ' + theDate)
+        except Exception as e:
+            logger.exception('Problem getting date')
+
+        resultList = []
+        sections = [('要聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TAindex_r.htm'),
+                    ('加國新聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TDindex_r.htm'),
+                    ('地產','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TRindex_r.htm'),
+                    ('中國','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TCAindex_r.htm'),
+                    ('國際','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TTAindex_r.htm'),
+                    ('港聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/HK-GAindex_r.htm'),
+                    ('經濟','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/THindex_r.htm'),
+                    ('體育','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TSindex_r.htm'),
+                    ('影視','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/HK-MAindex_r.htm'),
+                    ('副刊','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/WWindex_r.htm'),]
+
+
+        baseUrl = 'http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/'
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(unicode(read_http_page(url), 'big5', errors='ignore'))
+                for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
+                    if topic.text and topic.get('href'):
+                        resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
+
 class MingPaoHK(RSSBase):
 
     def get_id(self):
