@@ -287,14 +287,16 @@ class MingPaoVancouver(BaseSource):
             logger.exception('Problem getting date')
 
         resultList = []
-        sections = [('要聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VAindex.htm'),
-                    ('加國新聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VBindex.htm'),
-                    ('社區新聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VDindex.htm'),
-                    ('港聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/HK-VGindex.htm'),
-                    ('國際','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VTindex.htm'),
-                    ('中國','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VCindex.htm'),
-                    ('體育','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VSindex.htm'),
-                    ('影視','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/HK-MAindex.htm'),]
+        sections = [('要聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VAindex_r.htm'),
+                    ('加國新聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VBindex_r.htm'),
+                    ('社區新聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VDindex_r.htm'),
+                    ('港聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/HK-VGindex_r.htm'),
+                    ('國際','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VTindex_r.htm'),
+                    ('中國','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VCindex_r.htm'),
+                    ('經濟','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VEindex_r.htm'),
+                    ('體育','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VSindex_r.htm'),
+                    ('影視','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/HK-MAindex_r.htm'),
+                    ('副刊','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/WWindex_r.htm'),]
 
         baseUrl = 'http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/'
         try:
@@ -303,7 +305,7 @@ class MingPaoVancouver(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(unicode(read_http_page(url), 'big5', errors='ignore'))
-                for topic in doc.xpath('//a[contains(@class, "ListContentLargeLink") or contains(@class, "ListContentSmallLink")]'):
+                for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
