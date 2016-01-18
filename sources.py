@@ -44,15 +44,18 @@ class RSSBase(BaseSource):
     def get_articles(self):
         resultList = []
         for (title, url) in self.get_rss_links():
-            # for each section, insert a title...
-            resultList.append(self.create_section(title))
-            # ... then parse the page and extract article links
-            doc = etree.fromstring(read_http_page(url))
-            for entry in doc.xpath('//rss/channel/item'):
-                title = entry.xpath('title')[0].text
-                link = entry.xpath('link')[0].text
-                abstract = entry.xpath('description')[0].text
-                resultList.append(self.create_article(title.strip(), link, abstract))
+            try:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = etree.fromstring(read_http_page(url))
+                for entry in doc.xpath('//rss/channel/item'):
+                    title = entry.xpath('title')[0].text
+                    link = entry.xpath('link')[0].text
+                    abstract = entry.xpath('description')[0].text
+                    resultList.append(self.create_article(title.strip(), link, abstract))
+            except Exception as e:
+                logger.exception('Problem processing rss')
         return resultList
 
 class TheProvince(BaseSource):
