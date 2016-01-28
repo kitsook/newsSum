@@ -43,10 +43,10 @@ class RSSBase(BaseSource):
 
     def get_articles(self):
         resultList = []
-        for (title, url) in self.get_rss_links():
+        for (name, url) in self.get_rss_links():
             try:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                resultList.append(self.create_section(name))
                 # ... then parse the page and extract article links
                 doc = etree.fromstring(read_http_page(url))
                 for entry in doc.xpath('//rss/channel/item'):
@@ -466,6 +466,18 @@ class MetroHK(RSSBase):
 
     def get_rss_links(self):
         return [('香港都市日報','http://www.metrohk.com.hk/desktopRSS.php'),]
+
+class MetroVancouver(RSSBase):
+
+    def get_id(self):
+        return 'metrovancouver'
+
+    def get_desc(self):
+        return 'Metro Vancouver'
+
+    def get_rss_links(self):
+        return [('Metro Vancouver','http://www.metronews.ca/feeds.articles.news.vancouver.rss'),]
+
 
 class SingPao(BaseSource):
 
