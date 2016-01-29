@@ -476,7 +476,14 @@ class MetroVancouver(RSSBase):
         return 'Metro Vancouver'
 
     def get_rss_links(self):
-        return [('Metro Vancouver','http://www.metronews.ca/feeds.articles.news.vancouver.rss'),]
+        return [('Vancouver','http://www.metronews.ca/feeds.articles.news.vancouver.rss'),
+                ('Canada', 'http://www.metronews.ca/feeds.articles.news.canada.rss'),
+                ('World', 'http://www.metronews.ca/feeds.articles.news.world.rss'),
+                ('Views', 'http://www.metronews.ca/feeds.articles.views.vancouver.rss'),
+                ('Entertainment', 'http://www.metronews.ca/feeds.articles.entertainment.rss'),
+                ('Life', 'http://www.metronews.ca/feeds.articles.life.rss'),
+                ('Drive', 'http://www.metronews.ca/feeds.articles.drive.rss'),
+                ('Sports', 'http://www.metronews.ca/feeds.articles.sports.rss'),]
 
 
 class SingPao(BaseSource):
