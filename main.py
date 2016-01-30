@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Copyright (c) 2016 Clarence Ho (clarenceho at gmail dot com)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,26 +21,12 @@
 # SOFTWARE.
 
 import json
-import sys
-import inspect
 
 import webapp2
 from google.appengine.api import memcache
 
 from logger import logger
-import sources
-
-def get_sources():
-    result = {}
-
-    for item in inspect.getmembers(sys.modules['sources'], inspect.isclass):
-        cls = item[1]
-        if (cls.__name__ != 'BaseSource' and cls.__name__ != 'RSSBase'  and issubclass(cls, sources.BaseSource)):
-            obj = cls()
-            if hasattr(obj, 'get_id') and hasattr(obj, 'get_desc') and hasattr(obj, 'get_articles'):
-                result[obj.get_id()] = obj
-
-    return result
+from util import get_sources
 
 allSources = get_sources()
 
