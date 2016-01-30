@@ -485,6 +485,24 @@ class MetroVancouver(RSSBase):
                 ('Drive', 'http://www.metronews.ca/feeds.articles.drive.rss'),
                 ('Sports', 'http://www.metronews.ca/feeds.articles.sports.rss'),]
 
+class TorontoStar(RSSBase):
+
+    def get_id(self):
+        return 'torontostar'
+
+    def get_desc(self):
+        return 'Toronto Star'
+
+    def get_rss_links(self):
+        return [('News','http://www.thestar.com/feeds.articles.news.rss'),
+                ('Your Toronto','http://www.thestar.com/feeds.articles.yourtoronto.rss'),
+                ('Opinion','http://www.thestar.com/feeds.articles.opinion.rss'),
+                ('Sports','http://www.thestar.com/feeds.articles.sports.rss'),
+                ('Business','http://www.thestar.com/feeds.articles.business.rss'),
+                ('Entertainment','http://www.thestar.com/feeds.articles.entertainment.rss'),
+                ('Life','http://www.thestar.com/feeds.articles.life.rss'),
+                ('Autos', 'http://www.thestar.com/feeds.articles.autos.rss'),]
+
 
 class SingPao(BaseSource):
 
