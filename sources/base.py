@@ -59,7 +59,7 @@ class RSSBase(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(name))
                 # ... then parse the page and extract article links
-                doc = etree.fromstring(read_http_page(url))
+                doc = etree.fromstring(read_http_page(url), parser=etree.XMLParser(recover=True))
                 for entry in doc.xpath('//rss/channel/item'):
                     title = entry.xpath('title')[0].text
                     link = entry.xpath('link')[0].text
