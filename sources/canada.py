@@ -23,6 +23,7 @@
 import re
 import datetime
 from lxml import html
+from lxml import etree
 
 from logger import logger
 from fetcher import read_http_page
