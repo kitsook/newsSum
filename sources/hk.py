@@ -112,7 +112,7 @@ class OrientalDaily(BaseSource):
         theDate = datetime.datetime.today().strftime('%Y%m%d')
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
-            for aLink in doc.get_element_by_id('topMenu').xpath('//ul[contains(@class, "menuList clear")]/li/a[contains(@class, "news")]'):
+            for aLink in doc.get_element_by_id('topMenu').xpath('ul[contains(@class, "menuList clear")]/li/a[contains(@class, "news")]'):
                 href = aLink.attrib['href']
                 match = re.match('\/cnt\/news\/([0-9]{8})\/index\.html', href)
                 if match and match.lastindex == 1:
@@ -137,7 +137,7 @@ class OrientalDaily(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
-                for topic in doc.get_element_by_id('articleList').xpath('//ul[contains(@class, "commonBigList")]/li/a'):
+                for topic in doc.get_element_by_id('articleList').xpath('ul[contains(@class, "commonBigList")]/li/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
@@ -168,12 +168,14 @@ class SingPao(BaseSource):
 
     def get_articles(self):
         resultList = []
-        sections = [('成報新聞', 'http://www.singpao.com/index.php/spnews/sphknews'),
-                    ('成報社評', 'http://www.singpao.com/index.php/spcpnews'),
-                    ('成報財經', 'http://www.singpao.com/index.php/spfinance'),
-                    ('成報娛樂', 'http://www.singpao.com/index.php/spent'),
-                    ('成報體育', 'http://www.singpao.com/index.php/spsport'),
-                    ('成報副刊', 'http://www.singpao.com/index.php/spmagazine'),]
+        sections = [('港聞要聞', 'http://www.singpao.com/index.php/sp-news-i/sp-hk-new-i'),
+                    ('兩岸新聞', 'http://www.singpao.com/index.php/sp-news-i/sp-cn-new-i'),
+                    ('國際新聞', 'http://www.singpao.com/index.php/sp-news-i/sp-int-new-i'),
+                    ('成報社評', 'http://www.singpao.com/index.php/sp-editorial-i'),
+                    ('成報財經', 'http://www.singpao.com/index.php/sp-finance-i'),
+                    ('成報娛樂', 'http://www.singpao.com/index.php/sp-ents-i'),
+                    ('成報體育', 'http://www.singpao.com/index.php/sp-sport-i'),
+                    ('成報副刊', 'http://www.singpao.com/index.php/sp-supplement-i'),]
         baseUrl = 'http://www.singpao.com'
 
         try:
