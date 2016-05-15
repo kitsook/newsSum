@@ -49,8 +49,9 @@ class RSSBase(BaseSource):
 
     __metaclass__ = ABCMeta
 
+    @abstractmethod
     def get_rss_links(self):
-        return [];
+        return []
 
     def get_articles(self):
         resultList = []
