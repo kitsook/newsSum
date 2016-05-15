@@ -219,3 +219,13 @@ class AM730(BaseSource):
             logger.exception('Problem getting date')
 
         return resultList
+
+class HeadlineDaily(RSSBase):
+    def get_id(self):
+        return 'stheadline'
+
+    def get_desc(self):
+        return '頭條日報 Headline Daily'
+
+    def get_rss_links(self):
+        return [('頭條日報 Headline Daily','http://hd.stheadline.com/rss/news/daily/'),]
