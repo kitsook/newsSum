@@ -83,3 +83,25 @@ class LibertyTimes(BaseSource):
             logger.exception('Problem processing url')
 
         return resultList
+
+class UnitedDailyNewsRSS(RSSBase):
+
+    def get_id(self):
+        return 'udn'
+
+    def get_desc(self):
+        return '聯合新聞網'
+
+    def get_rss_links(self):
+        return [('要聞','http://udn.com/rssfeed/news/2/6638?ch=news'),
+                ('全球','http://udn.com/rssfeed/news/2/7225?ch=news'),
+                ('兩岸','http://udn.com/rssfeed/news/2/6640?ch=news'),
+                ('地方','http://udn.com/rssfeed/news/2/6641?ch=news'),
+                ('評論','http://udn.com/rssfeed/news/2/6643?ch=news'),
+                ('產經','http://udn.com/rssfeed/news/2/6644?ch=news'),
+                ('股市','http://udn.com/rssfeed/news/2/6645?ch=news'),
+                ('娛樂','http://udn.com/rssfeed/news/2/6648?ch=news'),
+                ('運動','http://udn.com/rssfeed/news/2/7227?ch=news'),
+                ('社會','http://udn.com/rssfeed/news/2/6639?ch=news'),
+                ('生活','http://udn.com/rssfeed/news/2/6649?ch=news'),
+                ('數位','http://udn.com/rssfeed/news/2/7226?ch=news'),]
