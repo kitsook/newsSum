@@ -28,6 +28,7 @@ from fetcher import read_http_page
 
 from base import BaseSource
 from base import RSSBase
+from base import RDFBase
 
 class LibertyTimes(BaseSource):
 
@@ -126,3 +127,19 @@ class AppleDailyTaiwan(RSSBase):
                 ('旅遊與美食總','http://www.appledaily.com.tw/rss/create/kind/sec/type/ALL24'),
                 ('家庭與健康','http://www.appledaily.com.tw/rss/create/kind/sec/type/19'),
                 ('科技3C','http://www.appledaily.com.tw/rss/create/kind/sec/type/18'),]
+
+class TaipeiTimes(RDFBase):
+
+    def get_id(self):
+        return 'taipeitimes'
+
+    def get_desc(self):
+        return 'Taipei Times(臺北時報)'
+
+    def get_rss_links(self):
+        return [('Front Page', 'http://www.taipeitimes.com/xml/front.rss'),
+                ('Taiwan News','http://www.taipeitimes.com/xml/taiwan.rss'),
+                ('World News','http://www.taipeitimes.com/xml/world.rss'),
+                ('Business','http://www.taipeitimes.com/xml/biz.rss'),
+                ('Sports','http://www.taipeitimes.com/xml/sport.rss'),
+                ('Features','http://www.taipeitimes.com/xml/feat.rss'),]
