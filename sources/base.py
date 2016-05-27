@@ -69,3 +69,24 @@ class RSSBase(BaseSource):
             except Exception as e:
                 logger.exception('Problem processing rss')
         return resultList
+
+class RDFBase(RSSBase):
+
+    __metaclass__ = ABCMeta
+
+    def get_articles(self):
+        resultList = []
+        for (name, url) in self.get_rss_links():
+            try:
+                # for each section, insert a title...
+                resultList.append(self.create_section(name))
+                # ... then parse the page and extract article links
+                doc = etree.fromstring(read_http_page(url), parser=etree.XMLParser(recover=True))
+                for entry in doc.xpath('//*[local-name()="RDF"]/*[local-name()="item"]'):
+                    title = entry.xpath('*[local-name()="title"]')[0].text
+                    link = entry.xpath('*[local-name()="link"]')[0].text
+                    abstract = entry.xpath('*[local-name()="description"]')[0].text
+                    resultList.append(self.create_article(title.strip(), link, abstract))
+            except Exception as e:
+                logger.exception('Problem processing rdf')
+        return resultList
