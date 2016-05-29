@@ -143,3 +143,14 @@ class TaipeiTimes(RDFBase):
                 ('Business','http://www.taipeitimes.com/xml/biz.rss'),
                 ('Sports','http://www.taipeitimes.com/xml/sport.rss'),
                 ('Features','http://www.taipeitimes.com/xml/feat.rss'),]
+
+class ChinaTimes(RSSBase):
+
+    def get_id(self):
+        return 'chinatimes'
+
+    def get_desc(self):
+        return '中國時報'
+
+    def get_rss_links(self):
+        return [('中國時報', 'http://www.chinatimes.com/rss/chinatimes.xml'),]
