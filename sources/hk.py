@@ -147,52 +147,86 @@ class OrientalDaily(BaseSource):
 
         return resultList
 
-class MetroHK(RSSBase):
-
+class MetroHK(BaseSource):
     def get_id(self):
         return 'metrohk'
 
     def get_desc(self):
         return '香港都市日報 (Metro Daily)'
 
-    def get_rss_links(self):
-        return [('香港都市日報','http://www.metrohk.com.hk/desktopRSS.php'),]
+    def get_articles(self):
+        resultList = []
+        baseUrl = 'http://www.metrodaily.hk/'
 
-# class SingPao(BaseSource):
-#
-#     def get_id(self):
-#         return 'singpao'
-#
-#     def get_desc(self):
-#         return '香港成報'
-#
-#     def get_articles(self):
-#         resultList = []
-#         sections = [('港聞要聞', 'http://www.singpao.com/index.php/sp-news-i/sp-hk-new-i'),
-#                     ('兩岸新聞', 'http://www.singpao.com/index.php/sp-news-i/sp-cn-new-i'),
-#                     ('國際新聞', 'http://www.singpao.com/index.php/sp-news-i/sp-int-new-i'),
-#                     ('成報社評', 'http://www.singpao.com/index.php/sp-editorial-i'),
-#                     ('成報財經', 'http://www.singpao.com/index.php/sp-finance-i'),
-#                     ('成報娛樂', 'http://www.singpao.com/index.php/sp-ents-i'),
-#                     ('成報體育', 'http://www.singpao.com/index.php/sp-sport-i'),
-#                     ('成報副刊', 'http://www.singpao.com/index.php/sp-supplement-i'),]
-#         baseUrl = 'http://www.singpao.com'
-#
-#         try:
-#             for (title, url) in sections:
-#                 # for each section, insert a title...
-#                 resultList.append(self.create_section(title))
-#                 # ... then parse the page and extract article links
-#                 doc = html.document_fromstring(read_http_page(url))
-#                 for topic in doc.get_element_by_id('jsn-pos-mainbody-top').xpath('//a[contains(@class, "title")]'):
-#                     if topic.text and topic.get('href'):
-#                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
-#
-#
-#         except Exception as e:
-#             logger.exception('Problem processing url')
-#
-#         return resultList
+        sections = [('新聞', baseUrl + 'news-local/'),
+                    ('娛樂', baseUrl + 'entertainment/'),
+                    ('財經', baseUrl + 'finance/'),
+                    ('副刊', baseUrl + 'leisure/'),
+                    ('健康', baseUrl + 'health/'),
+                    ('專欄', baseUrl + 'columnist/'),]
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.get_element_by_id('news-rpdropdown').xpath('option'):
+                    if topic.text and topic.get('value'):
+                        resultList.append(self.create_article(topic.text.strip(), topic.get('value')))
+
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
+
+class SingPao(BaseSource):
+
+    def get_id(self):
+        return 'singpao'
+
+    def get_desc(self):
+        return '香港成報'
+
+    def get_articles(self):
+        maxPagePerSection = 10
+        resultList = []
+
+        sections = [('要聞港聞', 'http://www.singpao.com.hk/index.php?fi=news1'),
+                    ('兩岸國際', 'http://www.singpao.com.hk/index.php?fi=news8'),
+                    ('財經', 'http://www.singpao.com.hk/index.php?fi=news3'),
+                    ('娛樂', 'http://www.singpao.com.hk/index.php?fi=news4'),
+                    ('體育', 'http://www.singpao.com.hk/index.php?fi=news5'),
+                    ('副刊', 'http://www.singpao.com.hk/index.php?fi=news7'),]
+        baseUrl = 'http://www.singpao.com.hk/'
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                page = 1
+                maxPage = 1
+                while page <= maxPage and page <= maxPagePerSection:
+                    doc = html.document_fromstring(read_http_page(url+'&page='+str(page)))
+                    page += 1
+
+                    for topic in doc.xpath('//td/a[contains(@class, "list_title")]'):
+                        if topic.text and topic.get('href'):
+                            resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
+
+                    for pageIndex in doc.xpath('//a[contains(@class, "fpagelist_css")]'):
+                        if pageIndex.text is not None:
+                            match = re.match('^([0-9]+)$', pageIndex.text.strip())
+                            if match and match.lastindex == 1 and match.group(1) > maxPage:
+                                maxPage = int(match.group(1))
+
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
 
 class AM730(BaseSource):
 
