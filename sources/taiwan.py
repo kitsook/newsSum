@@ -43,25 +43,25 @@ class LibertyTimes(BaseSource):
         baseUrl = 'http://news.ltn.com.tw'
         theDate = datetime.datetime.today().strftime('%Y%m%d')
         try:
-            doc = html.document_fromstring(read_http_page(baseUrl + '/newspaper/'))
-            cal =  doc.get_element_by_id('box300B')
+            doc = html.document_fromstring(read_http_page(baseUrl + '/list/newspaper'))
+            cal =  doc.get_element_by_id('newspaperdate')
             theDate = cal.attrib['title']
         except Exception as e:
             logger.exception('Problem getting date')
 
         resultList = []
-        sections = [('焦點', baseUrl + '/newspaper/focus/' + theDate),
-                    ('政治', baseUrl + '/newspaper/politics/' + theDate),
-                    ('社會', baseUrl + '/newspaper/society/' + theDate),
-                    ('地方', baseUrl + '/newspaper/local/' + theDate),
-                    ('生活', baseUrl + '/newspaper/life/' + theDate),
-                    ('言論', baseUrl + '/newspaper/opinion/' + theDate),
-                    ('國際', baseUrl + '/newspaper/world/' + theDate),
-                    ('財經', baseUrl + '/newspaper/business/' + theDate),
-                    ('體育', baseUrl + '/newspaper/sports/' + theDate),
-                    ('娛樂', baseUrl + '/newspaper/entertainment/' + theDate),
-                    ('消費', baseUrl + '/newspaper/consumer/' + theDate),
-                    ('副刊', baseUrl + '/newspaper/supplement/' + theDate),]
+        sections = [('焦點', baseUrl + '/list/newspaper/focus/' + theDate),
+                    ('政治', baseUrl + '/list/newspaper/politics/' + theDate),
+                    ('社會', baseUrl + '/list/newspaper/society/' + theDate),
+                    ('地方', baseUrl + '/list/newspaper/local/' + theDate),
+                    ('生活', baseUrl + '/list/newspaper/life/' + theDate),
+                    ('言論', baseUrl + '/list/newspaper/opinion/' + theDate),
+                    ('國際', baseUrl + '/list/newspaper/world/' + theDate),
+                    ('財經', baseUrl + '/list/newspaper/business/' + theDate),
+                    ('體育', baseUrl + '/list/newspaper/sports/' + theDate),
+                    ('娛樂', baseUrl + '/list/newspaper/entertainment/' + theDate),
+                    ('消費', baseUrl + '/list/newspaper/consumer/' + theDate),
+                    ('副刊', baseUrl + '/list/newspaper/supplement/' + theDate),]
 
         try:
             for (title, url) in sections:
@@ -71,12 +71,13 @@ class LibertyTimes(BaseSource):
                 maxPage = 1
                 while curPage <= maxPage:
                     # ... then parse the page and extract article links
-                    doc = html.document_fromstring(read_http_page(url + '?page=' + str(curPage)))
-                    for link in doc.get_element_by_id('newslistul').xpath('//a[contains(@class, "picword")]'):
-                        if link.text and link.get('href'):
-                            resultList.append(self.create_article(link.text.strip(), baseUrl + link.get('href')))
+                    # the encoding of libertytimes is messed up... forcing utf-8 when reading
+                    doc = html.document_fromstring(read_http_page(url + '?page=' + str(curPage)).decode('utf-8'))
+                    for link in doc.xpath('//div[contains(@class, "whitecon")]//a[contains(@class, "tit")]'):
+                        if link.xpath('p') and link.get('href'):
+                            resultList.append(self.create_article(link.xpath('p')[0].text.strip(), baseUrl + link.get('href')))
                     curPage += 1
-                    for pageNum in doc.get_element_by_id('page').xpath('//*[contains(@class, "p_num")]'):
+                    for pageNum in doc.xpath('//*[contains(@class, "p_num")]'):
                         maxPage = int(pageNum.text.strip())
 
 
