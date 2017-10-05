@@ -147,39 +147,15 @@ class OrientalDaily(BaseSource):
 
         return resultList
 
-class MetroHK(BaseSource):
+class MetroHK(RSSBase):
     def get_id(self):
         return 'metrohk'
 
     def get_desc(self):
         return '香港都市日報 (Metro Daily)'
 
-    def get_articles(self):
-        resultList = []
-        baseUrl = 'http://www.metrodaily.hk/'
-
-        sections = [('新聞', baseUrl + 'news-local/'),
-                    ('娛樂', baseUrl + 'entertainment/'),
-                    ('財經', baseUrl + 'finance/'),
-                    ('副刊', baseUrl + 'leisure/'),
-                    ('健康', baseUrl + 'health/'),
-                    ('專欄', baseUrl + 'columnist/'),]
-
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                for topic in doc.get_element_by_id('news-rpdropdown').xpath('option'):
-                    if topic.text and topic.get('value'):
-                        resultList.append(self.create_article(topic.text.strip(), topic.get('value')))
-
-
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
+    def get_rss_links(self):
+        return [('都市日報','http://www.metrodaily.hk/feed/?post_type=metro_news'),]
 
 class SingPao(BaseSource):
 
