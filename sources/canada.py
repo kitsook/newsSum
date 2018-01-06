@@ -84,42 +84,43 @@ class MingPaoVancouver(BaseSource):
 
         return resultList
 
-class SingTaoToronto(BaseSource):
-
+class SingTaoToronto(RSSBase):
     def get_id(self):
         return 'singtaotoronto'
 
     def get_desc(self):
         return '星島日報(多倫多)'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('要聞', 'http://toronto.singtao.ca/category/%e8%a6%81%e8%81%9e/?variant=zh-hk'),
-                    ('城市', 'http://toronto.singtao.ca/category/%e5%9f%8e%e5%b8%82/?variant=zh-hk'),
-                    ('加國', 'http://toronto.singtao.ca/category/%e5%8a%a0%e5%9c%8b/?variant=zh-hk'),
-                    ('國際', 'http://toronto.singtao.ca/category/%e5%9c%8b%e9%9a%9b/?variant=zh-hk'),
-                    ('港聞', 'http://toronto.singtao.ca/category/%e6%b8%af%e8%81%9e/?variant=zh-hk'),
-                    ('中國', 'http://toronto.singtao.ca/category/%e4%b8%ad%e5%9c%8b/?variant=zh-hk'),
-                    ('台灣', 'http://toronto.singtao.ca/category/%e5%8f%b0%e7%81%a3/?variant=zh-hk'),
-                    ('體育', 'http://toronto.singtao.ca/category/%e9%ab%94%e8%82%b2/?variant=zh-hk'),
-                    ('財經', 'http://toronto.singtao.ca/category/%e8%b2%a1%e7%b6%93/?variant=zh-hk'),
-                    ('娛樂', 'http://toronto.singtao.ca/category/%e5%a8%9b%e6%a8%82/?variant=zh-hk'),]
+    def get_rss_links(self):
+        return [('要聞', 'http://www.singtao.ca/toronto/category/%e8%a6%81%e8%81%9e/feed/?variant=zh-hk'),
+                ('城市', 'http://www.singtao.ca/toronto/category/%e5%9f%8e%e5%b8%82/feed/?variant=zh-hk'),
+                ('加國', 'http://www.singtao.ca/toronto/category/%e5%8a%a0%e5%9c%8b/feed/?variant=zh-hk'),
+                ('國際', 'http://www.singtao.ca/toronto/category/%e5%9c%8b%e9%9a%9b/feed/?variant=zh-hk'),
+                ('港聞', 'http://www.singtao.ca/toronto/category/%e6%b8%af%e8%81%9e/feed/?variant=zh-hk'),
+                ('中國', 'http://www.singtao.ca/toronto/category/%e4%b8%ad%e5%9c%8b/feed/?variant=zh-hk'),
+                ('台灣', 'http://www.singtao.ca/toronto/category/%e5%8f%b0%e7%81%a3/feed/?variant=zh-hk'),
+                ('體育', 'http://www.singtao.ca/toronto/category/%e9%ab%94%e8%82%b2/feed/?variant=zh-hk'),
+                ('財經', 'http://www.singtao.ca/toronto/category/%e8%b2%a1%e7%b6%93/feed/?variant=zh-hk'),
+                ('娛樂', 'http://www.singtao.ca/toronto/category/%e5%a8%9b%e6%a8%82/feed/?variant=zh-hk'),]
 
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                for option in doc.get_element_by_id('news').xpath('option'):
-                    if option.text and option.get('value'):
-                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
+class SingTaoCalgary(RSSBase):
+    def get_id(self):
+        return 'singtaocalgary'
 
+    def get_desc(self):
+        return '星島日報(卡加利)'
 
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
+    def get_rss_links(self):
+        return [('本地', 'http://www.singtao.ca/calgary/category/%e8%a6%81%e8%81%9e/feed/?variant=zh-hk'),
+                ('加西', 'http://www.singtao.ca/calgary/category/%E5%8A%A0%E8%A5%BF/feed/?variant=zh-hk'),
+                ('加國', 'http://www.singtao.ca/calgary/category/%E5%8A%A0%E5%9C%8B/feed/?variant=zh-hk'),
+                ('國際', 'http://www.singtao.ca/calgary/category/%e5%9c%8b%e9%9a%9b/feed/?variant=zh-hk'),
+                ('港聞', 'http://www.singtao.ca/calgary/category/%e6%b8%af%e8%81%9e/feed/?variant=zh-hk'),
+                ('中國', 'http://www.singtao.ca/calgary/category/%e4%b8%ad%e5%9c%8b/feed/?variant=zh-hk'),
+                ('台灣', 'http://www.singtao.ca/calgary/category/%e5%8f%b0%e7%81%a3/feed/?variant=zh-hk'),
+                ('體育', 'http://www.singtao.ca/calgary/category/%e9%ab%94%e8%82%b2/feed/?variant=zh-hk'),
+                ('財經', 'http://www.singtao.ca/calgary/category/%e8%b2%a1%e7%b6%93/feed/?variant=zh-hk'),
+                ('娛樂', 'http://www.singtao.ca/calgary/category/%e5%a8%9b%e6%a8%82/feed/?variant=zh-hk'),]
 
 class TheProvince(BaseSource):
 
@@ -198,44 +199,26 @@ class CBCNews(RSSBase):
                 ('Offbeat', 'http://rss.cbc.ca/lineup/offbeat.xml'),
                 ('Aboriginal', 'http://www.cbc.ca/cmlink/rss-cbcaboriginal'),]
 
-class SingTaoVancouver(BaseSource):
-
+class SingTaoVancouver(RSSBase):
     def get_id(self):
         return 'singtaovancouver'
 
     def get_desc(self):
         return '星島日報(溫哥華)'
 
-    def get_articles(self):
-        resultList = []
-        sections = [('要聞', 'http://vancouver.singtao.ca/category/%E8%A6%81%E8%81%9E/?variant=zh-hk'),
-                    ('省市', 'http://vancouver.singtao.ca/category/%E7%9C%81%E5%B8%82/?variant=zh-hk'),
-                    ('加國', 'http://vancouver.singtao.ca/category/%e5%8a%a0%e5%9c%8b/?variant=zh-hk'),
-                    ('社區', 'http://vancouver.singtao.ca/category/%e7%a4%be%e5%8d%80/?variant=zh-hk'),
-                    ('國際', 'http://vancouver.singtao.ca/category/%e5%9c%8b%e9%9a%9b/?variant=zh-hk'),
-                    ('港聞', 'http://vancouver.singtao.ca/category/%e6%b8%af%e8%81%9e/?variant=zh-hk'),
-                    ('中國', 'http://vancouver.singtao.ca/category/%e4%b8%ad%e5%9c%8b/?variant=zh-hk'),
-                    ('台灣', 'http://vancouver.singtao.ca/category/%e5%8f%b0%e7%81%a3/?variant=zh-hk'),
-                    ('體育', 'http://vancouver.singtao.ca/category/%e9%ab%94%e8%82%b2/?variant=zh-hk'),
-                    ('財經', 'http://vancouver.singtao.ca/category/%e8%b2%a1%e7%b6%93/?variant=zh-hk'),
-                    ('娛樂', 'http://vancouver.singtao.ca/category/%e5%a8%9b%e6%a8%82/?variant=zh-hk'),
-                    ('社論', 'http://vancouver.singtao.ca/category/%e7%a4%be%e8%ab%96/?variant=zh-hk'),]
-
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                for option in doc.get_element_by_id('news').xpath('option'):
-                    if option.text and option.get('value'):
-                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
-
-
-        except Exception as e:
-            logger.exception('Problem processing url')
-
-        return resultList
+    def get_rss_links(self):
+        return [('要聞', 'http://www.singtao.ca/vancouver/category/%E8%A6%81%E8%81%9E/feed/?variant=zh-hk'),
+                ('省市', 'http://www.singtao.ca/vancouver/category/%E7%9C%81%E5%B8%82/feed/?variant=zh-hk'),
+                ('加國', 'http://www.singtao.ca/vancouver/category/%e5%8a%a0%e5%9c%8b/feed/?variant=zh-hk'),
+                ('社區', 'http://www.singtao.ca/vancouver/category/%e7%a4%be%e5%8d%80/feed/?variant=zh-hk'),
+                ('國際', 'http://www.singtao.ca/vancouver/category/%e5%9c%8b%e9%9a%9b/feed/?variant=zh-hk'),
+                ('港聞', 'http://www.singtao.ca/vancouver/category/%e6%b8%af%e8%81%9e/feed/?variant=zh-hk'),
+                ('中國', 'http://www.singtao.ca/vancouver/category/%e4%b8%ad%e5%9c%8b/feed/?variant=zh-hk'),
+                ('台灣', 'http://www.singtao.ca/vancouver/category/%e5%8f%b0%e7%81%a3/feed/?variant=zh-hk'),
+                ('體育', 'http://www.singtao.ca/vancouver/category/%e9%ab%94%e8%82%b2/feed/?variant=zh-hk'),
+                ('財經', 'http://www.singtao.ca/vancouver/category/%e8%b2%a1%e7%b6%93/feed/?variant=zh-hk'),
+                ('娛樂', 'http://www.singtao.ca/vancouver/category/%e5%a8%9b%e6%a8%82/feed/?variant=zh-hk'),
+                ('社論', 'http://www.singtao.ca/vancouver/category/%e7%a4%be%e8%ab%96/feed/?variant=zh-hk'),]
 
 class MingPaoToronto(BaseSource):
 
