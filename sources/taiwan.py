@@ -117,17 +117,17 @@ class AppleDailyTaiwan(RSSBase):
         return '蘋果日報(台灣)'
 
     def get_rss_links(self):
-        return [('要聞','http://www.appledaily.com.tw/rss/create/kind/sec/type/5'),
-                ('國際','http://www.appledaily.com.tw/rss/create/kind/sec/type/7'),
-                ('娛樂','http://www.appledaily.com.tw/rss/create/kind/sec/type/9'),
-                ('體育','http://www.appledaily.com.tw/rss/create/kind/sec/type/10'),
-                ('財經','http://www.appledaily.com.tw/rss/create/kind/sec/type/8'),
-                ('房市地產','http://www.appledaily.com.tw/rss/newcreate/kind/sec/type/31488836'),
-                ('論壇與專欄','http://www.appledaily.com.tw/rss/newcreate/kind/sec/type/forum'),
-                ('副刊','http://www.appledaily.com.tw/rss/create/kind/sec/type/17'),
-                ('旅遊與美食總','http://www.appledaily.com.tw/rss/create/kind/sec/type/ALL24'),
-                ('家庭與健康','http://www.appledaily.com.tw/rss/create/kind/sec/type/19'),
-                ('科技3C','http://www.appledaily.com.tw/rss/create/kind/sec/type/18'),]
+        return [('要聞','https://tw.appledaily.com/rss/newcreate/kind/sec/type/5'),
+                ('國際','https://tw.appledaily.com/rss/newcreate/kind/sec/type/7'),
+                ('娛樂','https://tw.appledaily.com/rss/newcreate/kind/sec/type/9'),
+                ('體育','https://tw.appledaily.com/rss/create/kind/sec/type/10'),
+                ('財經','https://tw.appledaily.com/rss/create/kind/sec/type/8'),
+                ('房市地產','https://tw.appledaily.com/rss/newcreate/kind/sec/type/31488836'),
+                ('論壇與專欄','https://tw.appledaily.com/rss/newcreate/kind/sec/type/forum'),
+                ('副刊','https://tw.appledaily.com/rss/create/kind/sec/type/17'),
+                ('旅遊與美食總','https://tw.appledaily.com/rss/create/kind/sec/type/ALL24'),
+                ('家庭與健康','https://tw.appledaily.com/rss/create/kind/sec/type/19'),
+                ('科技3C','https://tw.appledaily.com/rss/create/kind/sec/type/18'),]
 
 class TaipeiTimes(RDFBase):
 
