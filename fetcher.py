@@ -23,8 +23,10 @@ import urllib2
 
 URL_TIMEOUT = 15
 
-def read_http_page(url):
+def read_http_page(url, cookies=None):
     req = urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36')
+    if cookies:
+        req.add_header('Cookie', ';'.join(["%s=%s" % (key, value) for (key, value) in cookies.items()]))
     urlPath = urlopen(req, timeout=URL_TIMEOUT)
     return urlPath.read()
