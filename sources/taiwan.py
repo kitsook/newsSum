@@ -75,7 +75,7 @@ class LibertyTimes(BaseSource):
                     doc = html.document_fromstring(read_http_page(url + '?page=' + str(curPage)).decode('utf-8'))
                     for link in doc.xpath('//div[contains(@class, "whitecon")]//a[contains(@class, "tit")]'):
                         if link.xpath('p') and link.get('href'):
-                            resultList.append(self.create_article(link.xpath('p')[0].text.strip(), baseUrl + link.get('href')))
+                            resultList.append(self.create_article(link.xpath('p')[0].text.strip(), baseUrl + '/' + link.get('href')))
                     curPage += 1
                     for pageNum in doc.xpath('//*[contains(@class, "p_num")]'):
                         maxPage = int(pageNum.text.strip())
@@ -108,7 +108,7 @@ class UnitedDailyNewsRSS(RSSBase):
                 ('生活','http://udn.com/rssfeed/news/2/6649?ch=news'),
                 ('數位','http://udn.com/rssfeed/news/2/7226?ch=news'),]
 
-class AppleDailyTaiwan(RSSBase):
+class AppleDailyTaiwan(BaseSource):
 
     def get_id(self):
         return 'appledailytw'
@@ -116,18 +116,56 @@ class AppleDailyTaiwan(RSSBase):
     def get_desc(self):
         return '蘋果日報(台灣)'
 
-    def get_rss_links(self):
-        return [('要聞','https://tw.appledaily.com/rss/newcreate/kind/sec/type/5'),
-                ('國際','https://tw.appledaily.com/rss/newcreate/kind/sec/type/7'),
-                ('娛樂','https://tw.appledaily.com/rss/newcreate/kind/sec/type/9'),
-                ('體育','https://tw.appledaily.com/rss/create/kind/sec/type/10'),
-                ('財經','https://tw.appledaily.com/rss/create/kind/sec/type/8'),
-                ('房市地產','https://tw.appledaily.com/rss/newcreate/kind/sec/type/31488836'),
-                ('論壇與專欄','https://tw.appledaily.com/rss/newcreate/kind/sec/type/forum'),
-                ('副刊','https://tw.appledaily.com/rss/create/kind/sec/type/17'),
-                ('旅遊與美食總','https://tw.appledaily.com/rss/create/kind/sec/type/ALL24'),
-                ('家庭與健康','https://tw.appledaily.com/rss/create/kind/sec/type/19'),
-                ('科技3C','https://tw.appledaily.com/rss/create/kind/sec/type/18'),]
+    def get_articles(self):
+        # get article lists
+        summary_url = 'https://tw.appledaily.com/daily'
+        doc = html.document_fromstring(read_http_page(summary_url))
+
+        resultList = []
+        sections = [('頭條', u'//article[contains(@class, "nclns")]//h2[contains(text(), "頭條")]/following-sibling::ul/li/a'),
+                    ('要聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "要聞")]/following-sibling::ul/li/a'),
+                    ('政治', u'//article[contains(@class, "nclns")]//h2[contains(text(), "政治")]/following-sibling::ul/li/a'),
+                    ('社會', u'//article[contains(@class, "nclns")]//h2[contains(text(), "社會")]/following-sibling::ul/li/a'),
+                    ('蘋果爆破社', u'//article[contains(@class, "nclns")]//h2[contains(text(), "蘋果爆破社")]/following-sibling::ul/li/a'),
+                    ('蘋論陣線', u'//article[contains(@class, "nclns")]//h2[contains(text(), "蘋論陣線")]/following-sibling::ul/li/a'),
+                    ('暖流', u'//article[contains(@class, "nclns")]//h2[contains(text(), "暖流")]/following-sibling::ul/li/a'),
+                    ('娛樂名人', u'//article[contains(@class, "nclns")]//h2[contains(text(), "娛樂名人")]/following-sibling::ul/li/a'),
+                    ('木瓜霞吐槽', u'//article[contains(@class, "nclns")]//h2[contains(text(), "木瓜霞吐槽")]/following-sibling::ul/li/a'),
+                    ('直擊好萊塢', u'//article[contains(@class, "nclns")]//h2[contains(text(), "直擊好萊塢")]/following-sibling::ul/li/a'),
+                    ('亞洲哈燒星', u'//article[contains(@class, "nclns")]//h2[contains(text(), "亞洲哈燒星")]/following-sibling::ul/li/a'),
+                    ('名人時尚', u'//article[contains(@class, "nclns")]//h2[contains(text(), "名人時尚")]/following-sibling::ul/li/a'),
+                    ('國際頭條', u'//article[contains(@class, "nclns")]//h2[contains(text(), "國際頭條")]/following-sibling::ul/li/a'),
+                    ('國際新聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "國際新聞")]/following-sibling::ul/li/a'),
+                    ('雙語天下', u'//article[contains(@class, "nclns")]//h2[contains(text(), "雙語天下")]/following-sibling::ul/li/a'),
+                    ('體育焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "體育焦點")]/following-sibling::ul/li/a'),
+                    ('大運動場', u'//article[contains(@class, "nclns")]//h2[contains(text(), "大運動場")]/following-sibling::ul/li/a'),
+                    ('籃球瘋', u'//article[contains(@class, "nclns")]//h2[contains(text(), "籃球瘋")]/following-sibling::ul/li/a'),
+                    ('投打對決', u'//article[contains(@class, "nclns")]//h2[contains(text(), "投打對決")]/following-sibling::ul/li/a'),
+                    ('足球新聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "足球新聞")]/following-sibling::ul/li/a'),
+                    ('運彩分析', u'//article[contains(@class, "nclns")]//h2[contains(text(), "運彩分析")]/following-sibling::ul/li/a'),
+                    ('財經焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "財經焦點")]/following-sibling::ul/li/a'),
+                    ('頭家人生', u'//article[contains(@class, "nclns")]//h2[contains(text(), "頭家人生")]/following-sibling::ul/li/a'),
+                    ('投資理財', u'//article[contains(@class, "nclns")]//h2[contains(text(), "投資理財")]/following-sibling::ul/li/a'),
+                    ('卡該這樣刷', u'//article[contains(@class, "nclns")]//h2[contains(text(), "卡該這樣刷")]/following-sibling::ul/li/a'),
+                    ('地產焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "地產焦點")]/following-sibling::ul/li/a'),
+                    ('副刊焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "副刊焦點")]/following-sibling::ul/li/a'),
+                    ('美食天地', u'//article[contains(@class, "nclns")]//h2[contains(text(), "美食天地")]/following-sibling::ul/li/a'),
+                    ('車市3C', u'//article[contains(@class, "nclns")]//h2[contains(text(), "車市3C")]/following-sibling::ul/li/a'),
+                    ('家庭與健康', u'//article[contains(@class, "nclns")]//h2[contains(text(), "家庭與健康")]/following-sibling::ul/li/a'),
+                    ]
+
+        try:
+            for (title, path) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                for link in doc.xpath(path):
+                    if link.get('title') and link.get('href'):
+                        resultList.append(self.create_article(link.get('title').strip(), link.get('href')))
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
 
 class TaipeiTimes(RDFBase):
 
