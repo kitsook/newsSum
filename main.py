@@ -43,7 +43,11 @@ class MainPage(webapp2.RequestHandler):
             if (encodedArticles == None):
                 articles.extend(allSources[thePath].get_articles())
                 encodedArticles = json.dumps(articles)
-                memcache.add(key=thePath, value=encodedArticles, time=900)
+                try:
+                    memcache.add(key=thePath, value=encodedArticles, time=900)
+                except Exception as e:
+                    # may cause error if encoded articles are too big to fit into memcache
+                    pass
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.write(encodedArticles)

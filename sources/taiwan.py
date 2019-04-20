@@ -22,6 +22,10 @@
 
 import datetime
 from lxml import html
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 from logger import logger
 from fetcher import read_http_page
@@ -107,6 +111,37 @@ class UnitedDailyNewsRSS(RSSBase):
                 ('社會','http://udn.com/rssfeed/news/2/6639?ch=news'),
                 ('生活','http://udn.com/rssfeed/news/2/6649?ch=news'),
                 ('數位','http://udn.com/rssfeed/news/2/7226?ch=news'),]
+
+class MoneyUnitedDailyNewsRSS(RSSBase):
+
+    @staticmethod
+    def is_url(url):
+      try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+      except ValueError:
+        return False
+
+    def get_id(self):
+        return 'money-udn'
+
+    def get_desc(self):
+        return '經濟日報-聯合新聞網'
+
+    def get_rss_links(self):
+        resultList = []
+        try:
+            rss_list_url = 'https://money.udn.com/rssfeed/lists/1001';
+            doc = html.document_fromstring(read_http_page(rss_list_url).decode('utf-8'))
+            for aLink in doc.get_element_by_id("rss_list").xpath('div/div/dl/dt/a'):
+                if aLink.xpath('text()') and MoneyUnitedDailyNewsRSS.is_url(aLink.get('href')):
+                    resultList.append((aLink.xpath('text()'), aLink.get('href')))
+
+        except Exception as e:
+            logger.exception('Problem fetching rss links')
+
+        return resultList
+
 
 class AppleDailyTaiwan(BaseSource):
 
