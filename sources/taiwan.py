@@ -136,12 +136,10 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
             for aLink in doc.get_element_by_id("rss_list").xpath('div/div/dl/dt/a'):
                 if aLink.xpath('text()') and MoneyUnitedDailyNewsRSS.is_url(aLink.get('href')):
                     resultList.append((aLink.xpath('text()'), aLink.get('href')))
-
         except Exception as e:
             logger.exception('Problem fetching rss links')
 
         return resultList
-
 
 class AppleDailyTaiwan(BaseSource):
 
@@ -228,3 +226,14 @@ class ChinaTimes(RSSBase):
 
     def get_rss_links(self):
         return [('中國時報', 'http://www.chinatimes.com/rss/chinatimes.xml'),]
+
+class CommercialTimes(RSSBase):
+
+    def get_id(self):
+        return 'commercialtimes'
+
+    def get_desc(self):
+        return '工商時報'
+
+    def get_rss_links(self):
+        return [('財經要聞', 'https://ctee.com.tw/feed'),]
