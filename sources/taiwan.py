@@ -216,7 +216,7 @@ class TaipeiTimes(RDFBase):
                 ('Sports','http://www.taipeitimes.com/xml/sport.rss'),
                 ('Features','http://www.taipeitimes.com/xml/feat.rss'),]
 
-class ChinaTimes(RSSBase):
+class ChinaTimes(BaseSource):
 
     def get_id(self):
         return 'chinatimes'
@@ -224,8 +224,41 @@ class ChinaTimes(RSSBase):
     def get_desc(self):
         return '中國時報'
 
-    def get_rss_links(self):
-        return [('中國時報', 'http://www.chinatimes.com/rss/chinatimes.xml'),]
+    def get_articles(self):
+        resultList = []
+        baseUrl = 'https://www.chinatimes.com'
+
+        sections = [('政治', baseUrl + '/politic/?chdtv'),
+                    ('言論', baseUrl + '/opinion/?chdtv'),
+                    ('生活', baseUrl + '/life/?chdtv'),
+                    ('娛樂', baseUrl + '/star/?chdtv'),
+                    ('財經', baseUrl + '/money/?chdtv'),
+                    ('社會', baseUrl + '/society/?chdtv'),
+                    ('話題', baseUrl + '/hottopic/?chdtv'),
+                    ('國際', baseUrl + '/world/?chdtv'),
+                    ('軍事', baseUrl + '/armament/?chdtv'),
+                    ('兩岸', baseUrl + '/chinese/?chdtv'),
+                    ('時尚', baseUrl + '/fashion/?chdtv'),
+                    ('體育', baseUrl + '/sports/?chdtv'),
+                    ('科技', baseUrl + '/technologynews/?chdtv'),
+                    ('玩食', baseUrl + '/travel/?chdtv'),
+                    ('新聞專輯', baseUrl + '/album/?chdtv'),]
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.xpath('//section[contains(@class, "article-list")]/ul//li//h3[contains(@class, "title")]//a'):
+                    if topic.text and topic.get('href'):
+                        resultList.append(self.create_article(topic.text.strip(), topic.get('href')))
+
+
+        except Exception as e:
+            logger.exception('Problem processing url')
+
+        return resultList
 
 class CommercialTimes(RSSBase):
 

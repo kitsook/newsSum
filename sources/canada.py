@@ -264,10 +264,7 @@ class VancouverSun(RSSBase):
         return 'Vancouver Sun'
 
     def get_rss_links(self):
-        return [('News Home Page', 'http://rss.canada.com/get/?F229'),
-                ('Regional', 'http://rss.canada.com/get/?F259'),
-                ('National', 'http://rss.canada.com/get/?F7431'),
-                ('World', 'http://rss.canada.com/get/?F7432'),]
+        return [('Vancouver News, Top Stories', 'https://vancouversun.com/feed'),]
 
 class CBCNews(RSSBase):
     def get_id(self):
@@ -341,24 +338,6 @@ class MingPaoToronto(BaseSource):
             logger.exception('Problem processing url')
 
         return resultList
-
-class MetroVancouver(RSSBase):
-
-    def get_id(self):
-        return 'metrovancouver'
-
-    def get_desc(self):
-        return 'Metro Vancouver'
-
-    def get_rss_links(self):
-        return [('Vancouver','http://www.metronews.ca/feeds.articles.news.vancouver.rss'),
-                ('Canada', 'http://www.metronews.ca/feeds.articles.news.canada.rss'),
-                ('World', 'http://www.metronews.ca/feeds.articles.news.world.rss'),
-                ('Views', 'http://www.metronews.ca/feeds.articles.views.vancouver.rss'),
-                ('Entertainment', 'http://www.metronews.ca/feeds.articles.entertainment.rss'),
-                ('Life', 'http://www.metronews.ca/feeds.articles.life.rss'),
-                ('Drive', 'http://www.metronews.ca/feeds.articles.drive.rss'),
-                ('Sports', 'http://www.metronews.ca/feeds.articles.sports.rss'),]
 
 class TorontoStar(RSSBase):
 
