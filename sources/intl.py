@@ -27,8 +27,8 @@ from lxml import html
 from logger import logger
 from fetcher import read_http_page
 
-from base import BaseSource
-from base import RSSBase
+from .base import BaseSource
+from .base import RSSBase
 
 class BBCWorld(RSSBase):
 

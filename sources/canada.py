@@ -28,8 +28,8 @@ from lxml import etree
 from logger import logger
 from fetcher import read_http_page
 
-from base import BaseSource
-from base import RSSBase
+from .base import BaseSource
+from .base import RSSBase
 
 class MingPaoVancouver(BaseSource):
 
@@ -46,7 +46,7 @@ class MingPaoVancouver(BaseSource):
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
-                if aLink.text_content().encode('utf-8') == '明報首頁':
+                if aLink.text_content() == u'明報首頁':
                     href = aLink.attrib['href']
                     match = re.match('htm\/News\/([0-9]{8})\/main_r\.htm', href)
                     if match and match.lastindex == 1:
@@ -54,7 +54,7 @@ class MingPaoVancouver(BaseSource):
                     else:
                         logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
-            logger.exception('Problem getting date')
+            logger.exception('Problem getting date: ' + str(e))
 
         resultList = []
         sections = [('要聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VAindex_r.htm'),
@@ -74,13 +74,13 @@ class MingPaoVancouver(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(unicode(read_http_page(url), 'big5', errors='ignore'))
+                doc = html.document_fromstring(read_http_page(url).decode('big5', errors='ignore'))
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -123,7 +123,7 @@ class SingTaoVancouver(BaseSource):
                         resultList.append(self.create_article(topic.text.strip(), topic.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -165,7 +165,7 @@ class SingTaoToronto(BaseSource):
                         resultList.append(self.create_article(topic.text.strip(), topic.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -207,7 +207,7 @@ class SingTaoCalgary(BaseSource):
                         resultList.append(self.create_article(topic.text.strip(), topic.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -251,7 +251,7 @@ class TheProvince(BaseSource):
                     resultList.append(self.create_article(title.strip(), link, abstract))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -300,7 +300,7 @@ class MingPaoToronto(BaseSource):
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
-                if aLink.text_content().encode('utf-8') == '明報首頁':
+                if aLink.text_content() == u'明報首頁':
                     href = aLink.attrib['href']
                     match = re.match('htm\/News\/([0-9]{8})\/main_r\.htm', href)
                     if match and match.lastindex == 1:
@@ -308,12 +308,11 @@ class MingPaoToronto(BaseSource):
                     else:
                         logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
-            logger.exception('Problem getting date')
+            logger.exception('Problem getting date: ' + str(e))
 
         resultList = []
         sections = [('要聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TAindex_r.htm'),
                     ('加國新聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TDindex_r.htm'),
-                    ('地產','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TRindex_r.htm'),
                     ('中國','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TCAindex_r.htm'),
                     ('國際','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TTAindex_r.htm'),
                     ('港聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/HK-GAindex_r.htm'),
@@ -329,13 +328,13 @@ class MingPaoToronto(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(unicode(read_http_page(url), 'big5', errors='ignore'))
+                doc = html.document_fromstring(read_http_page(url).decode('big5', errors='ignore'))
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 

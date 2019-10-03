@@ -227,7 +227,9 @@
               $newCell.append($('<h4>').text($('<div/>').html(val['title']).text()));
             }
             if (val['abstract']) {
-              $newCell.append($('<span>', {'class': 'abs-text'}).text($('<div/>').html(val['abstract']).text()))
+              // remove img tags to avoid browser loading images unnecessarily when using jquery to parse html
+              var strip_img = val['abstract'].replace(/<img[^>"']*((("[^"]*")|('[^']*'))[^"'>]*)*>/g,"");
+              $newCell.append($('<span>', {'class': 'abs-text'}).text($($.parseHTML(strip_img)).text()));
             }
 
             if (val['url']) {

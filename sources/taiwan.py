@@ -30,9 +30,9 @@ except ImportError:
 from logger import logger
 from fetcher import read_http_page
 
-from base import BaseSource
-from base import RSSBase
-from base import RDFBase
+from .base import BaseSource
+from .base import RSSBase
+from .base import RDFBase
 
 class LibertyTimes(BaseSource):
 
@@ -51,7 +51,7 @@ class LibertyTimes(BaseSource):
             cal =  doc.get_element_by_id('newspaperdate')
             theDate = cal.attrib['title']
         except Exception as e:
-            logger.exception('Problem getting date')
+            logger.exception('Problem getting date: ' + str(e))
 
         resultList = []
         sections = [('焦點', baseUrl + '/list/newspaper/focus/' + theDate),
@@ -86,7 +86,7 @@ class LibertyTimes(BaseSource):
 
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -132,12 +132,12 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
         resultList = []
         try:
             rss_list_url = 'https://money.udn.com/rssfeed/lists/1001';
-            doc = html.document_fromstring(read_http_page(rss_list_url).decode('utf-8'))
+            doc = html.document_fromstring(read_http_page(rss_list_url))
             for aLink in doc.get_element_by_id("rss_list").xpath('div/div/dl/dt/a'):
                 if aLink.xpath('text()') and MoneyUnitedDailyNewsRSS.is_url(aLink.get('href')):
                     resultList.append((aLink.xpath('text()'), aLink.get('href')))
         except Exception as e:
-            logger.exception('Problem fetching rss links')
+            logger.exception('Problem fetching rss links: ' + str(e))
 
         return resultList
 
@@ -196,7 +196,7 @@ class AppleDailyTaiwan(BaseSource):
                         resultList.append(self.create_article(link.get('title').strip(), link.get('href')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -256,7 +256,7 @@ class ChinaTimes(BaseSource):
 
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 

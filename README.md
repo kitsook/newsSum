@@ -1,5 +1,8 @@
 # newsSum
 
+*This is for the GCP Python 3 environment.  For Python 2 environment, please 
+see the branch `gcp-py2`*
+
 A Google App Engine application to parse RSS feeds and HTML pages to extract
 headlines.  Result is available via JSON. Memcache is used to reduce process
 time.
