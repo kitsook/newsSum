@@ -60,14 +60,16 @@ class RSSBase(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(name))
                 # ... then parse the page and extract article links
-                doc = etree.fromstring(read_http_page(url), parser=etree.XMLParser(recover=True))
-                for entry in doc.xpath('//rss/channel/item'):
-                    title = entry.xpath('title')[0].text
-                    link = entry.xpath('link')[0].text
-                    abstract = entry.xpath('description')[0].text
-                    resultList.append(self.create_article(title.strip(), link, abstract))
+                data = read_http_page(url)
+                if data:
+                    doc = etree.fromstring(data, parser=etree.XMLParser(recover=True))
+                    for entry in doc.xpath('//rss/channel/item'):
+                        title = entry.xpath('title')[0].text
+                        link = entry.xpath('link')[0].text
+                        abstract = entry.xpath('description')[0].text
+                        resultList.append(self.create_article(title.strip(), link, abstract))
             except Exception as e:
-                logger.exception('Problem processing rss')
+                logger.exception('Problem processing rss: ' + str(e))
         return resultList
 
 class RDFBase(RSSBase):
@@ -88,5 +90,5 @@ class RDFBase(RSSBase):
                     abstract = entry.xpath('*[local-name()="description"]')[0].text
                     resultList.append(self.create_article(title.strip(), link, abstract))
             except Exception as e:
-                logger.exception('Problem processing rdf')
+                logger.exception('Problem processing rdf: ' + str(e))
         return resultList

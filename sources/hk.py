@@ -27,8 +27,8 @@ from lxml import html
 from logger import logger
 from fetcher import read_http_page
 
-from base import BaseSource
-from base import RSSBase
+from .base import BaseSource
+from .base import RSSBase
 
 class AppleDaily(BaseSource):
 
@@ -57,7 +57,7 @@ class AppleDaily(BaseSource):
                         resultList.append(self.create_article(option.text.strip(), option.get('value')))
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -120,7 +120,7 @@ class OrientalDaily(BaseSource):
                 else:
                     logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
-            logger.exception('Problem getting date')
+            logger.exception('Problem getting date: ' + str(e))
 
         resultList = []
         baseUrl = dateUrl
@@ -143,7 +143,7 @@ class OrientalDaily(BaseSource):
 
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 
@@ -200,7 +200,7 @@ class SingPao(BaseSource):
 
 
         except Exception as e:
-            logger.exception('Problem processing url')
+            logger.exception('Problem processing url: ' + str(e))
 
         return resultList
 

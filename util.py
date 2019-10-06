@@ -36,5 +36,7 @@ def get_sources():
             cls = item[1]
             if (issubclass(cls, BaseSource) and not inspect.isabstract(cls)):
                 obj = cls()
-                result[obj.get_id()] = obj
+                if obj.get_id():
+                    result[obj.get_id()] = obj
+
     return result

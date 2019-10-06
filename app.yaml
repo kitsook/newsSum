@@ -1,28 +1,25 @@
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime: python37
 
 automatic_scaling:
-  max_idle_instances: 1
+  max_instances: 1
 
 handlers:
 - url: /stylesheets
-  static_dir: stylesheets
+  static_dir: static/stylesheets
 
 - url: /js
-  static_dir: js
+  static_dir: static/js
 
 - url: /favicon.ico
-  static_files: favicon.ico
-  upload: favicon.ico
+  static_files: static/favicon.ico
+  upload: static/favicon.ico
 
 - url: /
-  static_files: index.html
-  upload: index.html
+  static_files: static/index.html
+  upload: static/index.html
 
-- url: /.+
-  script: main.app
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto
 
-libraries:
-- name: lxml
-  version: "2.3.5"

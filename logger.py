@@ -18,6 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
+import sys
 
-logger = logging
+class MyLogger:
+
+    def info(self, msg):
+        print(msg, file=sys.stderr)
+
+    def exception(self, msg):
+        print(msg, file=sys.stderr)
+
+logger = MyLogger()
