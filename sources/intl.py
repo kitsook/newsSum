@@ -29,6 +29,7 @@ from fetcher import read_http_page
 
 from .base import BaseSource
 from .base import RSSBase
+from .base import RDFBase
 
 class BBCWorld(RSSBase):
 
@@ -43,11 +44,21 @@ class BBCWorld(RSSBase):
                 ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
 
 class FTChinese(RSSBase):
-        def get_id(self):
-            return 'ftchinese'
+    def get_id(self):
+        return 'ftchinese'
 
-        def get_desc(self):
-            return 'FT中文网'
+    def get_desc(self):
+        return 'FT中文网'
 
-        def get_rss_links(self):
-            return [('今日焦点', 'http://big5.ftchinese.com/rss/news'),]
+    def get_rss_links(self):
+        return [('今日焦点', 'http://big5.ftchinese.com/rss/news'),]
+
+class DeutscheWelle(RDFBase):
+    def get_id(self):
+        return 'dw'
+
+    def get_desc(self):
+        return '德國之聲'
+
+    def get_rss_links(self):
+        return [('德國之聲', 'http://rss.dw.com/rdf/rss-chi-all'),]
