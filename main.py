@@ -22,6 +22,7 @@
 
 from flask import jsonify, send_from_directory
 from flask import Flask
+from flask_cors import CORS
 # from google.appengine.api import memcache
 
 from logger import logger
@@ -30,6 +31,7 @@ from util import get_sources
 allSources = get_sources()
 
 app = Flask(__name__, static_url_path='', static_folder='static')
+CORS(app)
 
 # route for source listing
 @app.route('/list', methods=['GET'])
