@@ -22,10 +22,12 @@
 
 import datetime
 from lxml import html
+import json
 try:
     from urllib.parse import urlparse
 except ImportError:
     from urlparse import urlparse
+import traceback
 
 from logger import logger
 from fetcher import read_http_page
@@ -43,50 +45,37 @@ class LibertyTimes(BaseSource):
         return '自由時報'
 
     def get_articles(self):
-        # get date first
-        baseUrl = 'http://news.ltn.com.tw'
-        theDate = datetime.datetime.today().strftime('%Y%m%d')
-        try:
-            doc = html.document_fromstring(read_http_page(baseUrl + '/list/newspaper'))
-            cal =  doc.get_element_by_id('newspaperdate')
-            theDate = cal.attrib['title']
-        except Exception as e:
-            logger.exception('Problem getting date: ' + str(e))
+        num_pages = 2
+        baseUrl = 'https://news.ltn.com.tw'
 
         resultList = []
-        sections = [('焦點', baseUrl + '/list/newspaper/focus/' + theDate),
-                    ('政治', baseUrl + '/list/newspaper/politics/' + theDate),
-                    ('社會', baseUrl + '/list/newspaper/society/' + theDate),
-                    ('地方', baseUrl + '/list/newspaper/local/' + theDate),
-                    ('生活', baseUrl + '/list/newspaper/life/' + theDate),
-                    ('言論', baseUrl + '/list/newspaper/opinion/' + theDate),
-                    ('國際', baseUrl + '/list/newspaper/world/' + theDate),
-                    ('財經', baseUrl + '/list/newspaper/business/' + theDate),
-                    ('體育', baseUrl + '/list/newspaper/sports/' + theDate),
-                    ('娛樂', baseUrl + '/list/newspaper/entertainment/' + theDate),
-                    ('消費', baseUrl + '/list/newspaper/consumer/' + theDate),
-                    ('副刊', baseUrl + '/list/newspaper/supplement/' + theDate),]
+        sections = [('熱門', baseUrl + '/ajax/breakingnews/popular/'),
+                    ('政治', baseUrl + '/ajax/breakingnews/politics/'),
+                    ('社會', baseUrl + '/ajax/breakingnews/society/'),
+                    ('地方', baseUrl + '/ajax/breakingnews/local/'),
+                    ('生活', baseUrl + '/ajax/breakingnews/life/'),
+                    ('國際', baseUrl + '/ajax/breakingnews/world/'),]
 
         try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                curPage = 1
-                maxPage = 1
-                while curPage <= maxPage:
+            for page in range(1, num_pages):
+                for (title, url) in sections:
+                    url = url + str(page)
+                    # for each section, insert a title...
+                    resultList.append(self.create_section(title))
                     # ... then parse the page and extract article links
-                    # the encoding of libertytimes is messed up... forcing utf-8 when reading
-                    doc = html.document_fromstring(read_http_page(url + '?page=' + str(curPage)).decode('utf-8'))
-                    for link in doc.xpath('//div[contains(@class, "whitecon")]//a[contains(@class, "tit")]'):
-                        if link.xpath('p') and link.get('href'):
-                            resultList.append(self.create_article(link.xpath('p')[0].text.strip(), baseUrl + '/' + link.get('href')))
-                    curPage += 1
-                    for pageNum in doc.xpath('//*[contains(@class, "p_num")]'):
-                        maxPage = int(pageNum.text.strip())
-
+                    result = json.loads(read_http_page(url + str(page)).decode('UTF-8'))
+                    if result.get('code', 0) == 200:
+                        data = result.get('data', [])
+                        for key in data.keys():
+                            title = data[key].get('title', None)
+                            url = data[key].get('url', None)
+                            abstract = data[key].get('summary', None)
+                            if title and url:
+                                resultList.append(self.create_article(title, url, abstract))
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -138,6 +127,7 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
                     resultList.append((aLink.xpath('text()'), aLink.get('href')))
         except Exception as e:
             logger.exception('Problem fetching rss links: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -197,6 +187,7 @@ class AppleDailyTaiwan(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -257,6 +248,7 @@ class ChinaTimes(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 

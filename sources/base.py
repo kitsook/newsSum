@@ -22,6 +22,7 @@
 
 from abc import ABCMeta, abstractmethod
 from lxml import etree
+import traceback
 
 from logger import logger
 from fetcher import read_http_page
@@ -70,6 +71,7 @@ class RSSBase(BaseSource):
                         resultList.append(self.create_article(title.strip(), link, abstract))
             except Exception as e:
                 logger.exception('Problem processing rss: ' + str(e))
+                logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
         return resultList
 
 class RDFBase(RSSBase):
@@ -85,10 +87,15 @@ class RDFBase(RSSBase):
                 # ... then parse the page and extract article links
                 doc = etree.fromstring(read_http_page(url), parser=etree.XMLParser(recover=True))
                 for entry in doc.xpath('//*[local-name()="RDF"]/*[local-name()="item"]'):
-                    title = entry.xpath('*[local-name()="title"]')[0].text
-                    link = entry.xpath('*[local-name()="link"]')[0].text
-                    abstract = entry.xpath('*[local-name()="description"]')[0].text
-                    resultList.append(self.create_article(title.strip(), link, abstract))
+                    titles = entry.xpath('*[local-name()="title"]')
+                    links = entry.xpath('*[local-name()="link"]')
+                    abstracts = entry.xpath('*[local-name()="description"]')
+                    if titles and links:
+                        title = titles[0].text
+                        link = links[0].text
+                        abstract = abstracts[0].text if abstracts else ''
+                        resultList.append(self.create_article(title.strip(), link, abstract))
             except Exception as e:
                 logger.exception('Problem processing rdf: ' + str(e))
+                logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
         return resultList

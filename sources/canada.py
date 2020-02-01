@@ -24,6 +24,7 @@ import re
 import datetime
 from lxml import html
 from lxml import etree
+import traceback
 
 from logger import logger
 from fetcher import read_http_page
@@ -55,6 +56,7 @@ class MingPaoVancouver(BaseSource):
                         logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
             logger.exception('Problem getting date: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         resultList = []
         sections = [('要聞','http://www.mingpaocanada.com/Van/htm/News/' + theDate + '/VAindex_r.htm'),
@@ -81,6 +83,7 @@ class MingPaoVancouver(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -124,6 +127,7 @@ class SingTaoVancouver(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -166,6 +170,7 @@ class SingTaoToronto(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -208,6 +213,7 @@ class SingTaoCalgary(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -252,6 +258,7 @@ class TheProvince(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -309,6 +316,7 @@ class MingPaoToronto(BaseSource):
                         logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
             logger.exception('Problem getting date: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         resultList = []
         sections = [('要聞','http://www.mingpaocanada.com/TOR/htm/News/' + theDate + '/TAindex_r.htm'),
@@ -335,6 +343,7 @@ class MingPaoToronto(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 

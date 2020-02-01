@@ -23,6 +23,7 @@
 import re
 import datetime
 from lxml import html
+import traceback
 
 from logger import logger
 from fetcher import read_http_page
@@ -58,6 +59,7 @@ class AppleDaily(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -121,6 +123,7 @@ class OrientalDaily(BaseSource):
                     logger.info('no date found. using system date: ' + theDate)
         except Exception as e:
             logger.exception('Problem getting date: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         resultList = []
         baseUrl = dateUrl
@@ -144,6 +147,7 @@ class OrientalDaily(BaseSource):
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
@@ -185,12 +189,13 @@ class SingPao(BaseSource):
                     for pageIndex in doc.xpath('//a[contains(@class, "fpagelist_css")]'):
                         if pageIndex.text is not None:
                             match = re.match('^([0-9]+)$', pageIndex.text.strip())
-                            if match and match.lastindex == 1 and match.group(1) > maxPage:
+                            if match and match.lastindex == 1 and int(match.group(1)) > maxPage:
                                 maxPage = int(match.group(1))
 
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
 
