@@ -147,16 +147,6 @@ class OrientalDaily(BaseSource):
 
         return resultList
 
-class MetroHK(RSSBase):
-    def get_id(self):
-        return 'metrohk'
-
-    def get_desc(self):
-        return '香港都市日報 (Metro Daily)'
-
-    def get_rss_links(self):
-        return [('都市日報','http://www.metrodaily.hk/feed/?post_type=metro_news'),]
-
 class SingPao(BaseSource):
 
     def get_id(self):
