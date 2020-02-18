@@ -65,6 +65,7 @@ for id in allSources:
 # since we don't have memcache in GCP py3, tell browsers to cache everything to minimize our traffic
 @app.after_request
 def add_header(response):
+    response.cache_control.public = True
     response.cache_control.max_age = 300
     return response
 
