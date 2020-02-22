@@ -208,3 +208,47 @@ class HeadlineDaily(RSSBase):
 
     def get_rss_links(self):
         return [('頭條日報','http://hd.stheadline.com/rss/news/daily/'),]
+
+class TaKungPao(BaseSource):
+    def get_id(self):
+        return 'takungpao'
+
+    def get_desc(self):
+        return '大公網'
+
+    def get_articles(self):
+        resultList = []
+
+        sections = [('港聞', 'http://www.takungpao.com.hk/hongkong/'),
+                    ('內地', 'http://www.takungpao.com.hk/mainland/'),
+                    ('台灣', 'http://www.takungpao.com.hk/taiwan/'),
+                    ('國際', 'http://www.takungpao.com.hk/international/'),
+                    ('評論', 'http://www.takungpao.com.hk/opinion/'),
+                    ('經濟', 'http://www.takungpao.com.hk/finance/'),
+                    ('文化', 'http://www.takungpao.com.hk/culture/'),
+                    ('體育', 'http://www.takungpao.com.hk/sports/'),
+                    ('娛樂', 'http://www.takungpao.com.hk/ent/'),]
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+
+                for topic in doc.xpath('//div[contains(@class, "list_tuwen")]/div[contains(@class, "content")]'):
+                    title = topic.xpath('ul/li[contains(@class, "title")]/a')
+                    intro = topic.xpath('ul/li[contains(@class, "intro")]/a')
+
+                    if title and title[0].text and title[0].get('href'):
+                        resultList.append(
+                            self.create_article( \
+                                title[0].text.strip(),\
+                                title[0].get('href'), \
+                                intro[0].text.strip() if intro and intro[0].text else None))
+
+        except Exception as e:
+            logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+
+        return resultList
