@@ -356,7 +356,13 @@ class TorontoStar(RSSBase):
         return 'Toronto Star'
 
     def get_rss_links(self):
-        return [('News','http://www.thestar.com/feeds.articles.news.rss'),
+        return [('Top stories', 'http://www.thestar.com/feeds.topstories.rss'),
+                ('Vancouver stories', 'http://www.thestar.com/feeds.articles.vancouver.rss'),
+                ('Calgary stories', 'http://www.thestar.com/feeds.articles.calgary.rss'),
+                ('Edmonton stories', 'http://www.thestar.com/feeds.articles.edmonton.rss'),
+                ('Halifax stories', 'http://www.thestar.com/feeds.articles.halifax.rss'),
+                ('News','http://www.thestar.com/feeds.articles.news.rss'),
+                ('World', 'http://www.thestar.com/feeds.articles.news.world.rss'),
                 ('Your Toronto','http://www.thestar.com/feeds.articles.yourtoronto.rss'),
                 ('Opinion','http://www.thestar.com/feeds.articles.opinion.rss'),
                 ('Sports','http://www.thestar.com/feeds.articles.sports.rss'),
