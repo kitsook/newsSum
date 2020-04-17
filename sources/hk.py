@@ -24,6 +24,8 @@ import re
 import datetime
 from lxml import html
 import traceback
+import json
+import urllib
 
 from logger import logger
 from fetcher import read_http_page
@@ -32,6 +34,27 @@ from .base import BaseSource
 from .base import RSSBase
 
 class AppleDaily(BaseSource):
+    _base_url = 'https://hk.news.appledaily.com'
+
+    def _find_date_id(self, raw_page):
+        m = re.search('([0-9]+)\<\/title\>', str(raw_page))
+        if m:
+            return m.group(1)
+        return datetime.date.today().strftime('%Y%m%d')
+
+    def _get_collection(self, section_id, date_id):
+        payload_query = {
+            "feedOffset":0,
+            "feedQuery": "taxonomy.primary_section._id:\"{}\" AND type:story AND editor_note:\"{}\"".format(section_id, date_id),
+            "feedSize":100,"sort":"location:asc"
+        }
+        payload_query = urllib.parse.quote(json.dumps(payload_query))
+
+        query_url = self._base_url + \
+            '/pf/api/v3/content/fetch/query-feed?query={}&d=69&_website=hk-appledaily'.format(payload_query)
+
+        return read_http_page(query_url)
+
 
     def get_id(self):
         return 'appledaily'
@@ -41,21 +64,33 @@ class AppleDaily(BaseSource):
 
     def get_articles(self):
         resultList = []
-        sections = [('要聞港聞', 'http://hk.apple.nextmedia.com/news/index/'),
-                    ('兩岸國際', 'http://hk.apple.nextmedia.com/international/index/'),
-                    ('財經地產', 'http://hk.apple.nextmedia.com/financeestate/index/'),
-                    ('娛樂名人', 'http://hk.apple.nextmedia.com/entertainment/index/'),
-                    ('果籽', 'http://hk.apple.nextmedia.com/supplement/index/'),]
+        sections = [('要聞港聞', '/daily/local', self._base_url + '/daily/local/'),
+                    ('兩岸', '/daily/china', self._base_url + '/daily/china/'),
+                    ('國際', '/daily/international', self._base_url + '/daily/international/'),
+                    ('財經', '/daily/finance', self._base_url + '/daily/finance/'),
+                    ('娛樂', '/daily/entertainment', self._base_url + '/daily/entertainment/'),
+                    ('體育', '/daily/sports', self._base_url + '/daily/sports/'),
+                    ]
 
+        from lxml.etree import tostring
         try:
-            for (title, url) in sections:
+            for (title, section_id, url) in sections:
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                for option in doc.get_element_by_id('article_ddl').xpath('//option'):
-                    if option.text and option.get('value'):
-                        resultList.append(self.create_article(option.text.strip(), option.get('value')))
+                # ... then retrieve the json content
+                raw_page = read_http_page(url)
+                date_id = self._find_date_id(raw_page)
+                if date_id:
+                    raw_result = self._get_collection(section_id, date_id)
+                    result = json.loads(raw_result)
+                    for article in result['content_elements']:
+                        desc = article['headlines']['basic']
+                        href = article['website_url']
+                        abstract = None
+                        if 'content_elements' in article and len(article['content_elements']) > 1 and 'content' in article['content_elements'][0]:
+                            abstract = article['content_elements'][0]['content']
+                        if desc and href:
+                            resultList.append(self.create_article(desc.strip(), self._base_url + href, abstract))
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
