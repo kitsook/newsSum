@@ -287,3 +287,19 @@ class TaKungPao(BaseSource):
             logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
+
+class Scmp(RSSBase):
+    def get_id(self):
+        return 'scmp'
+
+    def get_desc(self):
+        return 'South China Morning Post'
+
+    def get_rss_links(self):
+        return [('News', 'https://www.scmp.com/rss/91/feed'), \
+            ('Business', 'https://www.scmp.com/rss/92/feed'), \
+            ('Tech', 'https://www.scmp.com/rss/36/feed'), \
+            ('Life', 'https://www.scmp.com/rss/94/feed'), \
+            ('Culture', 'https://www.scmp.com/rss/322296/feed'), \
+            ('Sport', 'https://www.scmp.com/rss/95/feed'), \
+        ]
