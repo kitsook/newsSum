@@ -37,12 +37,15 @@ class AppleDaily(BaseSource):
     _base_url = 'https://hk.news.appledaily.com'
 
     def _find_date_id(self, raw_page):
-        m = re.search('([0-9]+)\<\/title\>', str(raw_page))
-        if m:
-            return m.group(1)
-        return datetime.date.today().strftime('%Y%m%d')
+        m_date = re.search('([0-9]+)\<\/title\>', str(raw_page))
+        m_d = re.search('\/pf\/dist\/components\/combinations\/default\.js\?d\=([0-9]+)', str(raw_page))
 
-    def _get_collection(self, section_id, date_id):
+        if m_date and m_d:
+            return m_date.group(1), m_d.group(1)
+        # TODO Figure out what is the "d" parameter. defaulting to 70 for now
+        return datetime.date.today().strftime('%Y%m%d'), 70
+
+    def _get_collection(self, section_id, date_id, d):
         payload_query = {
             "feedOffset":0,
             "feedQuery": "taxonomy.primary_section._id:\"{}\" AND type:story AND editor_note:\"{}\"".format(section_id, date_id),
@@ -51,8 +54,7 @@ class AppleDaily(BaseSource):
         payload_query = urllib.parse.quote(json.dumps(payload_query))
 
         query_url = self._base_url + \
-            '/pf/api/v3/content/fetch/query-feed?query={}&d=69&_website=hk-appledaily'.format(payload_query)
-
+            '/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=hk-appledaily'.format(payload_query, d)
         return read_http_page(query_url)
 
 
@@ -79,9 +81,9 @@ class AppleDaily(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then retrieve the json content
                 raw_page = read_http_page(url)
-                date_id = self._find_date_id(raw_page)
-                if date_id:
-                    raw_result = self._get_collection(section_id, date_id)
+                date_id, d = self._find_date_id(raw_page)
+                if date_id and d:
+                    raw_result = self._get_collection(section_id, date_id, d)
                     result = json.loads(raw_result)
                     for article in result['content_elements']:
                         desc = article['headlines']['basic']
