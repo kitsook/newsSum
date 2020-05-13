@@ -62,3 +62,13 @@ class DeutscheWelle(RDFBase):
 
     def get_rss_links(self):
         return [('德國之聲', 'http://rss.dw.com/rdf/rss-chi-all'),]
+
+class WSJChinese(RSSBase):
+    def get_id(self):
+        return 'wsjcn'
+
+    def get_desc(self):
+        return '華爾街日報'
+
+    def get_rss_links(self):
+        return [('華爾街日報', 'https://cn.wsj.com/zh-hant/rss'),]
