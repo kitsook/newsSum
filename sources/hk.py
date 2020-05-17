@@ -37,13 +37,13 @@ class AppleDaily(BaseSource):
     _base_url = 'https://hk.news.appledaily.com'
 
     def _find_date_id(self, raw_page):
-        m_date = re.search('([0-9]+)\<\/title\>', str(raw_page))
+        m_date = re.search('href\=\"\/local\/([0-9]+)\/', str(raw_page))
         m_d = re.search('\/pf\/dist\/components\/combinations\/default\.js\?d\=([0-9]+)', str(raw_page))
 
         if m_date and m_d:
             return m_date.group(1), m_d.group(1)
-        # TODO Figure out what is the "d" parameter. defaulting to 70 for now
-        return datetime.date.today().strftime('%Y%m%d'), 70
+        # TODO Figure out what is the "d" parameter. defaulting to 72 for now
+        return datetime.date.today().strftime('%Y%m%d'), 72
 
     def _get_collection(self, section_id, date_id, d):
         payload_query = {
@@ -305,3 +305,17 @@ class Scmp(RSSBase):
             ('Culture', 'https://www.scmp.com/rss/322296/feed'), \
             ('Sport', 'https://www.scmp.com/rss/95/feed'), \
         ]
+
+class Etnet(RSSBase):
+    def get_id(self):
+        return 'etnet'
+
+    def get_desc(self):
+        return '經濟通'
+
+    def get_rss_links(self):
+        return [('精選新聞', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=editor'), \
+            ('焦點專題', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=special'), \
+            ('股市傳聞 	', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=rumour'), \
+            ('股票評論', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=commentary'), \
+            ]
