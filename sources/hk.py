@@ -26,6 +26,7 @@ from lxml import html
 import traceback
 import json
 import urllib
+from urllib.parse import urlparse
 
 from logger import logger
 from fetcher import read_http_page
@@ -57,7 +58,6 @@ class AppleDaily(BaseSource):
             '/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=hk-appledaily'.format(payload_query, d)
         return read_http_page(query_url)
 
-
     def get_id(self):
         return 'appledaily'
 
@@ -74,7 +74,6 @@ class AppleDaily(BaseSource):
                     ('體育', '/daily/sports', self._base_url + '/daily/sports/'),
                     ]
 
-        from lxml.etree import tostring
         try:
             for (title, section_id, url) in sections:
                 # for each section, insert a title...
@@ -99,7 +98,6 @@ class AppleDaily(BaseSource):
             logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
 
         return resultList
-
 
 class MingPaoHK(RSSBase):
 
@@ -319,3 +317,44 @@ class Etnet(RSSBase):
             ('股市傳聞 	', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=rumour'), \
             ('股票評論', 'http://www.etnet.com.hk/www/tc/news/rss.php?section=commentary'), \
             ]
+
+class HkEt(BaseSource):
+    def _is_absolute(self, url):
+        return bool(urlparse(url).netloc)
+
+    def get_id(self):
+        return 'hket'
+
+    def get_desc(self):
+        return '香港經濟日報'
+
+    def get_articles(self):
+        resultList = []
+        sections = [('金融經濟', 'https://inews.hket.com', '/sran009/金融經濟', 3),
+                    ('理財', 'https://wealth.hket.com', '/', 1),
+                    ('科技', 'https://inews.hket.com', '/sran010/科技', 2),
+                    ('中國', 'https://china.hket.com', '/', 1),
+                    ('國際', 'https://inews.hket.com', '/sran011/國際', 2),
+                    ('商業', 'https://inews.hket.com', '/sran012/商業', 2),
+                    ]
+        seen_url = {}
+
+        try:
+            for (title, base_url, url, pages) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then get page and parse
+                for page in range(1, pages+1):
+                    doc = html.document_fromstring(read_http_page(base_url + url + '?p={}'.format(page)))
+                    for topic in doc.xpath('//div[contains(@class, "listing-widget-33") or contains(@class, "listing-widget-4") or contains(@class, "listing-widget-9")]/a[contains(@class, "listing-overlay")]'):
+                        if topic.text and topic.get('href'):
+                            topic_url = topic.get('href') if self._is_absolute(topic.get('href')) else base_url+topic.get('href')
+                            if not topic_url in seen_url:
+                                seen_url[topic_url] = None
+                                resultList.append(self.create_article(topic.text.strip(), topic_url))
+
+        except Exception as e:
+            logger.exception('Problem processing url: ' + str(e))
+            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+
+        return resultList
