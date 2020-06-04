@@ -21,12 +21,13 @@
 # SOFTWARE.
 
 import re
-import datetime
+from datetime import datetime
 from lxml import html
 import traceback
 import json
 import urllib
 from urllib.parse import urlparse
+import pytz
 
 from logger import logger
 from fetcher import read_http_page
@@ -39,12 +40,19 @@ class AppleDaily(BaseSource):
 
     def _find_date_id(self, raw_page):
         m_date = re.search('href\=\"\/local\/([0-9]+)\/', str(raw_page))
-        m_d = re.search('\/pf\/dist\/components\/combinations\/default\.js\?d\=([0-9]+)', str(raw_page))
+        m_d = re.search('Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
 
-        if m_date and m_d:
-            return m_date.group(1), m_d.group(1)
+        hk_time = datetime.utcnow().replace(tzinfo=pytz.timezone('Etc/GMT+8'))
+        result_date = hk_time.strftime('%Y%m%d')
         # TODO Figure out what is the "d" parameter. defaulting to 72 for now
-        return datetime.date.today().strftime('%Y%m%d'), 72
+        result_d = 72
+
+        if m_date:
+            result_date = m_date.group(1)
+        if m_d:
+            result_d = m_d.group(1)
+
+        return result_date, result_d
 
     def _get_collection(self, section_id, date_id, d):
         payload_query = {
