@@ -76,7 +76,7 @@ class MingPaoVancouver(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url).decode('big5', errors='ignore'))
+                doc = html.document_fromstring(read_http_page(url).decode('big5-hkscs', errors='ignore'))
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
@@ -336,7 +336,7 @@ class MingPaoToronto(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url).decode('big5', errors='ignore'))
+                doc = html.document_fromstring(read_http_page(url).decode('big5-hkscs', errors='ignore'))
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get('href'):
                         resultList.append(self.create_article(topic.text.strip(), baseUrl+topic.get('href')))
