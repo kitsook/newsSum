@@ -49,7 +49,7 @@ class MingPaoVancouver(BaseSource):
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
                 if aLink.text_content() == u'明報首頁':
                     href = aLink.attrib['href']
-                    match = re.match('htm\/News\/([0-9]{8})\/main_r\.htm', href)
+                    match = re.match(r'htm\/News\/([0-9]{8})\/main_r\.htm', href)
                     if match and match.lastindex == 1:
                         theDate = match.group(1)
                     else:
@@ -309,7 +309,7 @@ class MingPaoToronto(BaseSource):
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
                 if aLink.text_content() == u'明報首頁':
                     href = aLink.attrib['href']
-                    match = re.match('htm\/News\/([0-9]{8})\/main_r\.htm', href)
+                    match = re.match(r'htm\/News\/([0-9]{8})\/main_r\.htm', href)
                     if match and match.lastindex == 1:
                         theDate = match.group(1)
                     else:

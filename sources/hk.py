@@ -39,8 +39,8 @@ class AppleDaily(BaseSource):
     _base_url = 'https://hk.news.appledaily.com'
 
     def _find_date_id(self, raw_page):
-        m_date = re.search('href\=\"\/local\/([0-9]+)\/', str(raw_page))
-        m_d = re.search('Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
+        m_date = re.search(r'href\=\"\/local\/([0-9]+)\/', str(raw_page))
+        m_d = re.search(r'Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
 
         hk_time = datetime.utcnow().replace(tzinfo=pytz.timezone('Etc/GMT+8'))
         result_date = hk_time.strftime('%Y%m%d')
@@ -154,12 +154,12 @@ class OrientalDaily(BaseSource):
     def get_articles(self):
         # get date first
         dateUrl = 'http://orientaldaily.on.cc/'
-        theDate = datetime.datetime.today().strftime('%Y%m%d')
+        theDate = datetime.today().strftime('%Y%m%d')
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('topMenu').xpath('ul[contains(@class, "menuList clear")]/li/a[contains(@class, "news")]'):
                 href = aLink.attrib['href']
-                match = re.match('\/cnt\/news\/([0-9]{8})\/index\.html', href)
+                match = re.match(r'\/cnt\/news\/([0-9]{8})\/index\.html', href)
                 if match and match.lastindex == 1:
                     theDate = match.group(1)
                 else:
@@ -231,7 +231,7 @@ class SingPao(BaseSource):
 
                     for pageIndex in doc.xpath('//a[contains(@class, "fpagelist_css")]'):
                         if pageIndex.text is not None:
-                            match = re.match('^([0-9]+)$', pageIndex.text.strip())
+                            match = re.match(r'^([0-9]+)$', pageIndex.text.strip())
                             if match and match.lastindex == 1 and int(match.group(1)) > maxPage:
                                 maxPage = int(match.group(1))
 

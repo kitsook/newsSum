@@ -120,7 +120,7 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
     def get_rss_links(self):
         resultList = []
         try:
-            rss_list_url = 'https://money.udn.com/rssfeed/lists/1001';
+            rss_list_url = 'https://money.udn.com/rssfeed/lists/1001'
             doc = html.document_fromstring(read_http_page(rss_list_url))
             for aLink in doc.get_element_by_id("rss_list").xpath('div/div/dl/dt/a'):
                 if aLink.xpath('text()') and MoneyUnitedDailyNewsRSS.is_url(aLink.get('href')):
