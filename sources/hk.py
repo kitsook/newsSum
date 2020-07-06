@@ -39,16 +39,13 @@ class AppleDaily(BaseSource):
     _base_url = 'https://hk.news.appledaily.com'
 
     def _find_date_id(self, raw_page):
-        m_date = re.search(r'href\=\"\/local\/([0-9]+)\/', str(raw_page))
         m_d = re.search(r'Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
 
-        hk_time = datetime.utcnow().replace(tzinfo=pytz.timezone('Etc/GMT+8'))
+        hk_time = datetime.now(pytz.timezone('Hongkong'))
         result_date = hk_time.strftime('%Y%m%d')
         # TODO Figure out what is the "d" parameter. defaulting to 72 for now
         result_d = 72
 
-        if m_date:
-            result_date = m_date.group(1)
         if m_d:
             result_d = m_d.group(1)
 
