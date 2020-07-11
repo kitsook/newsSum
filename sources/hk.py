@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from lxml import html
 import traceback
 import json
@@ -42,10 +42,11 @@ class AppleDaily(BaseSource):
         m_d = re.search(r'Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
 
         hk_time = datetime.now(pytz.timezone('Hongkong'))
+        if hk_time.hour < 4:
+            hk_time = hk_time - timedelta(days=1)
         result_date = hk_time.strftime('%Y%m%d')
-        # TODO Figure out what is the "d" parameter. defaulting to 72 for now
-        result_d = 72
 
+        result_d = 0
         if m_d:
             result_d = m_d.group(1)
 
