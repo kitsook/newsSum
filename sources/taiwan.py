@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import datetime
+import re
+from datetime import datetime, timedelta
 from lxml import html
 import json
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+import urllib
+from urllib.parse import urlparse
 import traceback
+import pytz
 
 from logger import logger
 from fetcher import read_http_page
@@ -132,6 +132,34 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
         return resultList
 
 class AppleDailyTaiwan(BaseSource):
+    _base_url = 'https://tw.appledaily.com'
+
+    def _find_date_id(self, raw_page):
+        m_d = re.search(r'Fusion\.deployment\=\"([0-9]+)\"', str(raw_page))
+
+        tw_time = datetime.now(pytz.timezone('Hongkong'))   # same tz as hk
+        if tw_time.hour < 4:
+            tw_time = tw_time - timedelta(days=1)
+        result_date = tw_time.strftime('%Y%m%d')
+
+        result_d = 0
+        if m_d:
+            result_d = m_d.group(1)
+
+        return result_date, result_d
+
+    def _get_collection(self, section_id, date_id, d):
+        payload_query = {
+            "feedOffset":0,
+            "feedQuery": "taxonomy.primary_section._id:\"{}\" AND type:story AND editor_note:\"{}\"".format(section_id, date_id),
+            "feedSize":100,"sort":"location:asc"
+        }
+        payload_query = urllib.parse.quote(json.dumps(payload_query))
+
+        query_url = self._base_url + \
+            '/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=hk-appledaily'.format(payload_query, d)
+        return read_http_page(query_url)
+
 
     def get_id(self):
         return 'appledailytw'
@@ -140,50 +168,34 @@ class AppleDailyTaiwan(BaseSource):
         return '蘋果日報(台灣)'
 
     def get_articles(self):
-        # get article lists
-        summary_url = 'https://tw.appledaily.com/daily'
-        doc = html.document_fromstring(read_http_page(summary_url))
-
         resultList = []
-        sections = [('頭條', u'//article[contains(@class, "nclns")]//h2[contains(text(), "頭條")]/following-sibling::ul/li/a'),
-                    ('要聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "要聞")]/following-sibling::ul/li/a'),
-                    ('政治', u'//article[contains(@class, "nclns")]//h2[contains(text(), "政治")]/following-sibling::ul/li/a'),
-                    ('社會', u'//article[contains(@class, "nclns")]//h2[contains(text(), "社會")]/following-sibling::ul/li/a'),
-                    ('蘋果爆破社', u'//article[contains(@class, "nclns")]//h2[contains(text(), "蘋果爆破社")]/following-sibling::ul/li/a'),
-                    ('蘋論陣線', u'//article[contains(@class, "nclns")]//h2[contains(text(), "蘋論陣線")]/following-sibling::ul/li/a'),
-                    ('暖流', u'//article[contains(@class, "nclns")]//h2[contains(text(), "暖流")]/following-sibling::ul/li/a'),
-                    ('娛樂名人', u'//article[contains(@class, "nclns")]//h2[contains(text(), "娛樂名人")]/following-sibling::ul/li/a'),
-                    ('木瓜霞吐槽', u'//article[contains(@class, "nclns")]//h2[contains(text(), "木瓜霞吐槽")]/following-sibling::ul/li/a'),
-                    ('直擊好萊塢', u'//article[contains(@class, "nclns")]//h2[contains(text(), "直擊好萊塢")]/following-sibling::ul/li/a'),
-                    ('亞洲哈燒星', u'//article[contains(@class, "nclns")]//h2[contains(text(), "亞洲哈燒星")]/following-sibling::ul/li/a'),
-                    ('名人時尚', u'//article[contains(@class, "nclns")]//h2[contains(text(), "名人時尚")]/following-sibling::ul/li/a'),
-                    ('國際頭條', u'//article[contains(@class, "nclns")]//h2[contains(text(), "國際頭條")]/following-sibling::ul/li/a'),
-                    ('國際新聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "國際新聞")]/following-sibling::ul/li/a'),
-                    ('雙語天下', u'//article[contains(@class, "nclns")]//h2[contains(text(), "雙語天下")]/following-sibling::ul/li/a'),
-                    ('體育焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "體育焦點")]/following-sibling::ul/li/a'),
-                    ('大運動場', u'//article[contains(@class, "nclns")]//h2[contains(text(), "大運動場")]/following-sibling::ul/li/a'),
-                    ('籃球瘋', u'//article[contains(@class, "nclns")]//h2[contains(text(), "籃球瘋")]/following-sibling::ul/li/a'),
-                    ('投打對決', u'//article[contains(@class, "nclns")]//h2[contains(text(), "投打對決")]/following-sibling::ul/li/a'),
-                    ('足球新聞', u'//article[contains(@class, "nclns")]//h2[contains(text(), "足球新聞")]/following-sibling::ul/li/a'),
-                    ('運彩分析', u'//article[contains(@class, "nclns")]//h2[contains(text(), "運彩分析")]/following-sibling::ul/li/a'),
-                    ('財經焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "財經焦點")]/following-sibling::ul/li/a'),
-                    ('頭家人生', u'//article[contains(@class, "nclns")]//h2[contains(text(), "頭家人生")]/following-sibling::ul/li/a'),
-                    ('投資理財', u'//article[contains(@class, "nclns")]//h2[contains(text(), "投資理財")]/following-sibling::ul/li/a'),
-                    ('卡該這樣刷', u'//article[contains(@class, "nclns")]//h2[contains(text(), "卡該這樣刷")]/following-sibling::ul/li/a'),
-                    ('地產焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "地產焦點")]/following-sibling::ul/li/a'),
-                    ('副刊焦點', u'//article[contains(@class, "nclns")]//h2[contains(text(), "副刊焦點")]/following-sibling::ul/li/a'),
-                    ('美食天地', u'//article[contains(@class, "nclns")]//h2[contains(text(), "美食天地")]/following-sibling::ul/li/a'),
-                    ('車市3C', u'//article[contains(@class, "nclns")]//h2[contains(text(), "車市3C")]/following-sibling::ul/li/a'),
-                    ('家庭與健康', u'//article[contains(@class, "nclns")]//h2[contains(text(), "家庭與健康")]/following-sibling::ul/li/a'),
+        sections = [('要聞', '/daily/headline', self._base_url + '/daily/headline/'),
+                    ('娛樂', '/daily/entertainment', self._base_url + '/daily/entertainment/'),
+                    ('國際', '/daily/international', self._base_url + '/daily/international/'),
+                    ('財經', '/daily/finance', self._base_url + '/daily/finance/'),
+                    ('副刊', '/daily/lifestyle', self._base_url + '/daily/lifestyle/'),
+                    ('體育', '/daily/sports', self._base_url + '/daily/sports/'),
+                    ('地產', '/daily/home', self._base_url + '/daily/home/'),
                     ]
 
         try:
-            for (title, path) in sections:
+            for (title, section_id, url) in sections:
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
-                for link in doc.xpath(path):
-                    if link.get('title') and link.get('href'):
-                        resultList.append(self.create_article(link.get('title').strip(), link.get('href')))
+                # ... then retrieve the json content
+                raw_page = read_http_page(url)
+                date_id, d = self._find_date_id(raw_page)
+                if date_id and d:
+                    raw_result = self._get_collection(section_id, date_id, d)
+                    result = json.loads(raw_result)
+                    for article in result['content_elements']:
+                        desc = article['headlines']['basic']
+                        href = article['website_url']
+                        abstract = None
+                        if 'content_elements' in article and len(article['content_elements']) > 1 and 'content' in article['content_elements'][0]:
+                            abstract = article['content_elements'][0]['content']
+                        if desc and href:
+                            resultList.append(self.create_article(desc.strip(), self._base_url + href, abstract))
 
         except Exception as e:
             logger.exception('Problem processing url: ' + str(e))
