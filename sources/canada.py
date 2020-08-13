@@ -21,10 +21,11 @@
 # SOFTWARE.
 
 import re
-import datetime
+from datetime import datetime, timedelta
 from lxml import html
 from lxml import etree
 import traceback
+import pytz
 
 from logger import logger
 from fetcher import read_http_page
@@ -43,7 +44,11 @@ class MingPaoVancouver(BaseSource):
     def get_articles(self):
         # get date first
         dateUrl = 'http://www.mingpaocanada.com/Van/'
-        theDate = datetime.datetime.today().strftime('%Y%m%d')
+        van_time = datetime.now(pytz.timezone('America/Vancouver'))
+        if van_time.hour < 4:
+            van_time = van_time - timedelta(days=1)
+        theDate = van_time.strftime('%Y%m%d')
+
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
@@ -303,7 +308,11 @@ class MingPaoToronto(BaseSource):
     def get_articles(self):
         # get date first
         dateUrl = 'http://www.mingpaocanada.com/TOR/'
-        theDate = datetime.datetime.today().strftime('%Y%m%d')
+        tor_time = datetime.now(pytz.timezone('America/Toronto'))
+        if tor_time.hour < 4:
+            tor_time = tor_time - timedelta(days=1)
+        theDate = tor_time.strftime('%Y%m%d')
+
         try:
             doc = html.document_fromstring(read_http_page(dateUrl))
             for aLink in doc.get_element_by_id('mp-menu').xpath('//div/ul/li/a'):
