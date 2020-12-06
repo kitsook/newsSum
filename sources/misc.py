@@ -20,45 +20,57 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
-import datetime
 from lxml import html
-from lxml import etree
 import traceback
 
 from logger import logger
 from fetcher import read_http_page
 
 from .base import BaseSource
-from .base import RSSBase
-from .base import RDFBase
+
 
 class HackerNews(BaseSource):
     def get_id(self):
-        return 'hackernews'
+        return "hackernews"
 
     def get_desc(self):
-        return 'Hacker News'
+        return "Hacker News"
 
     def get_articles(self):
         # Although the source is in RSS, the daily items are consolidated as CDATA.
         # Parse and break them down instead of using RSSBase
-        rss_url = 'http://www.daemonology.net/hn-daily/index.rss'
+        rss_url = "http://www.daemonology.net/hn-daily/index.rss"
         resultList = []
         try:
             doc = html.document_fromstring(read_http_page(rss_url))
-            for item in doc.xpath('//rss/channel/item'):
-                title = item.xpath('title')[0].text if len(item.xpath('title')) > 0 else 'Daily Hacker News'
+            for item in doc.xpath("//rss/channel/item"):
+                title = (
+                    item.xpath("title")[0].text
+                    if len(item.xpath("title")) > 0
+                    else "Daily Hacker News"
+                )
                 resultList.append(self.create_section(title))
 
-                description = item.xpath('description')[0] if len(item.xpath('description')) > 0 else None
+                description = (
+                    item.xpath("description")[0]
+                    if len(item.xpath("description")) > 0
+                    else None
+                )
                 if description is not None:
-                    for article in description.xpath('ul/li/span[@class="storylink"]/a'):
-                        if article.text and article.get('href'):
-                            resultList.append(self.create_article(article.text.strip(), article.get('href')))
+                    for article in description.xpath(
+                        'ul/li/span[@class="storylink"]/a'
+                    ):
+                        if article.text and article.get("href"):
+                            resultList.append(
+                                self.create_article(
+                                    article.text.strip(), article.get("href")
+                                )
+                            )
 
         except Exception as e:
-            logger.exception('Problem processing Hacker News: ' + str(e))
-            logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+            logger.exception("Problem processing Hacker News: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
 
         return resultList

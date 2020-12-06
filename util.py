@@ -24,17 +24,17 @@ import sys
 import pkgutil
 import inspect
 
-from logger import logger
 from sources.base import BaseSource
+
 
 def get_sources():
     result = {}
 
-    for _, name, _ in pkgutil.iter_modules(['sources']):
-        __import__('sources.'+name)
-        for item in inspect.getmembers(sys.modules['sources.'+name], inspect.isclass):
+    for _, name, _ in pkgutil.iter_modules(["sources"]):
+        __import__("sources." + name)
+        for item in inspect.getmembers(sys.modules["sources." + name], inspect.isclass):
             cls = item[1]
-            if (issubclass(cls, BaseSource) and not inspect.isabstract(cls)):
+            if issubclass(cls, BaseSource) and not inspect.isabstract(cls):
                 obj = cls()
                 if obj.get_id():
                     result[obj.get_id()] = obj

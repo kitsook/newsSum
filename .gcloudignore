@@ -21,6 +21,7 @@ __pycache__/
 env/
 venv/
 *.pyc
+requirements-dev.txt
 
 *.code-workspace
 .vscode/

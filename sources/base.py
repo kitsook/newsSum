@@ -27,24 +27,29 @@ import traceback
 from logger import logger
 from fetcher import read_http_page
 
-class BaseSource():
+
+class BaseSource:
 
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def get_id(self): pass
+    def get_id(self):
+        pass
 
     @abstractmethod
-    def get_desc(self): pass
+    def get_desc(self):
+        pass
 
     @abstractmethod
-    def get_articles(self): pass
+    def get_articles(self):
+        pass
 
     def create_section(self, title):
-        return {'title': title}
+        return {"title": title}
 
     def create_article(self, title, url, abstract=None):
-        return {'title': title, 'url': url, 'abstract': abstract}
+        return {"title": title, "url": url, "abstract": abstract}
+
 
 class RSSBase(BaseSource):
 
@@ -64,15 +69,22 @@ class RSSBase(BaseSource):
                 data = read_http_page(url)
                 if data:
                     doc = etree.fromstring(data, parser=etree.XMLParser(recover=True))
-                    for entry in doc.xpath('//rss/channel/item'):
-                        title = entry.xpath('title')[0].text
-                        link = entry.xpath('link')[0].text
-                        abstract = entry.xpath('description')[0].text
-                        resultList.append(self.create_article(title.strip(), link, abstract))
+                    for entry in doc.xpath("//rss/channel/item"):
+                        title = entry.xpath("title")[0].text
+                        link = entry.xpath("link")[0].text
+                        abstract = entry.xpath("description")[0].text
+                        resultList.append(
+                            self.create_article(title.strip(), link, abstract)
+                        )
             except Exception as e:
-                logger.exception('Problem processing rss: ' + str(e))
-                logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+                logger.exception("Problem processing rss: " + str(e))
+                logger.exception(
+                    traceback.format_exception(
+                        etype=type(e), value=e, tb=e.__traceback__
+                    )
+                )
         return resultList
+
 
 class RDFBase(RSSBase):
 
@@ -85,17 +97,28 @@ class RDFBase(RSSBase):
                 # for each section, insert a title...
                 resultList.append(self.create_section(name))
                 # ... then parse the page and extract article links
-                doc = etree.fromstring(read_http_page(url), parser=etree.XMLParser(recover=True))
-                for entry in doc.xpath('//*[local-name()="RDF"]/*[local-name()="item"]'):
-                    titles = entry.xpath('*[local-name()="title"]')
-                    links = entry.xpath('*[local-name()="link"]')
-                    abstracts = entry.xpath('*[local-name()="description"]')
-                    if titles and links:
-                        title = titles[0].text
-                        link = links[0].text
-                        abstract = abstracts[0].text if abstracts else ''
-                        resultList.append(self.create_article(title.strip(), link, abstract))
+                doc = etree.fromstring(
+                    read_http_page(url), parser=etree.XMLParser(recover=True)
+                )
+                if doc is not None:
+                    for entry in doc.xpath(
+                        '//*[local-name()="RDF"]/*[local-name()="item"]'
+                    ):
+                        titles = entry.xpath('*[local-name()="title"]')
+                        links = entry.xpath('*[local-name()="link"]')
+                        abstracts = entry.xpath('*[local-name()="description"]')
+                        if titles and links:
+                            title = titles[0].text
+                            link = links[0].text
+                            abstract = abstracts[0].text if abstracts else ""
+                            resultList.append(
+                                self.create_article(title.strip(), link, abstract)
+                            )
             except Exception as e:
-                logger.exception('Problem processing rdf: ' + str(e))
-                logger.exception(traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__))
+                logger.exception("Problem processing rdf: " + str(e))
+                logger.exception(
+                    traceback.format_exception(
+                        etype=type(e), value=e, tb=e.__traceback__
+                    )
+                )
         return resultList

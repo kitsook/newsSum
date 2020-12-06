@@ -20,12 +20,13 @@
 
 import sys
 
-class MyLogger:
 
+class MyLogger:
     def info(self, msg):
         print(msg, file=sys.stderr)
 
     def exception(self, msg):
         print(msg, file=sys.stderr)
+
 
 logger = MyLogger()

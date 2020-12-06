@@ -20,55 +20,58 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
-import datetime
-from lxml import html
-
-from logger import logger
-from fetcher import read_http_page
-
-from .base import BaseSource
 from .base import RSSBase
 from .base import RDFBase
 
-class BBCWorld(RSSBase):
 
+class BBCWorld(RSSBase):
     def get_id(self):
-        return 'bbcworld'
+        return "bbcworld"
 
     def get_desc(self):
-        return 'BBC World'
+        return "BBC World"
 
     def get_rss_links(self):
-        return [('World', 'http://feeds.bbci.co.uk/news/world/rss.xml'),
-                ('Asia', 'http://feeds.bbci.co.uk/news/world/asia/rss.xml'),]
+        return [
+            ("World", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+            ("Asia", "http://feeds.bbci.co.uk/news/world/asia/rss.xml"),
+        ]
+
 
 class FTChinese(RSSBase):
     def get_id(self):
-        return 'ftchinese'
+        return "ftchinese"
 
     def get_desc(self):
-        return 'FT中文网'
+        return "FT中文网"
 
     def get_rss_links(self):
-        return [('今日焦点', 'http://big5.ftchinese.com/rss/news'),]
+        return [
+            ("今日焦点", "http://big5.ftchinese.com/rss/news"),
+        ]
+
 
 class DeutscheWelle(RDFBase):
     def get_id(self):
-        return 'dw'
+        return "dw"
 
     def get_desc(self):
-        return '德國之聲'
+        return "德國之聲"
 
     def get_rss_links(self):
-        return [('德國之聲', 'http://rss.dw.com/rdf/rss-chi-all'),]
+        return [
+            ("德國之聲", "http://rss.dw.com/rdf/rss-chi-all"),
+        ]
+
 
 class WSJChinese(RSSBase):
     def get_id(self):
-        return 'wsjcn'
+        return "wsjcn"
 
     def get_desc(self):
-        return '華爾街日報'
+        return "華爾街日報"
 
     def get_rss_links(self):
-        return [('華爾街日報', 'https://cn.wsj.com/zh-hant/rss'),]
+        return [
+            ("華爾街日報", "https://cn.wsj.com/zh-hant/rss"),
+        ]

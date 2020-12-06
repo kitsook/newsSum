@@ -23,43 +23,45 @@
 from flask import jsonify, send_from_directory
 from flask import Flask
 from flask_cors import CORS
-# from google.appengine.api import memcache
 
-from logger import logger
 from util import get_sources
 
 allSources = get_sources()
 
-app = Flask(__name__, static_url_path='', static_folder='static')
+app = Flask(__name__, static_url_path="", static_folder="static")
 CORS(app)
 
+
 # route for source listing
-@app.route('/list', methods=['GET'])
+@app.route("/list", methods=["GET"])
 def route_list():
     src = []
     for id in allSources:
-        src.append({'path': id, 'desc': allSources[id].get_desc()})
+        src.append({"path": id, "desc": allSources[id].get_desc()})
 
     return jsonify(src)
+
 
 # route for sources
 def route_source():
     articles = []
 
     from flask import request
-    thePath = request.path.strip('/')
+
+    thePath = request.path.strip("/")
     if thePath in allSources:
         # try to retrieve from cache
         # encodedArticles = memcache.get(thePath)
         encodedArticles = None
-        if (encodedArticles == None):
+        if encodedArticles is None:
             articles.extend(allSources[thePath].get_articles())
 
     return jsonify(articles)
 
+
 # register routes for available sources
 for id in allSources:
-    app.route('/' + id, methods=['GET'])(route_source)
+    app.route("/" + id, methods=["GET"])(route_source)
 
 
 # since we don't have memcache in GCP py3, tell browsers to cache everything to minimize our traffic
@@ -70,16 +72,16 @@ def add_header(response):
     return response
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # This is used when running locally only. When deploying to Google App
     # Engine, a webserver process such as Gunicorn will serve the app. This
     # can be configured by adding an `entrypoint` to app.yaml.
-    @app.route('/js/<path:path>', methods=['GET'])
+    @app.route("/js/<path:path>", methods=["GET"])
     def send_js(path):
-        return send_from_directory('static/js', path)
+        return send_from_directory("static/js", path)
 
-    @app.route('/', methods=['GET'])
+    @app.route("/", methods=["GET"])
     def root():
-        return app.send_static_file('index.html')
+        return app.send_static_file("index.html")
 
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=True)
