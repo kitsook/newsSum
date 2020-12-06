@@ -714,24 +714,24 @@ class TorontoStar(RSSBase):
         ]
 
 
-class NationalPost(RSSBase):
-    def get_id(self):
-        return "nationalpost"
+# class NationalPost(RSSBase):
+#     def get_id(self):
+#         return "nationalpost"
 
-    def get_desc(self):
-        return "National Post"
+#     def get_desc(self):
+#         return "National Post"
 
-    def get_rss_links(self):
-        return [
-            ("News", "http://news.nationalpost.com/category/news/feed"),
-            ("Comment", "http://news.nationalpost.com/category/full-comment/feed"),
-            (
-                "Personal Finance",
-                "http://business.financialpost.com/category/personal-finance/feed",
-            ),
-            ("Tech", "http://business.financialpost.com/category/fp-tech-desk/feed"),
-            ("Sports", "http://news.nationalpost.com/category/sports/feed"),
-            ("Arts", "http://news.nationalpost.com/category/arts/feed"),
-            ("Life", "http://news.nationalpost.com/category/life/feed"),
-            ("Health", "http://news.nationalpost.com/category/health/feed"),
-        ]
+#     def get_rss_links(self):
+#         return [
+#             ("News", "http://news.nationalpost.com/category/news/feed"),
+#             ("Comment", "http://news.nationalpost.com/category/full-comment/feed"),
+#             (
+#                 "Personal Finance",
+#                 "http://business.financialpost.com/category/personal-finance/feed",
+#             ),
+#             ("Tech", "http://business.financialpost.com/category/fp-tech-desk/feed"),
+#             ("Sports", "http://news.nationalpost.com/category/sports/feed"),
+#             ("Arts", "http://news.nationalpost.com/category/arts/feed"),
+#             ("Life", "http://news.nationalpost.com/category/life/feed"),
+#             ("Health", "http://news.nationalpost.com/category/health/feed"),
+#         ]

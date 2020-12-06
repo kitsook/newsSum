@@ -243,12 +243,7 @@ class TaipeiTimes(RDFBase):
 
     def get_rss_links(self):
         return [
-            ("Front Page", "http://www.taipeitimes.com/xml/front.rss"),
-            ("Taiwan News", "http://www.taipeitimes.com/xml/taiwan.rss"),
-            ("World News", "http://www.taipeitimes.com/xml/world.rss"),
-            ("Business", "http://www.taipeitimes.com/xml/biz.rss"),
-            ("Sports", "http://www.taipeitimes.com/xml/sport.rss"),
-            ("Features", "http://www.taipeitimes.com/xml/feat.rss"),
+            ("Taipei Times", "https://www.taipeitimes.com/xml/index.rss"),
         ]
 
 
