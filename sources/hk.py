@@ -345,17 +345,15 @@ class TaKungPao(BaseSource):
                 for topic in doc.xpath(
                     '//div[contains(@class, "list_tuwen")]/div[contains(@class, "content")]'
                 ):
-                    title = topic.xpath('ul/li[contains(@class, "title")]/a')
-                    intro = topic.xpath('ul/li[contains(@class, "intro")]/a')
+                    title = topic.xpath('ul[contains(@class, "txt")]/li[contains(@class, "title")]/a')
+                    intro = topic.xpath('ul[contains(@class, "txt")]/li[contains(@class, "intro")]/a')
 
                     if title and title[0].text and title[0].get("href"):
                         resultList.append(
                             self.create_article(
                                 title[0].text.strip(),
                                 title[0].get("href"),
-                                intro[0].text.strip()
-                                if intro and intro[0].text
-                                else None,
+                                intro[0].text.strip() if intro and intro[0].text else None,
                             )
                         )
 
