@@ -453,3 +453,52 @@ class HkEt(BaseSource):
             )
 
         return resultList
+
+class CitizenNewss(BaseSource):
+    def get_id(self):
+        return "hkcnews"
+
+    def get_desc(self):
+        return "眾新聞 CitizenNews"
+
+    def get_articles(self):
+        resultList = []
+        sections = [
+            ("眾聞", "https://www.hkcnews.com", "https://www.hkcnews.com/data/newsposts", 3),
+        ]
+
+        try:
+            for (title, base_url, data_url, pages) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then get page and parse
+                for page in range(1, pages + 1):
+                    raw_result = read_http_page(data_url + "?page={}".format(page))
+                    result = json.loads(raw_result)
+                    for item in result['items']:
+                        doc = html.document_fromstring(item)
+                        for article in doc.xpath('//div[contains(@class, "article-block")]'):
+                            article_link = article.xpath('div[contains(@class, "article-block-body")]/a')
+                            article_text = article.xpath('div[contains(@class, "article-block-body")]/a/p')
+                            if article_link and article_text:
+                                url = base_url + article_link[0].get("href")
+                                text = article_text[0].text
+                                if url and text:
+                                    footer = article.xpath('a[contains(@class, "article-block-footer")]')
+                                    date_str = ''
+                                    if footer:
+                                        divs = footer[0].xpath('div/div[contains(@class, "text-box")]/div')
+                                        for div in divs:
+                                            if div.text and re.match(r"[0-9]{2}\.[0-9]{2}\.[0-9]{2}", div.text.strip()):
+                                                date_str = div.text.strip()
+                                    resultList.append(
+                                        self.create_article(text.strip() + ' - {}'.format(date_str), url)
+                                    )
+
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList
