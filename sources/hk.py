@@ -148,23 +148,6 @@ class MingPaoHK(RSSBase):
         ]
 
 
-class OrientalDailyRSS(RSSBase):
-    def get_id(self):
-        return "orientaldailyrss"
-
-    def get_desc(self):
-        return "東方日報RSS(香港)"
-
-    def get_rss_links(self):
-        return [
-            ("要聞港聞", "http://orientaldaily.on.cc/rss/news.xml"),
-            ("兩岸國際", "http://orientaldaily.on.cc/rss/china_world.xml"),
-            ("財經", "http://orientaldaily.on.cc/rss/finance.xml"),
-            ("娛樂", "http://orientaldaily.on.cc/rss/entertainment.xml"),
-            ("副刊", "http://orientaldaily.on.cc/rss/lifestyle.xml"),
-        ]
-
-
 class OrientalDaily(BaseSource):
     def get_id(self):
         return "orientaldaily"
