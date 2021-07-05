@@ -395,3 +395,16 @@ class CitizenNewss(BaseSource):
             )
 
         return resultList
+
+
+class HKFP(RSSBase):
+    def get_id(self):
+        return "hkfp"
+
+    def get_desc(self):
+        return "Hong Kong Free Press"
+
+    def get_rss_links(self):
+        return [
+            ("Hong Kong Free Press", "https://www.hongkongfp.com/feed/"),
+        ]
