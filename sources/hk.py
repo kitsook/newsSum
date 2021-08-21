@@ -66,60 +66,72 @@ class OrientalDaily(BaseSource):
         return "東方日報(香港)"
 
     def get_articles(self):
-        # get date first
-        dateUrl = "http://orientaldaily.on.cc/"
-        theDate = datetime.today().strftime("%Y%m%d")
+        topUrl = "http://orientaldaily.on.cc"
+        sections = {
+            'news': {
+                'title': '要聞港聞',
+                'url': ''
+            },
+            'china_world': {
+                'title': '兩岸國際',
+                'url': ''
+            },
+            'finance': {
+                'title': '產經',
+                'url': ''
+            },
+            'entertainment': {
+                'title': '娛樂',
+                'url': ''
+            },
+            'lifestyle': {
+                'title': '副刊',
+                'url': ''
+            },
+            'sport': {
+                'title': '體育',
+                'url': ''
+            }
+        }
+
         try:
-            doc = html.document_fromstring(read_http_page(dateUrl))
-            for aLink in doc.get_element_by_id("topMenu").xpath(
-                'ul[contains(@class, "menuList clear")]/li/a[contains(@class, "news")]'
-            ):
-                href = aLink.attrib["href"]
-                match = re.match(r"\/cnt\/news\/([0-9]{8})\/index\.html", href)
-                if match and match.lastindex == 1:
-                    theDate = match.group(1)
-                else:
-                    logger.info("no date found. using system date: " + theDate)
+            doc = html.document_fromstring(read_http_page(topUrl))
+            if doc is not None:
+                menu = doc.xpath('//*[@id="pageCTN"]/header/div[contains(@class, "middle")]/ul[contains(@class, "menuList")]')
+                if menu:
+                    for theLink in menu[0].xpath('li/a'):
+                        theClass = theLink.xpath('@class')
+                        if theLink.xpath('@href') and theClass and theClass[0] in sections:
+                            sections[theClass[0]]['url'] = topUrl + theLink.xpath('@href')[0]
         except Exception as e:
-            logger.exception("Problem getting date: " + str(e))
+            logger.exception("Problem getting sections: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
         resultList = []
-        baseUrl = dateUrl
-
-        sections = [
-            ("要聞港聞", "http://orientaldaily.on.cc/cnt/news/" + theDate + "/index.html"),
-            (
-                "兩岸國際",
-                "http://orientaldaily.on.cc/cnt/china_world/" + theDate + "/index.html",
-            ),
-            ("財經", "http://orientaldaily.on.cc/cnt/finance/" + theDate + "/index.html"),
-            (
-                "娛樂",
-                "http://orientaldaily.on.cc/cnt/entertainment/"
-                + theDate
-                + "/index.html",
-            ),
-        ]
+        baseUrl = topUrl
 
         try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                if doc is not None and doc.get_element_by_id("articleList") is not None:
-                    for topic in doc.get_element_by_id("articleList").xpath(
-                        'ul[contains(@class, "commonBigList")]/li/a'
-                    ):
-                        if topic.text and topic.get("href"):
-                            resultList.append(
-                                self.create_article(
-                                    topic.text.strip(), baseUrl + topic.get("href")
+            for _, section in sections.items():
+                title = section['title']
+                sectionUrl = section['url']
+                if sectionUrl:
+                    # for each section, insert a title...
+                    resultList.append(self.create_section(title))
+                    # ... then parse the page and extract article links
+                    doc = html.document_fromstring(read_http_page(sectionUrl))
+                    if doc is not None:
+                        articles = doc.xpath('//div[contains(@class, "sectionList")]/div[contains(@class, "subsection")]/ul[contains(@class, "items")]/li[@articleid]')
+                        for article in articles:
+                            articleUrls = article.xpath('a/@href')
+                            articleTexts = article.xpath('a/div[contains(@class, "text")]/text()')
+                            if articleUrls and articleTexts:
+                                resultList.append(
+                                    self.create_article(
+                                        articleTexts[0].strip(), baseUrl + articleUrls[0]
+                                    )
                                 )
-                            )
 
         except Exception as e:
             logger.exception("Problem processing url: " + str(e))
