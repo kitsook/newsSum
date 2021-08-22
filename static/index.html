@@ -235,6 +235,8 @@
             if (val['url']) {
               $newCell = $('<a/>', {
                 'href': val['url'],
+                'target': '_blank',
+                'rel': 'noopener noreferrer',
               }).append($newCell);
             }
             $('#table-'+srcId).append($('<tr/>').append($newCell));
