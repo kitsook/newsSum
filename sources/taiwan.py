@@ -150,31 +150,26 @@ class AppleDailyTaiwan(BaseSource):
     def _find_date_id(self, raw_page):
         m_d = re.search(r"Fusion\.deployment\=\"([0-9]+)\"", str(raw_page))
 
-        tw_time = datetime.now(pytz.timezone("Hongkong"))  # same tz as hk
-        if tw_time.hour < 4:
-            tw_time = tw_time - timedelta(days=1)
-        result_date = tw_time.strftime("%Y%m%d")
-
         result_d = 0
         if m_d:
             result_d = m_d.group(1)
 
-        return result_date, result_d
+        return result_d
 
-    def _get_collection(self, section_id, date_id, d):
+    def _get_collection(self, section_id, d):
         payload_query = {
             "feedOffset": 0,
-            "feedQuery": 'taxonomy.primary_section._id:"{}" AND type:story AND editor_note:"{}"'.format(
-                section_id, date_id
+            "feedQuery": 'taxonomy.primary_section._id:"{}" AND type:story AND display_date:[now-24h/h TO now] AND NOT taxonomy.tags.text.raw:_no_show_for_web AND NOT taxonomy.tags.text.raw:_nohkad'.format(
+                section_id
             ),
             "feedSize": 100,
-            "sort": "location:asc",
+            "sort": "display_date:desc",
         }
         payload_query = urllib.parse.quote(json.dumps(payload_query))
 
         query_url = (
             self._base_url
-            + "/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=hk-appledaily".format(
+            + "/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=tw-appledaily".format(
                 payload_query, d
             )
         )
@@ -189,13 +184,13 @@ class AppleDailyTaiwan(BaseSource):
     def get_articles(self):
         resultList = []
         sections = [
-            ("要聞", "/daily/headline", self._base_url + "/daily/headline/"),
-            ("娛樂", "/daily/entertainment", self._base_url + "/daily/entertainment/"),
-            ("國際", "/daily/international", self._base_url + "/daily/international/"),
-            ("財經", "/daily/finance", self._base_url + "/daily/finance/"),
-            ("副刊", "/daily/lifestyle", self._base_url + "/daily/lifestyle/"),
-            ("體育", "/daily/sports", self._base_url + "/daily/sports/"),
-            ("地產", "/daily/home", self._base_url + "/daily/home/"),
+            ("國際", "/realtime/international", self._base_url + "/realtime/international/"),
+            ("娛樂時尚", "/realtime/entertainment", self._base_url + "/realtime/entertainment/"),
+            ("社會", "/realtime/local", self._base_url + "/realtime/local"),
+            ("生活", "/realtime/life", self._base_url + "/realtime/life"),
+            ("財經地產", "/realtime/property", self._base_url + "/realtime/property/"),
+            ("吃喝玩樂", "/realtime/supplement", self._base_url + "/realtime/supplement/"),
+            ("體育", "/realtime/sports", self._base_url + "/realtime/sports/"),
         ]
 
         try:
@@ -204,9 +199,9 @@ class AppleDailyTaiwan(BaseSource):
                 resultList.append(self.create_section(title))
                 # ... then retrieve the json content
                 raw_page = read_http_page(url)
-                date_id, d = self._find_date_id(raw_page)
-                if date_id and d:
-                    raw_result = self._get_collection(section_id, date_id, d)
+                d = self._find_date_id(raw_page)
+                if d:
+                    raw_result = self._get_collection(section_id, d)
                     result = json.loads(raw_result)
                     for article in result["content_elements"]:
                         desc = article["headlines"]["basic"]
