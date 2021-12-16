@@ -86,7 +86,7 @@ class LibertyTimes(BaseSource):
         return resultList
 
 
-class UnitedDailyNewsRSS(RSSBase):
+class UnitedDailyNewsRSS(BaseSource):
     def get_id(self):
         return "udn"
 
@@ -111,32 +111,77 @@ class UnitedDailyNewsRSS(RSSBase):
 
 
 class MoneyUnitedDailyNewsRSS(RSSBase):
-    @staticmethod
-    def is_url(url):
-        try:
-            result = urlparse(url)
-            return all([result.scheme, result.netloc])
-        except ValueError:
-            return False
-
     def get_id(self):
         return "money-udn"
 
     def get_desc(self):
         return "經濟日報-聯合新聞網"
 
-    def get_rss_links(self):
+    def get_articles(self):
+        siteBaseUrl = "https://money.udn.com"
+        baseUrl = siteBaseUrl + "/money/cate/"
+
         resultList = []
+        sections = [
+            ("要聞", baseUrl + "10846"),
+            ("國際", baseUrl + "5588"),
+            ("兩岸", baseUrl + "5589"),
+            ("產業", baseUrl + "5591"),
+            ("證券", baseUrl + "5590"),
+            ("金融", baseUrl + "12017"),
+            ("期貨", baseUrl + "11111"),
+            ("理財", baseUrl + "5592"),
+            ("房市", baseUrl + "5593"),
+            ("專欄", baseUrl + "5595"),
+            ("商情", baseUrl + "5597"),
+        ]
+
         try:
-            rss_list_url = "https://money.udn.com/rssfeed/lists/1001"
-            doc = html.document_fromstring(read_http_page(rss_list_url))
-            for aLink in doc.get_element_by_id("rss_list").xpath("div/div/dl/dt/a"):
-                if aLink.xpath("text()") and MoneyUnitedDailyNewsRSS.is_url(
-                    aLink.get("href")
-                ):
-                    resultList.append((aLink.xpath("text()"), aLink.get("href")))
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.xpath('//section[contains(@class, "cate-main__section")]/div[contains(@class, "story-headline-wrapper")]'):
+                    # main stories first...
+                    link = topic.xpath(
+                        'div[contains(@class, "story__content")]/a'
+                    )
+                    title = topic.xpath(
+                        'div[contains(@class, "story__content")]/a/h3'
+                    )
+                    intro = topic.xpath(
+                        'div[contains(@class, "story__content")]/a/p'
+                    )
+                    title_text = title[0].text if title else None
+
+                    if title and title_text and link:
+                        resultList.append(
+                            self.create_article(
+                                title_text.strip(),
+                                siteBaseUrl + link[0].get("href"),
+                                intro[0].text.strip() if intro and intro[0].text else None,
+                            )
+                        )
+
+                for topic in doc.xpath('//section[contains(@class, "cate-main__section")]/ul[contains(@class, "story-flex-bt-wrapper")]'):
+                    # ... then other stories
+                    titles = topic.xpath(
+                        'li[contains(@class, "story__item")]/a'
+                    )
+                    for title in titles:
+                        title_text = title.text
+                        if title_text:
+                            resultList.append(
+                                self.create_article(
+                                    title_text.strip(),
+                                    siteBaseUrl + title.get("href"),
+                                    None,
+                                )
+                            )
+
         except Exception as e:
-            logger.exception("Problem fetching rss links: " + str(e))
+            logger.exception("Problem processing url: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
