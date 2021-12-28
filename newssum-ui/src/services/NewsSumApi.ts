@@ -10,7 +10,9 @@ export default class NewsSumApi {
         "method": "GET",
       });
       if (response.ok) {
-        return <NewsSource[]>(await response.json());
+        let sources: NewsSource[] = <NewsSource[]>(await response.json());
+        sources.sort((a, b) => a.desc < b.desc? -1 : 1);
+        return sources;
       } else {
         Logger.log("Failed to fetch news sources " + response.status + ": " + response.statusText);
       }

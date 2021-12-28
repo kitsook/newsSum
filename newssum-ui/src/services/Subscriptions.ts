@@ -1,22 +1,25 @@
 import Logger from "./Logger";
 
 export default class Subscriptions {
-  static jsonSubscriptions: { [name: string]: number; } = JSON.parse(localStorage.subs);
-
   static get subscriptions(): Set<string> {
     let subs = new Set<string>();
-    for (let key in this.jsonSubscriptions) {
-      subs.add(key);
+    try {
+      let jsonSubscriptions: { [name: string]: number; } = JSON.parse(localStorage.subs);
+      for (let key in jsonSubscriptions) {
+        subs.add(key);
+      }
+    } catch(e) {
+      Logger.log("Problem retrieving subscription");
     }
     return subs;
   }
 
   static updateSubscription(subscriptions: string[]) {
-    this.jsonSubscriptions = {}
+    let jsonSubscriptions: { [name: string]: number; } = {}
     for (let sub of subscriptions) {
-      this.jsonSubscriptions[sub] = 1
+      jsonSubscriptions[sub] = 1
     }
-    localStorage.subs = JSON.stringify(this.jsonSubscriptions);
+    localStorage.subs = JSON.stringify(jsonSubscriptions);
   }
 
   static getLastRead(): string {
