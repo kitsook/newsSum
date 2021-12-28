@@ -11,9 +11,20 @@ export default class Subscriptions {
     return subs;
   }
 
-  static addSubscription(newSub: string): void {
-      this.jsonSubscriptions[newSub] = 1;
-      localStorage.subs = JSON.stringify(this.jsonSubscriptions);
+  static updateSubscription(subscriptions: string[]) {
+    this.jsonSubscriptions = {}
+    for (let sub of subscriptions) {
+      this.jsonSubscriptions[sub] = 1
+    }
+    localStorage.subs = JSON.stringify(this.jsonSubscriptions);
+  }
+
+  static getLastRead(): string {
+    return localStorage.last;
+  }
+
+  static setLastRead(sub: string) {
+    localStorage.last = sub;
   }
 }
 

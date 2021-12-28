@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <NewsPages :sources="this.newsSources" :subscriptions="subscriptions" />
+    <NewsPages :sources="this.newsSources"
+        :subscriptions="subscriptions"
+        @subscriptionChanged="subscriptionChanged"
+        :showTab="showTab" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { mixins } from 'vue-class-component'
 import NewsPages from './components/NewsPages.vue';
 import Subscriptions from './services/Subscriptions';
 import NewsSumApi from "./services/NewsSumApi";
@@ -21,6 +23,7 @@ import NewsSource from "./models/NewsSource";
 export default class App extends Vue {
   newsSources = [] as NewsSource[];
   subscriptions = new Set<string>();
+  showTab = Subscriptions.getLastRead();
 
   created() {
     this.subscriptions = Subscriptions.subscriptions;
@@ -31,15 +34,17 @@ export default class App extends Vue {
     }).catch((resp) => {
       Logger.log("Got errors when trying to retrieve news sources");
     });
-
   }
 
+  private subscriptionChanged() {
+    this.subscriptions = Subscriptions.subscriptions;
+  }
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;

@@ -8,7 +8,8 @@
       <li v-for="source in this.sources" :key="source.path" class="list-group-item border-0">
         <input class="form-check-input me-1" type="checkbox"
             :value="source.path"
-            :checked="subscriptions.has(source.path)">
+            v-model="checkedSources"
+            @change="changeSubscription()">
         {{ source.desc }}
       </li>
     </ul>
@@ -19,6 +20,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import NewsSource from "../models/NewsSource";
 import Loading from "../components/Loading.vue";
+import Subscriptions from "../services/Subscriptions";
 import Logger from "../services/Logger";
 
 @Component({
@@ -30,7 +32,15 @@ export default class IndexTab extends Vue {
   @Prop({ default: new Set<string>() }) subscriptions!: Set<string>;
   @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
 
+  checkedSources = [] as string[];
+
+  changeSubscription() {
+    Subscriptions.updateSubscription(this.checkedSources);
+    this.$emit('subscriptionChanged');
+  }
+
   created() {
+    this.checkedSources = Array.from(this.subscriptions);
   }
 
   @Watch('sources')
@@ -39,6 +49,7 @@ export default class IndexTab extends Vue {
 
   @Watch('subscriptions')
   onSubscriptionsChanged(value: { [name: string]: number; }, oldValue: { [name: string]: number; }) {
+    this.checkedSources = Array.from(this.subscriptions);
   }
 }
 </script>
