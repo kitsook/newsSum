@@ -1,10 +1,10 @@
 <template>
   <div class="list-group">
     <a v-for="(article, index) in articles" :key="index" :href="article.url"
-        :class="article.url? (index%2 == 0? 'list-group-item-dark' : 'list-group-item-light') : 'active'"
+        :class="article.url? (index%2 == 0? 'list-group-item-secondary' : 'list-group-item-light') : 'active'"
         class="list-group-item list-group-item-action" target="_blank">
-      <h6>{{ article.title }}</h6>
-      <small>{{ article.abstract? article.abstract.replace(re, '') : '' }}</small>
+      <div :class="article.url? 'text-primary' : ''">{{ article.title }}</div>
+      <div>{{ article.abstract? article.abstract.replace(re, '') : '' }}</div>
     </a>
   </div>
 </template>

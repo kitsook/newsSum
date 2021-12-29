@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="tabbable">
     <b-tabs content-class="" id="news-tabs">
       <IndexTab :subscriptions="subscriptions"
           :sources="sources"
           @subscriptionChanged="subscriptionChanged"/>
-      <NewsTab v-for="(source, index) of showingSources"
-          :key="index"
+      <NewsTab v-for="source of showingSources"
+          :key="source.path"
           :title="source.desc"
           :srcUrl="source.path"
           :isActive="showTab === source.path" />
@@ -60,3 +60,14 @@ export default class NewsPages extends Vue {
 
 }
 </script>
+
+<style>
+.tabbable .nav-tabs {
+   overflow-x: show;
+   overflow-y: hidden;
+   flex-wrap: nowrap;
+}
+.tabbable .nav-tabs .nav-link {
+  white-space: nowrap;
+}
+</style>
