@@ -86,7 +86,7 @@ class LibertyTimes(BaseSource):
         return resultList
 
 
-class UnitedDailyNewsRSS(BaseSource):
+class UnitedDailyNewsRSS(RSSBase):
     def get_id(self):
         return "udn"
 
