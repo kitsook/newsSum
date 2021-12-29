@@ -3,4 +3,3 @@ env/
 venv/
 *.code-workspace
 .vscode/
-static/*
