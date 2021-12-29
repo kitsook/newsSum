@@ -7,5 +7,5 @@ lxml==4.7.1
 MarkupSafe==2.0.1
 pytz==2021.1
 six==1.15.0
-urllib3==1.26.5
+urllib3[brotli]==1.26.5
 Werkzeug==2.0.1

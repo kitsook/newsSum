@@ -438,98 +438,17 @@ class SingTaoCalgary(BaseSource):
         return resultList
 
 
-class TheProvince(BaseSource):
+class TheProvince(RSSBase):
     def get_id(self):
         return "theprovince"
 
     def get_desc(self):
         return "The Province"
 
-    def get_articles(self):
-        resultList = []
-        sections = [
-            (
-                "Vancouver",
-                "http://www.theprovince.com/scripts/Sp6Query.aspx?catalog=VAPR&tags=category|news|subcategory|metro%20vancouver",
-            ),
-            (
-                "Fraser Valley",
-                "http://www.theprovince.com/scripts/Sp6Query.aspx?catalog=VAPR&tags=category|news|subcategory|fraser%20valley",
-            ),
-            (
-                "B.C.",
-                "http://www.theprovince.com/scripts/Sp6Query.aspx?catalog=VAPR&tags=category|news|subcategory|b.c.",
-            ),
+    def get_rss_links(self):
+        return [
+            ("The Province", "https://theprovince.com/feed"),
         ]
-        relSections = [
-            ("Canada", "http://www.theprovince.com/7588609.atom"),
-            ("World", "http://www.theprovince.com/7589147.atom"),
-        ]
-
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = etree.fromstring(read_http_page(url))
-                for entry in doc.xpath(
-                    '//ns:entry[@Status="FREE"]',
-                    namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                ):
-                    title = entry.xpath(
-                        'ns:title[@type="html"]',
-                        namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                    )[0].text
-                    link = (
-                        "http://www.theprovince.com"
-                        + entry.xpath(
-                            'ns:link[@type="text/html"]',
-                            namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                        )[0].get("href")
-                    )
-                    abstract = entry.xpath(
-                        'ns:link[@type="text/html"]',
-                        namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                    )[0].get("Abstract")
-                    resultList.append(
-                        self.create_article(title.strip(), link, abstract)
-                    )
-
-            for (title, url) in relSections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = etree.fromstring(read_http_page(url))
-                for entry in doc.xpath(
-                    '//ns:entry[@Status="FREE"]',
-                    namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                ):
-                    title = entry.xpath(
-                        'ns:title[@type="html"]',
-                        namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                    )[0].text
-                    link = (
-                        "http://www.theprovince.com"
-                        + entry.xpath(
-                            'ns:link[@type="text/xml"]',
-                            namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                        )[0].get("href")
-                    )
-                    abstract = entry.xpath(
-                        'ns:link[@type="text/xml"]',
-                        namespaces={"ns": "http://www.w3.org/2005/Atom"},
-                    )[0].get("Abstract")
-                    resultList.append(
-                        self.create_article(title.strip(), link, abstract)
-                    )
-
-        except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
-            logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-            )
-
-        return resultList
 
 
 class VancouverSun(RSSBase):
