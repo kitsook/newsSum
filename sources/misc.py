@@ -27,7 +27,7 @@ from logger import logger
 from fetcher import read_http_page
 
 from .base import BaseSource
-
+from .base import RSSBase
 
 class HackerNews(BaseSource):
     def get_id(self):
@@ -74,3 +74,74 @@ class HackerNews(BaseSource):
             )
 
         return resultList
+
+class RFACantonese(BaseSource):
+    def get_id(self):
+        return "rfa_cantonese"
+
+    def get_desc(self):
+        return "RFA 粵語部"
+
+    def get_articles(self):
+        resultList = []
+        baseUrl = "https://www.rfa.org/cantonese"
+
+        sections = [
+            ("新聞", baseUrl + "/news"),
+            ("港澳台新聞", baseUrl + "/news/htm"),
+            ("評論", baseUrl + "/commentaries"),
+            ("聚言堂", baseUrl + "/talkshows"),
+            ("專題", baseUrl + "/features/hottopic"),
+            ("多媒體", baseUrl + "/multimedia"),
+        ]
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                doc = html.document_fromstring(read_http_page(url))
+                for topic in doc.xpath('//div[contains(@id, "topstorywidefulltease")]|//div[contains(@class, "sectionteaser")]'):
+                    title = topic.xpath('h2/a')
+                    intro = topic.xpath('p')
+
+                    if title:
+                        title_text = title[0].xpath('span')
+
+                        resultList.append(
+                            self.create_article(
+                              title_text[0].text.strip(),
+                              title[0].get("href"),
+                              intro[0].text.strip() if intro and intro[0].text else None))
+
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList
+
+class RFACantoneseRSS(RSSBase):
+    def get_id(self):
+        return "rfa_cantonese_rss"
+
+    def get_desc(self):
+        return "RFA 粵語部 RSS"
+
+    def get_rss_links(self):
+        return [
+            ("RFA 自由亞洲電台粵語部", "https://www.rfa.org/cantonese/rss2.xml"),
+        ]
+
+class RFAEnglishRSS(RSSBase):
+    def get_id(self):
+        return "rfa_english_rss"
+
+    def get_desc(self):
+        return "Radio Free Asia RSS"
+
+    def get_rss_links(self):
+        return [
+            ("Radio Free Asia", "https://www.rfa.org/english/rss2.xml"),
+        ]
