@@ -63,7 +63,7 @@ export default class NewsPages extends Vue {
 
 <style>
 .tabbable .nav-tabs {
-   overflow-x: show;
+   overflow-x: auto;
    overflow-y: hidden;
    flex-wrap: nowrap;
 }
