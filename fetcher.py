@@ -19,11 +19,21 @@
 # SOFTWARE.
 
 import urllib3
+import ssl
+from urllib3.util.ssl_ import create_urllib3_context
 
 URL_TIMEOUT = 15
 
+ctx = create_urllib3_context()
+# change the TLS signature, so that cloudflare won't consider us as bot and block us for some sites
+ctx.set_ciphers('ECDHE+CHACHA20:ECDHE+AESGCM')
+ctx.load_default_certs()
+ctx.options |= ssl.OP_NO_TLSv1_3
+if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
+    ctx.options ^= ssl.OP_NO_COMPRESSION
+http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
+
 def read_http_page(url, cookies=None):
-    http = urllib3.PoolManager(timeout=URL_TIMEOUT)
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
         "Pragma": "no-cache",

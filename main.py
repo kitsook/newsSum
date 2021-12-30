@@ -64,7 +64,7 @@ for id in allSources:
     app.route("/" + id, methods=["GET"])(route_source)
 
 
-# since we don't have memcache in GCP py3, tell browsers / proxy servers to cache everything to minimize our traffic
+# since we don't have memcache in GCP py3, tell browsers / proxy servers to cache everything to minimize our computation cost
 @app.after_request
 def add_header(response):
     response.cache_control.public = True
