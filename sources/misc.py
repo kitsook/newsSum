@@ -22,6 +22,9 @@
 
 from lxml import html
 import traceback
+import json
+
+import urllib3
 
 from logger import logger
 from fetcher import read_http_page
@@ -145,3 +148,52 @@ class RFAEnglishRSS(RSSBase):
         return [
             ("Radio Free Asia", "https://www.rfa.org/english/rss2.xml"),
         ]
+
+class TheInitium(BaseSource):
+    def get_id(self):
+        return "the_initium"
+
+    def get_desc(self):
+        return "端傳媒"
+
+    def get_articles(self):
+        resultList = []
+        baseUrl = "https://api.theinitium.com"
+        apiUrl = "https://api.theinitium.com/api/v2/channel/articles"
+
+        sections = [
+            ("最新", apiUrl + "/?language=zh-hant&slug=latest"),
+            ("香港", apiUrl + "/?language=zh-hant&slug=hongkong"),
+            ("國際", apiUrl + "/?language=zh-hant&slug=international"),
+            ("大陸", apiUrl + "/?language=zh-hant&slug=mainland"),
+            ("台灣", apiUrl + "/?language=zh-hant&slug=taiwan"),
+            ("評論", apiUrl + "/?language=zh-hant&slug=opinion"),
+            ("科技", apiUrl + "/?language=zh-hant&slug=technology"),
+            ("風物", apiUrl + "/?language=zh-hant&slug=culture"),
+            ("廣場", apiUrl + "/?language=zh-hant&slug=notes-and-letters"),
+        ]
+
+        headers = urllib3.make_headers(basic_auth="anonymous:GiCeLEjxnqBcVpnp6cLsUvJievvRQcAXLv")
+        headers['Accept'] = "application/json"
+
+        try:
+            for (title, url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then parse the page and extract article links
+                contents = json.loads(read_http_page(url, headers=headers))
+                for digest in contents["digests"]:
+                    article = digest["article"]
+                    resultList.append(
+                        self.create_article(
+                            article["headline"].strip(),
+                            baseUrl + article["url"],
+                            article["lead"]))
+
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList

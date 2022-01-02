@@ -47,7 +47,11 @@ class FTChinese(RSSBase):
 
     def get_rss_links(self):
         return [
+            ("每日更新", "http://big5.ftchinese.com/rss/feed"),
             ("今日焦点", "http://big5.ftchinese.com/rss/news"),
+            ("十大熱門文章", "http://big5.ftchinese.com/rss/hotstoryby7day"),
+            ("生活時尚", "http://big5.ftchinese.com/rss/lifestyle"),
+            ("《馬丁 沃爾夫》", "http://big5.ftchinese.com/rss/column/007000012"),
         ]
 
 

@@ -33,8 +33,8 @@ if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
     ctx.options ^= ssl.OP_NO_COMPRESSION
 http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
 
-def read_http_page(url, cookies=None):
-    headers = {
+def read_http_page(url, cookies=None, headers=None):
+    the_headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
         "Pragma": "no-cache",
         "Cache-Control": "no-cache",
@@ -43,12 +43,15 @@ def read_http_page(url, cookies=None):
     }
 
     if cookies:
-        headers["Cookie"] = ";".join(
+        the_headers["Cookie"] = ";".join(
             ["%s=%s" % (key, value) for (key, value) in cookies.items()]
         )
 
+    if headers:
+        the_headers.update(headers)
+
     try:
-        resp = http.request("GET", url, headers=headers)
+        resp = http.request("GET", url, headers=the_headers)
         return resp.data
     except (Exception, Warning):
         pass
