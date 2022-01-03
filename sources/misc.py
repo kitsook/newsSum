@@ -184,11 +184,12 @@ class TheInitium(BaseSource):
                 contents = json.loads(read_http_page(url, headers=headers))
                 for digest in contents["digests"]:
                     article = digest["article"]
-                    resultList.append(
-                        self.create_article(
-                            article["headline"].strip(),
-                            baseUrl + article["url"],
-                            article["lead"]))
+                    if article and article["headline"] and article["url"]:
+                        resultList.append(
+                            self.create_article(
+                                article["headline"].strip(),
+                                baseUrl + article["url"],
+                                article["lead"]))
 
         except Exception as e:
             logger.exception("Problem processing url: " + str(e))
