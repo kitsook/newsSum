@@ -1,6 +1,6 @@
 <template>
   <div class="tabbable">
-    <b-tabs content-class="" id="news-tabs">
+    <b-tabs content-class="" id="news-tabs" v-model="showTabIndex" @activate-tab="tabChanged">
       <IndexTab :subscriptions="subscriptions"
           :sources="sources"
           @subscriptionChanged="subscriptionChanged"/>
@@ -18,7 +18,9 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
 import NewsSource from "../models/NewsSource";
+import Subscriptions from '../services/Subscriptions';
 import Logger from "../services/Logger";
+import { BvEvent } from 'bootstrap-vue';
 
 @Component({
   components: {
@@ -32,6 +34,7 @@ export default class NewsPages extends Vue {
   @Prop({ default: ''}) showTab!: string;
 
   showingSources = [] as NewsSource[];
+  showTabIndex = 0;
 
   @Watch('subscriptions')
   onSubScriptionsChanged(newSubscriptions: Set<string>, oldSubscriptions: Set<string>) {
@@ -41,6 +44,12 @@ export default class NewsPages extends Vue {
   @Watch('sources')
   onSourcesChanged(newSources: NewsSource[], oldSources: NewsSource[]) {
     this.refreshShowingSources(this.subscriptions, newSources);
+  }
+
+  private tabChanged(newTabIndex: number, prevTabIndex: number, bvEvent: BvEvent) {
+    if (newTabIndex > 0 && this.showingSources.length > newTabIndex-1) {
+      Subscriptions.setLastRead(this.showingSources[newTabIndex-1].path);
+    }
   }
 
   private subscriptionChanged() {

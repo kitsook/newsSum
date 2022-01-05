@@ -1,5 +1,5 @@
 <template>
-  <b-tab :title="title">
+  <b-tab :title="title" :active.sync="tabIsActive">
     <Loading v-if="newsArticles.length == 0" />
     <ArticleList :articles="newsArticles" />
   </b-tab>
@@ -25,6 +25,7 @@ export default class NewsTab extends Vue {
   @Prop({ default: false }) isActive!: boolean;
 
   newsArticles = [] as NewsArticle[];
+  tabIsActive = false;
 
   created() {
     NewsSumApi.getArticles(this.srcUrl).then((articles) => {
@@ -35,7 +36,7 @@ export default class NewsTab extends Vue {
   }
 
   mounted() {
-
+    this.tabIsActive = this.isActive;
   }
 }
 </script>
