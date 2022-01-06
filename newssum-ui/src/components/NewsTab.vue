@@ -20,8 +20,8 @@ import ArticleList from "../components/ArticleList.vue";
   },
 })
 export default class NewsTab extends Vue {
-  @Prop() title!: string;
-  @Prop() srcUrl!: string;
+  @Prop({ default: "" }) title!: string;
+  @Prop({ default: "" }) srcUrl!: string;
   @Prop({ default: false }) isActive!: boolean;
 
   newsArticles = [] as NewsArticle[];
