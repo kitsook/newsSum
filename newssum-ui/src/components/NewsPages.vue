@@ -55,7 +55,7 @@ export default class NewsPages extends Vue {
     if (this.firstTabChange) {
       this.firstTabChange = false;
       if (newTabIndex > 0 && this.showingSources.length > newTabIndex) {
-        this.scrollToActiveTab(this.showingSources[newTabIndex].desc);
+        this.scrollToShowActiveTab(this.showingSources[newTabIndex].desc);
       }
     } else {
       if (newTabIndex > 0 && this.showingSources.length > newTabIndex-1) {
@@ -64,23 +64,25 @@ export default class NewsPages extends Vue {
     }
   }
 
-  private scrollToActiveTab(tabText: string) {
+  private scrollToShowActiveTab(tabText: string) {
     const headers = this.$refs.tabheaders.querySelector(".nav-tabs");
-    let activeTab: Element | undefined = undefined;
+    let makeVisibleTab: HTMLElement | null = null;
 
     const links = this.$refs.tabheaders.getElementsByClassName('nav-link');
     for (let i = 0; i < links.length; i++) {
       if (links[i].innerHTML === tabText) {
-        activeTab = links[i];
+        makeVisibleTab = links[i==links.length-1? i : i+1].parentElement; // get next tab
+        break;
       }
     }
 
     // TODO find a more efficient and accurate way to scroll to the active tab
-    if (headers && activeTab) {
+    if (headers && makeVisibleTab) {
       let maxScrollLeft = headers.scrollWidth - headers.clientWidth;
+      let scrollStep = maxScrollLeft / 5;
       headers.scrollLeft = 0;
-      while(!this.isInViewport(activeTab) && headers.scrollLeft < maxScrollLeft) {
-        headers.scrollLeft += maxScrollLeft / 5;
+      while(!this.isInViewport(makeVisibleTab) && headers.scrollLeft < maxScrollLeft) {
+        headers.scrollLeft += scrollStep;
       }
     }
   }
