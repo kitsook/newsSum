@@ -21,7 +21,7 @@ python3 -m venv venv
 pip install -r requirements.txt
 # compile UI
 cd newssum-ui
-npm run build
+npm install && npm run build
 cp -r dist/* ../static
 cd ..
 # run local server
