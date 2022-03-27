@@ -6,11 +6,11 @@ export default class NewsSumApi {
   static async getSources(): Promise<NewsSource[]> {
     try {
       // TODO use relative url
-      var response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/list" : "/list", {
+      const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/list" : "/list", {
         "method": "GET",
       });
       if (response.ok) {
-        let sources: NewsSource[] = <NewsSource[]>(await response.json());
+        const sources: NewsSource[] = <NewsSource[]>(await response.json());
         sources.sort((a, b) => a.desc < b.desc? -1 : 1);
         return sources;
       } else {
@@ -30,7 +30,7 @@ export default class NewsSumApi {
   static async getArticles(path: string): Promise<NewsArticle[]> {
     try {
       // TODO use relative url
-      var response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/" + path : "/" + path, {
+      const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/" + path : "/" + path, {
         "method": "GET",
       })
       if (response.ok) {

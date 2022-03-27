@@ -19,7 +19,6 @@ import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
 import NewsSource from "../models/NewsSource";
 import Subscriptions from '../services/Subscriptions';
-import Logger from "../services/Logger";
 import { BvEvent } from 'bootstrap-vue';
 
 @Component({

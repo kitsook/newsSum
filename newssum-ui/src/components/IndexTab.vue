@@ -21,7 +21,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import NewsSource from "../models/NewsSource";
 import Loading from "../components/Loading.vue";
 import Subscriptions from "../services/Subscriptions";
-import Logger from "../services/Logger";
 
 @Component({
   components: {
@@ -41,10 +40,6 @@ export default class IndexTab extends Vue {
 
   created() {
     this.checkedSources = Array.from(this.subscriptions);
-  }
-
-  @Watch('sources')
-  onSourcesChanged(value: NewsSource[], oldValue: NewsSource) {
   }
 
   @Watch('subscriptions')
