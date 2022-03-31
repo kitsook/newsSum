@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 from lxml import html
+from lxml.html.soupparser import fromstring
 import traceback
 import json
 
@@ -103,8 +104,11 @@ class RFACantonese(BaseSource):
                 # for each section, insert a title...
                 resultList.append(self.create_section(title))
                 # ... then parse the page and extract article links
-                doc = html.document_fromstring(read_http_page(url))
-                for topic in doc.xpath('//div[contains(@id, "topstorywidefulltease")]|//div[contains(@class, "sectionteaser")]'):
+                doc = fromstring(read_http_page(url))
+                for topic in doc.xpath('//div[contains(@id, "topstorywidefull")]'\
+                        '|//div[contains(@class, "sectionteaser")]'\
+                        '|//div[contains(@class, "single_column_teaser")]'\
+                        '|//div[contains(@class, "two_featured")]'):
                     title = topic.xpath('h2/a')
                     intro = topic.xpath('p')
 
