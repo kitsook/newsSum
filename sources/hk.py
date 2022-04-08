@@ -420,3 +420,49 @@ class HKFP(RSSBase):
         return [
             ("Hong Kong Free Press", "https://www.hongkongfp.com/feed/"),
         ]
+
+class HKEJ(BaseSource):
+    def get_id(self):
+        return "hkej"
+
+    def get_desc(self):
+        return "信報財經"
+
+    def get_articles(self):
+        resultList = []
+        root_url = "https://www1.hkej.com"
+        sections = [
+            ("要聞", "/dailynews"),
+            ("理財投資", "/dailynews/investment"),
+            ("時事評論", "/dailynews/commentary"),
+            ("財經新聞", "/dailynews/finnews"),
+            ("地產市道", "/dailynews/property"),
+            ("政壇脈搏", "/dailynews/politics"),
+            ("獨眼", "/dailynews/views"),
+            ("兩岸消息", "/dailynews/cntw"),
+            ("EJ Global", "/dailynews/international"),
+            ("副刊文化", "/dailynews/culture"),
+        ]
+        try:
+            for (title, base_url) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                # ... then get page and parse
+                doc = html.document_fromstring(
+                    read_http_page(root_url + base_url)
+                )
+                for article in doc.xpath(
+                    '//div[contains(@class, "more-articles-dd-wrapper")]/form/select/option'
+                ):
+                    if article.get("value") and article.text:
+                        article_url = root_url + article.get("value")
+                        resultList.append(
+                            self.create_article(article.text.strip(), article_url)
+                        )
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList
