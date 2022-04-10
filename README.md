@@ -2,7 +2,7 @@
 
 A Google App Engine application to parse RSS feeds and HTML pages to extract headlines.  Result is available via JSON.
 
-~~Memcache is used to reduce process time.~~ There is no memcache service for GCP Python 3 runtime and the Memorystore for Redis isn't free, so no caching is done on the server side. For now, use the `cache-control` header to have browser / proxy to do the caching.
+~~Memcache is used to reduce process time.~~ There is no memcache service for GCP Python 3 runtime and the Memorystore for Redis isn't free, so no caching is done on the app server side. For now, use the `cache-control` header to have browser and GCP's proxy to do the caching.
 
 UI is implemented with Vue. To generate the UI, run `npm run build` under the folder `newssum-ui`. Then copy all the content under `newssum-ui/dist` folder to the `static` folder under root.
 
