@@ -466,3 +466,51 @@ class HKEJ(BaseSource):
             )
 
         return resultList
+
+class AM730(BaseSource):
+    def get_id(self):
+        return "am730"
+
+    def get_desc(self):
+        return "AM730"
+
+    def get_articles(self):
+        resultList = []
+        root_url = "https://www.am730.com.hk"
+        sections = [
+            ("本地", "/本地", 5),
+            ("國際", "/國際", 3),
+            ("娛樂", "/娛樂", 3),
+            ("中國", "/中國", 2),
+            ("財經", "/財經", 2),
+            ("地產", "/地產", 2),
+            ("體育", "/體育", 2),
+            ("專欄", "/column", 5),
+        ]
+        try:
+            for (title, base_url, num_pages) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                for page in range(1, num_pages+1):
+                    # ... then get page and parse
+                    resp = json.loads(read_http_page(root_url + base_url,
+                        method="POST",
+                        headers = { "Accept": "application/json",
+                            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                            "X-Requested-With": "XMLHttpRequest" },
+                        body = "page={}".format(page)))
+
+                    for article in resp["data"]["data"]:
+                        article_title = article["title"]
+                        article_url = article["url"]
+                        if article_title and article_url:
+                            resultList.append(
+                                self.create_article(article_title.strip(), root_url + article_url)
+                            )
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList
