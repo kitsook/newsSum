@@ -133,3 +133,15 @@ class AP(BaseSource):
             )
 
         return resultList
+
+class Reuters(RSSBase):
+    def get_id(self):
+        return "reuters"
+
+    def get_desc(self):
+        return "Reuters"
+
+    def get_rss_links(self):
+        return [
+            ("Reuters", "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com"),
+        ]
