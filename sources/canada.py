@@ -26,6 +26,7 @@ from lxml import html
 from lxml import etree
 import traceback
 import pytz
+from abc import ABCMeta, abstractmethod
 
 from logger import logger
 from fetcher import read_http_page
@@ -154,289 +155,222 @@ class MingPaoVancouver(BaseSource):
 
         return resultList
 
+class SingTaoCanada(BaseSource):
 
-class SingTaoVancouver(BaseSource):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get_sections(self):
+        pass
+
+    def get_articles(self):
+        resultList = []
+        sections = self.get_sections();
+
+        try:
+            for (title, url, pages) in sections:
+                # for each section, insert a title...
+                resultList.append(self.create_section(title))
+                for page in range(1, pages+1):
+                    # ... then parse the page and extract article links
+                    doc = html.document_fromstring(
+                        read_http_page(url + "&page=" + str(page), {"edition": "vancouver"}).decode("utf-8")
+                    )
+
+                    # top story
+                    top_story_link = doc.xpath(
+                        '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a'
+                    )
+                    top_story_text = doc.xpath(
+                        '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a/div/h3'
+                    )
+                    if top_story_link and top_story_text:
+                        resultList.append(
+                            self.create_article(
+                                top_story_text[0].text.strip(),
+                                top_story_link[0].get("href"),
+                            )
+                        )
+
+                    for topic in doc.xpath(
+                        '(//div[@class="td-ss-main-content"])[1]/div[contains(@class, "td-animation-stack")]/div[@class="item-details"]/h3/a'
+                    ):
+                        if topic.text and topic.get("href"):
+                            resultList.append(
+                                self.create_article(topic.text.strip(), topic.get("href"))
+                            )
+
+        except Exception as e:
+            logger.exception("Problem processing url: " + str(e))
+            logger.exception(
+                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+            )
+
+        return resultList
+
+class SingTaoVancouver(SingTaoCanada):
     def get_id(self):
         return "singtaovancouver"
 
     def get_desc(self):
         return "星島日報(溫哥華)"
 
-    def get_articles(self):
-        resultList = []
-        sections = [
+    def get_sections(self):
+        return [
             (
-                "要聞",
-                "https://www.singtao.ca/category/52-%E6%BA%AB%E5%93%A5%E8%8F%AF%E8%A6%81%E8%81%9E/?variant=zh-hk",
-            ),
-            (
-                "加國新聞",
-                "https://www.singtao.ca/category/54-%E6%BA%AB%E5%93%A5%E8%8F%AF%E5%8A%A0%E5%9C%8B/?variant=zh-hk",
+                "焦點",
+                "https://www.singtao.ca/category/2235233-%E6%BA%AB%E5%93%A5%E8%8F%AF%E7%84%A6%E9%BB%9E/?variant=zh-hk",
+                1,
             ),
             (
                 "省市",
                 "https://www.singtao.ca/category/65-%E6%BA%AB%E5%93%A5%E8%8F%AF%E7%9C%81%E5%B8%82/?variant=zh-hk",
-            ),
-            (
-                "社區新聞",
-                "https://www.singtao.ca/category/55-%E6%BA%AB%E5%93%A5%E8%8F%AF%E7%A4%BE%E5%8D%80/?variant=zh-hk",
+                1,
             ),
             (
                 "港聞",
                 "https://www.singtao.ca/category/57-%E6%BA%AB%E5%93%A5%E8%8F%AF%E6%B8%AF%E8%81%9E/?variant=zh-hk",
+                3,
             ),
             (
                 "國際",
                 "https://www.singtao.ca/category/56-%E6%BA%AB%E5%93%A5%E8%8F%AF%E5%9C%8B%E9%9A%9B/?variant=zh-hk",
+                1,
             ),
             (
-                "中國",
-                "https://www.singtao.ca/category/58-%E6%BA%AB%E5%93%A5%E8%8F%AF%E4%B8%AD%E5%9C%8B/?variant=zh-hk",
+                "兩岸",
+                "https://www.singtao.ca/category/1611587-%E6%BA%AB%E5%93%A5%E8%8F%AF%E5%85%A9%E5%B2%B8/?variant=zh-hk",
+                1,
             ),
             (
-                "台灣",
-                "https://www.singtao.ca/category/59-%E6%BA%AB%E5%93%A5%E8%8F%AF%E5%8F%B0%E7%81%A3/?variant=zh-hk",
+                "新移民",
+                "https://www.singtao.ca/category/2038601-%E6%BA%AB%E5%93%A5%E8%8F%AF%E6%96%B0%E7%A7%BB%E6%B0%91/?variant=zh-hk",
+                1,
             ),
+            (
+                "科技",
+                "https://www.singtao.ca/category/2054189-%E6%BA%AB%E5%93%A5%E8%8F%AF%E7%A7%91%E6%8A%80/?variant=zh-hk",
+                1,
+            ),
+
             (
                 "財經",
                 "https://www.singtao.ca/category/61-%E6%BA%AB%E5%93%A5%E8%8F%AF%E8%B2%A1%E7%B6%93/?variant=zh-hk",
+                1,
             ),
             (
                 "體育",
                 "https://www.singtao.ca/category/60-%E6%BA%AB%E5%93%A5%E8%8F%AF%E9%AB%94%E8%82%B2/?variant=zh-hk",
+                1,
             ),
             (
                 "娛樂",
                 "https://www.singtao.ca/category/62-%E6%BA%AB%E5%93%A5%E8%8F%AF%E5%A8%9B%E6%A8%82/?variant=zh-hk",
+                1,
             ),
         ]
 
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(
-                    read_http_page(url, {"edition": "vancouver"}).decode("utf-8")
-                )
-
-                # top story
-                top_story_link = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a'
-                )
-                top_story_text = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a/div/h3'
-                )
-                if top_story_link and top_story_text:
-                    resultList.append(
-                        self.create_article(
-                            top_story_text[0].text.strip(),
-                            top_story_link[0].get("href"),
-                        )
-                    )
-
-                for topic in doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[contains(@class, "td-animation-stack")]/div[@class="item-details"]/h3/a'
-                ):
-                    if topic.text and topic.get("href"):
-                        resultList.append(
-                            self.create_article(topic.text.strip(), topic.get("href"))
-                        )
-
-        except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
-            logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-            )
-
-        return resultList
-
-
-class SingTaoToronto(BaseSource):
+class SingTaoToronto(SingTaoCanada):
     def get_id(self):
         return "singtaotoronto"
 
     def get_desc(self):
         return "星島日報(多倫多)"
 
-    def get_articles(self):
-        resultList = []
-        sections = [
+    def get_sections(self):
+        return [
             (
-                "要聞",
-                "https://www.singtao.ca/category/52-%E5%A4%9A%E5%80%AB%E5%A4%9A%E8%A6%81%E8%81%9E/?variant=zh-hk",
-            ),
-            (
-                "加國新聞",
-                "https://www.singtao.ca/category/54-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%8A%A0%E5%9C%8B/?variant=zh-hk",
+                "焦點",
+                "https://www.singtao.ca/category/2235233-%E5%A4%9A%E5%80%AB%E5%A4%9A%E7%84%A6%E9%BB%9E/?variant=zh-hk",
+                1,
             ),
             (
                 "城市",
                 "https://www.singtao.ca/category/53-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%9F%8E%E5%B8%82/?variant=zh-hk",
+                1,
             ),
             (
                 "港聞",
                 "https://www.singtao.ca/category/57-%E5%A4%9A%E5%80%AB%E5%A4%9A%E6%B8%AF%E8%81%9E/?variant=zh-hk",
+                1,
             ),
             (
                 "國際",
                 "https://www.singtao.ca/category/56-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%9C%8B%E9%9A%9B/?variant=zh-hk",
+                1,
             ),
             (
-                "中國",
-                "https://www.singtao.ca/category/58-%E5%A4%9A%E5%80%AB%E5%A4%9A%E4%B8%AD%E5%9C%8B/?variant=zh-hk",
-            ),
-            (
-                "台灣",
-                "https://www.singtao.ca/category/59-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%8F%B0%E7%81%A3/?variant=zh-hk",
+                "兩岸",
+                "https://www.singtao.ca/category/1611587-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%85%A9%E5%B2%B8/?variant=zh-hk",
+                1,
             ),
             (
                 "財經",
                 "https://www.singtao.ca/category/61-%E5%A4%9A%E5%80%AB%E5%A4%9A%E8%B2%A1%E7%B6%93/?variant=zh-hk",
+                1,
             ),
             (
                 "體育",
                 "https://www.singtao.ca/category/60-%E5%A4%9A%E5%80%AB%E5%A4%9A%E9%AB%94%E8%82%B2/?variant=zh-hk",
+                1,
             ),
             (
                 "娛樂",
                 "https://www.singtao.ca/category/62-%E5%A4%9A%E5%80%AB%E5%A4%9A%E5%A8%9B%E6%A8%82/?variant=zh-hk",
+                1,
             ),
         ]
 
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(
-                    read_http_page(url, {"edition": "toronto"}).decode("utf-8")
-                )
-
-                # top story
-                top_story_link = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a'
-                )
-                top_story_text = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a/div/h3'
-                )
-                if top_story_link and top_story_text:
-                    resultList.append(
-                        self.create_article(
-                            top_story_text[0].text.strip(),
-                            top_story_link[0].get("href"),
-                        )
-                    )
-
-                for topic in doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[contains(@class, "td-animation-stack")]/div[@class="item-details"]/h3/a'
-                ):
-                    if topic.text and topic.get("href"):
-                        resultList.append(
-                            self.create_article(topic.text.strip(), topic.get("href"))
-                        )
-
-        except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
-            logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-            )
-
-        return resultList
-
-
-class SingTaoCalgary(BaseSource):
+class SingTaoCalgary(SingTaoCanada):
     def get_id(self):
         return "singtaocalgary"
 
     def get_desc(self):
         return "星島日報(卡加利)"
 
-    def get_articles(self):
-        resultList = []
-        sections = [
+    def get_sections(self):
+        return [
             (
-                "要聞",
-                "https://www.singtao.ca/category/52-%E5%8D%A1%E5%8A%A0%E5%88%A9%E8%A6%81%E8%81%9E/?variant=zh-hk",
-            ),
-            (
-                "加國新聞",
-                "https://www.singtao.ca/category/54-%E5%8D%A1%E5%8A%A0%E5%88%A9%E5%8A%A0%E5%9C%8B/?variant=zh-hk",
+                "焦點",
+                "https://www.singtao.ca/category/2235233-%E5%8D%A1%E5%8A%A0%E5%88%A9%E7%84%A6%E9%BB%9E/?variant=zh-hk",
+                1,
             ),
             (
                 "省市",
                 "https://www.singtao.ca/category/65-%E5%8D%A1%E5%8A%A0%E5%88%A9%E7%9C%81%E5%B8%82/?variant=zh-hk",
+                1,
             ),
             (
                 "港聞",
                 "https://www.singtao.ca/category/57-%E5%8D%A1%E5%8A%A0%E5%88%A9%E6%B8%AF%E8%81%9E/?variant=zh-hk",
+                3,
             ),
             (
                 "國際",
                 "https://www.singtao.ca/category/56-%E5%8D%A1%E5%8A%A0%E5%88%A9%E5%9C%8B%E9%9A%9B/?variant=zh-hk",
+                1,
             ),
             (
-                "中國",
-                "https://www.singtao.ca/category/58-%E5%8D%A1%E5%8A%A0%E5%88%A9%E4%B8%AD%E5%9C%8B/?variant=zh-hk",
-            ),
-            (
-                "台灣",
-                "https://www.singtao.ca/category/59-%E5%8D%A1%E5%8A%A0%E5%88%A9%E5%8F%B0%E7%81%A3/?variant=zh-hk",
+                "兩岸",
+                "https://www.singtao.ca/category/1611587-%E5%8D%A1%E5%8A%A0%E5%88%A9%E5%85%A9%E5%B2%B8/?variant=zh-hk",
+                1,
             ),
             (
                 "財經",
                 "https://www.singtao.ca/category/61-%E5%8D%A1%E5%8A%A0%E5%88%A9%E8%B2%A1%E7%B6%93/?variant=zh-hk",
+                1,
             ),
             (
                 "體育",
                 "https://www.singtao.ca/category/60-%E5%8D%A1%E5%8A%A0%E5%88%A9%E9%AB%94%E8%82%B2/?variant=zh-hk",
+                1,
             ),
             (
                 "娛樂",
                 "https://www.singtao.ca/category/62-%E5%8D%A1%E5%8A%A0%E5%88%A9%E5%A8%9B%E6%A8%82/?variant=zh-hk",
+                1,
             ),
         ]
-
-        try:
-            for (title, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                doc = html.document_fromstring(
-                    read_http_page(url, {"edition": "calgary"}).decode("utf-8")
-                )
-
-                # top story
-                top_story_link = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a'
-                )
-                top_story_text = doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a/div/h3'
-                )
-                if top_story_link and top_story_text:
-                    resultList.append(
-                        self.create_article(
-                            top_story_text[0].text.strip(),
-                            top_story_link[0].get("href"),
-                        )
-                    )
-
-                for topic in doc.xpath(
-                    '(//div[@class="td-ss-main-content"])[1]/div[contains(@class, "td-animation-stack")]/div[@class="item-details"]/h3/a'
-                ):
-                    if topic.text and topic.get("href"):
-                        resultList.append(
-                            self.create_article(topic.text.strip(), topic.get("href"))
-                        )
-
-        except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
-            logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-            )
-
-        return resultList
-
 
 class TheProvince(RSSBase):
     def get_id(self):
