@@ -22,6 +22,8 @@ import urllib3
 import ssl
 from urllib3.util.ssl_ import create_urllib3_context
 
+from logger import logger
+
 URL_TIMEOUT = 15
 
 ctx = create_urllib3_context()
@@ -53,7 +55,7 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     try:
         resp = http.request(method, url, headers=the_headers, body=body)
         return resp.data
-    except (Exception):
-        pass
+    except Exception as e:
+        logger.exception("Problem reading http page: " + str(e))
 
     return None

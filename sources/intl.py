@@ -93,7 +93,7 @@ class AP(BaseSource):
         return "Associated Press"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         api_url_base = "https://storage.googleapis.com/afs-prod/feeds"
         sections = [
             ("World News", "/world-news.json.gz"),
@@ -110,7 +110,7 @@ class AP(BaseSource):
         try:
             for (title, section_url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then get page and parse
                 resp = json.loads(read_http_page(api_url_base + section_url,
                     method="GET",
@@ -123,16 +123,16 @@ class AP(BaseSource):
                         article_url = article["localLinkUrl"]
                         article_abstract = article["firstWords"]
                         if article_title and article_url:
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(article_title.strip(), article_url, article_abstract)
                             )
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing AP: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class Reuters(RSSBase):
     def get_id(self):

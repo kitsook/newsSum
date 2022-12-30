@@ -66,7 +66,7 @@ class OrientalDaily(BaseSource):
         return "東方日報(香港)"
 
     def get_articles(self):
-        topUrl = "http://orientaldaily.on.cc"
+        top_url = "http://orientaldaily.on.cc"
         sections = {
             'news': {
                 'title': '要聞港聞',
@@ -95,51 +95,51 @@ class OrientalDaily(BaseSource):
         }
 
         try:
-            doc = html.document_fromstring(read_http_page(topUrl))
+            doc = html.document_fromstring(read_http_page(top_url))
             if doc is not None:
                 menu = doc.xpath('//*[@id="pageCTN"]/header/div[contains(@class, "middle")]/ul[contains(@class, "menuList")]')
                 if menu:
-                    for theLink in menu[0].xpath('li/a'):
-                        theClass = theLink.xpath('@class')
-                        if theLink.xpath('@href') and theClass and theClass[0] in sections:
-                            sections[theClass[0]]['url'] = topUrl + theLink.xpath('@href')[0]
+                    for the_link in menu[0].xpath('li/a'):
+                        the_class = the_link.xpath('@class')
+                        if the_link.xpath('@href') and the_class and the_class[0] in sections:
+                            sections[the_class[0]]['url'] = top_url + the_link.xpath('@href')[0]
         except Exception as e:
-            logger.exception("Problem getting sections: " + str(e))
+            logger.exception("Problem getting OrientalDaily sections: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        resultList = []
-        baseUrl = topUrl
+        result_list = []
+        base_url = top_url
 
         try:
             for _, section in sections.items():
                 title = section['title']
-                sectionUrl = section['url']
-                if sectionUrl:
+                section_url = section['url']
+                if section_url:
                     # for each section, insert a title...
-                    resultList.append(self.create_section(title))
+                    result_list.append(self.create_section(title))
                     # ... then parse the page and extract article links
-                    doc = html.document_fromstring(read_http_page(sectionUrl))
+                    doc = html.document_fromstring(read_http_page(section_url))
                     if doc is not None:
                         articles = doc.xpath('//div[contains(@class, "sectionList")]/div[contains(@class, "subsection")]/ul[contains(@class, "items")]/li[@articleid]')
                         for article in articles:
-                            articleUrls = article.xpath('a/@href')
-                            articleTexts = article.xpath('a/div[contains(@class, "text")]/text()')
-                            if articleUrls and articleTexts:
-                                resultList.append(
+                            article_urls = article.xpath('a/@href')
+                            article_texts = article.xpath('a/div[contains(@class, "text")]/text()')
+                            if article_urls and article_texts:
+                                result_list.append(
                                     self.create_article(
-                                        articleTexts[0].strip(), baseUrl + articleUrls[0]
+                                        article_texts[0].strip(), base_url + article_urls[0]
                                     )
                                 )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing OrientalDaily: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class SingPao(BaseSource):
@@ -150,8 +150,8 @@ class SingPao(BaseSource):
         return "香港成報"
 
     def get_articles(self):
-        maxPagePerSection = 10
-        resultList = []
+        max_page_per_section = 10
+        result_list = []
 
         sections = [
             ("要聞港聞", "http://www.singpao.com.hk/index.php?fi=news1"),
@@ -161,16 +161,16 @@ class SingPao(BaseSource):
             ("體育", "http://www.singpao.com.hk/index.php?fi=news5"),
             ("副刊", "http://www.singpao.com.hk/index.php?fi=news7"),
         ]
-        baseUrl = "http://www.singpao.com.hk/"
+        base_url = "http://www.singpao.com.hk/"
 
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 page = 1
-                maxPage = 1
-                while page <= maxPage and page <= maxPagePerSection:
+                max_page = 1
+                while page <= max_page and page <= max_page_per_section:
                     doc = html.document_fromstring(
                         read_http_page(url + "&page=" + str(page))
                     )
@@ -178,31 +178,31 @@ class SingPao(BaseSource):
 
                     for topic in doc.xpath('//td/a[contains(@class, "list_title")]'):
                         if topic.text and topic.get("href"):
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(
-                                    topic.text.strip(), baseUrl + topic.get("href")
+                                    topic.text.strip(), base_url + topic.get("href")
                                 )
                             )
 
-                    for pageIndex in doc.xpath(
+                    for page_index in doc.xpath(
                         '//a[contains(@class, "fpagelist_css")]'
                     ):
-                        if pageIndex.text is not None:
-                            match = re.match(r"^([0-9]+)$", pageIndex.text.strip())
+                        if page_index.text is not None:
+                            match = re.match(r"^(\d+)$", page_index.text.strip())
                             if (
                                 match
                                 and match.lastindex == 1
-                                and int(match.group(1)) > maxPage
+                                and int(match.group(1)) > max_page
                             ):
-                                maxPage = int(match.group(1))
+                                max_page = int(match.group(1))
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing SingPao: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class HeadlineDaily(RSSBase):
@@ -226,7 +226,7 @@ class TaKungPao(BaseSource):
         return "大公網"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
 
         sections = [
             ("港聞", "http://www.takungpao.com.hk/hongkong/"),
@@ -243,7 +243,7 @@ class TaKungPao(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
 
@@ -254,7 +254,7 @@ class TaKungPao(BaseSource):
                     intro = topic.xpath('ul[contains(@class, "txt")]/li[contains(@class, "intro")]/a')
 
                     if title and title[0].text and title[0].get("href"):
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
                                 title[0].text.strip(),
                                 title[0].get("href"),
@@ -263,12 +263,12 @@ class TaKungPao(BaseSource):
                         )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing TaKungPao: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class Scmp(RSSBase):
@@ -316,7 +316,7 @@ class HkEt(BaseSource):
         return "香港經濟日報"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         sections = [
             ("金融經濟", "https://inews.hket.com", "/sran009/金融經濟", 3),
             ("理財", "https://wealth.hket.com", "/", 1),
@@ -330,7 +330,7 @@ class HkEt(BaseSource):
         try:
             for (title, base_url, url, pages) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then get page and parse
                 for page in range(1, pages + 1):
                     doc = html.document_fromstring(
@@ -347,17 +347,17 @@ class HkEt(BaseSource):
                             )
                             if topic_url not in seen_url:
                                 seen_url[topic_url] = None
-                                resultList.append(
+                                result_list.append(
                                     self.create_article(topic.text.strip(), topic_url)
                                 )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing HkEt: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class CitizenNewss(BaseSource):
     def get_id(self):
@@ -367,7 +367,7 @@ class CitizenNewss(BaseSource):
         return "眾新聞 CitizenNews"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         sections = [
             ("眾聞", "https://www.hkcnews.com", "https://www.hkcnews.com/data/newsposts", 3),
         ]
@@ -375,7 +375,7 @@ class CitizenNewss(BaseSource):
         try:
             for (title, base_url, data_url, pages) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then get page and parse
                 for page in range(1, pages + 1):
                     raw_result = read_http_page(data_url + "?page={}".format(page))
@@ -394,19 +394,19 @@ class CitizenNewss(BaseSource):
                                     if footer:
                                         divs = footer[0].xpath('div/div[contains(@class, "text-box")]/div')
                                         for div in divs:
-                                            if div.text and re.match(r"[0-9]{2}\.[0-9]{2}\.[0-9]{2}", div.text.strip()):
+                                            if div.text and re.match(r"\d{2}\.\d{2}\.\d{2}", div.text.strip()):
                                                 date_str = div.text.strip()
-                                    resultList.append(
+                                    result_list.append(
                                         self.create_article(text.strip() + ' - {}'.format(date_str), url)
                                     )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing CitizenNewss: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class HKFP(RSSBase):
@@ -429,7 +429,7 @@ class HKEJ(BaseSource):
         return "信報財經"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         root_url = "https://www1.hkej.com"
         sections = [
             ("要聞", "/dailynews"),
@@ -446,7 +446,7 @@ class HKEJ(BaseSource):
         try:
             for (title, base_url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then get page and parse
                 doc = html.document_fromstring(
                     read_http_page(root_url + base_url)
@@ -456,16 +456,16 @@ class HKEJ(BaseSource):
                 ):
                     if article.get("value") and article.text:
                         article_url = root_url + article.get("value")
-                        resultList.append(
+                        result_list.append(
                             self.create_article(article.text.strip(), article_url)
                         )
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing HKEJ: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class AM730(BaseSource):
     def get_id(self):
@@ -475,7 +475,7 @@ class AM730(BaseSource):
         return "AM730"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         root_url = "https://www.am730.com.hk"
         sections = [
             ("本地", "/本地", 5),
@@ -490,7 +490,7 @@ class AM730(BaseSource):
         try:
             for (title, base_url, num_pages) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 for page in range(1, num_pages+1):
                     # ... then get page and parse
                     resp = json.loads(read_http_page(root_url + base_url,
@@ -504,13 +504,13 @@ class AM730(BaseSource):
                         article_title = article["title"]
                         article_url = article["url"]
                         if article_title and article_url:
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(article_title.strip(), root_url + article_url)
                             )
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing AM730: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list

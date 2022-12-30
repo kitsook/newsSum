@@ -44,7 +44,7 @@ class HackerNews(BaseSource):
         # Although the source is in RSS, the daily items are consolidated as CDATA.
         # Parse and break them down instead of using RSSBase
         rss_url = "http://www.daemonology.net/hn-daily/index.rss"
-        resultList = []
+        result_list = []
         try:
             doc = html.document_fromstring(read_http_page(rss_url))
             for item in doc.xpath("//rss/channel/item"):
@@ -53,7 +53,7 @@ class HackerNews(BaseSource):
                     if len(item.xpath("title")) > 0
                     else "Daily Hacker News"
                 )
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
 
                 description = (
                     item.xpath("description")[0]
@@ -65,19 +65,19 @@ class HackerNews(BaseSource):
                         'ul/li/span[@class="storylink"]/a'
                     ):
                         if article.text and article.get("href"):
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(
                                     article.text.strip(), article.get("href")
                                 )
                             )
 
         except Exception as e:
-            logger.exception("Problem processing Hacker News: " + str(e))
+            logger.exception("Problem processing HackerNews: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class RFACantonese(BaseSource):
     def get_id(self):
@@ -87,22 +87,22 @@ class RFACantonese(BaseSource):
         return "RFA 粵語部"
 
     def get_articles(self):
-        resultList = []
-        baseUrl = "https://www.rfa.org/cantonese"
+        result_list = []
+        base_url = "https://www.rfa.org/cantonese"
 
         sections = [
-            ("新聞", baseUrl + "/news"),
-            ("港澳台新聞", baseUrl + "/news/htm"),
-            ("評論", baseUrl + "/commentaries"),
-            ("聚言堂", baseUrl + "/talkshows"),
-            ("專題", baseUrl + "/features/hottopic"),
-            ("多媒體", baseUrl + "/multimedia"),
+            ("新聞", base_url + "/news"),
+            ("港澳台新聞", base_url + "/news/htm"),
+            ("評論", base_url + "/commentaries"),
+            ("聚言堂", base_url + "/talkshows"),
+            ("專題", base_url + "/features/hottopic"),
+            ("多媒體", base_url + "/multimedia"),
         ]
 
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = fromstring(read_http_page(url))
                 for topic in doc.xpath('//div[contains(@id, "topstorywidefull")]'\
@@ -115,19 +115,19 @@ class RFACantonese(BaseSource):
                     if title:
                         title_text = title[0].xpath('span')
 
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
                               title_text[0].text.strip(),
                               title[0].get("href"),
                               intro[0].text.strip() if intro and intro[0].text else None))
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing RFACantonese: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class RFACantoneseRSS(RSSBase):
     def get_id(self):
@@ -161,20 +161,20 @@ class TheInitium(BaseSource):
         return "端傳媒"
 
     def get_articles(self):
-        resultList = []
-        baseUrl = "https://api.theinitium.com"
-        apiUrl = "https://api.theinitium.com/api/v2/channel/articles"
+        result_list = []
+        base_url = "https://api.theinitium.com"
+        api_url = "https://api.theinitium.com/api/v2/channel/articles"
 
         sections = [
-            ("最新", apiUrl + "/?language=zh-hant&slug=latest"),
-            ("香港", apiUrl + "/?language=zh-hant&slug=hongkong"),
-            ("國際", apiUrl + "/?language=zh-hant&slug=international"),
-            ("大陸", apiUrl + "/?language=zh-hant&slug=mainland"),
-            ("台灣", apiUrl + "/?language=zh-hant&slug=taiwan"),
-            ("評論", apiUrl + "/?language=zh-hant&slug=opinion"),
-            ("科技", apiUrl + "/?language=zh-hant&slug=technology"),
-            ("風物", apiUrl + "/?language=zh-hant&slug=culture"),
-            ("廣場", apiUrl + "/?language=zh-hant&slug=notes-and-letters"),
+            ("最新", api_url + "/?language=zh-hant&slug=latest"),
+            ("香港", api_url + "/?language=zh-hant&slug=hongkong"),
+            ("國際", api_url + "/?language=zh-hant&slug=international"),
+            ("大陸", api_url + "/?language=zh-hant&slug=mainland"),
+            ("台灣", api_url + "/?language=zh-hant&slug=taiwan"),
+            ("評論", api_url + "/?language=zh-hant&slug=opinion"),
+            ("科技", api_url + "/?language=zh-hant&slug=technology"),
+            ("風物", api_url + "/?language=zh-hant&slug=culture"),
+            ("廣場", api_url + "/?language=zh-hant&slug=notes-and-letters"),
         ]
 
         headers = urllib3.make_headers(basic_auth="anonymous:GiCeLEjxnqBcVpnp6cLsUvJievvRQcAXLv")
@@ -183,22 +183,22 @@ class TheInitium(BaseSource):
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 contents = json.loads(read_http_page(url, headers=headers))
                 for digest in contents["digests"]:
                     article = digest["article"]
                     if article and article["headline"] and article["url"]:
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
                                 article["headline"].strip(),
-                                baseUrl + article["url"],
+                                base_url + article["url"],
                                 article["lead"]))
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing TheInitium: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list

@@ -60,11 +60,11 @@ class RSSBase(BaseSource):
         return []
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         for (name, url) in self.get_rss_links():
             try:
                 # for each section, insert a title...
-                resultList.append(self.create_section(name))
+                result_list.append(self.create_section(name))
                 # ... then parse the page and extract article links
                 data = read_http_page(url)
                 if data:
@@ -73,7 +73,7 @@ class RSSBase(BaseSource):
                         title = entry.xpath("title")[0].text
                         link = entry.xpath("link")[0].text
                         abstract = entry.xpath("description")[0].text
-                        resultList.append(
+                        result_list.append(
                             self.create_article(title.strip(), link, abstract)
                         )
             except Exception as e:
@@ -83,7 +83,7 @@ class RSSBase(BaseSource):
                         etype=type(e), value=e, tb=e.__traceback__
                     )
                 )
-        return resultList
+        return result_list
 
 
 class RDFBase(RSSBase):
@@ -91,29 +91,29 @@ class RDFBase(RSSBase):
     __metaclass__ = ABCMeta
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         for (name, url) in self.get_rss_links():
             try:
                 # for each section, insert a title...
-                resultList.append(self.create_section(name))
+                result_list.append(self.create_section(name))
                 # ... then parse the page and extract article links
                 doc = etree.fromstring(
                     read_http_page(url), parser=etree.XMLParser(recover=True)
                 )
-                if doc is not None:
-                    for entry in doc.xpath(
-                        '//*[local-name()="RDF"]/*[local-name()="item"]'
-                    ):
-                        titles = entry.xpath('*[local-name()="title"]')
-                        links = entry.xpath('*[local-name()="link"]')
-                        abstracts = entry.xpath('*[local-name()="description"]')
-                        if titles and links:
-                            title = titles[0].text
-                            link = links[0].text
-                            abstract = abstracts[0].text if abstracts else ""
-                            resultList.append(
-                                self.create_article(title.strip(), link, abstract)
-                            )
+
+                for entry in doc.xpath(
+                    '//*[local-name()="RDF"]/*[local-name()="item"]'
+                ):
+                    titles = entry.xpath('*[local-name()="title"]')
+                    links = entry.xpath('*[local-name()="link"]')
+                    abstracts = entry.xpath('*[local-name()="description"]')
+                    if titles and links:
+                        title = titles[0].text
+                        link = links[0].text
+                        abstract = abstracts[0].text if abstracts else ""
+                        result_list.append(
+                            self.create_article(title.strip(), link, abstract)
+                        )
             except Exception as e:
                 logger.exception("Problem processing rdf: " + str(e))
                 logger.exception(
@@ -121,4 +121,4 @@ class RDFBase(RSSBase):
                         etype=type(e), value=e, tb=e.__traceback__
                     )
                 )
-        return resultList
+        return result_list
