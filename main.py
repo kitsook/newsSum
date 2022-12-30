@@ -48,13 +48,9 @@ def route_source():
 
     from flask import request
 
-    thePath = request.path.strip("/")
-    if thePath in allSources:
-        # try to retrieve from cache
-        # encodedArticles = memcache.get(thePath)
-        encodedArticles = None
-        if encodedArticles is None:
-            articles.extend(allSources[thePath].get_articles())
+    the_path = request.path.strip("/")
+    if the_path in allSources:
+        articles.extend(allSources[the_path].get_articles())
 
     return jsonify(articles)
 

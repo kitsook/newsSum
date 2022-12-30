@@ -46,16 +46,16 @@ class LibertyTimes(BaseSource):
 
     def get_articles(self):
         num_pages = 2
-        baseUrl = "https://news.ltn.com.tw"
+        base_url = "https://news.ltn.com.tw"
 
-        resultList = []
+        result_list = []
         sections = [
-            ("熱門", baseUrl + "/ajax/breakingnews/popular/"),
-            ("政治", baseUrl + "/ajax/breakingnews/politics/"),
-            ("社會", baseUrl + "/ajax/breakingnews/society/"),
-            ("地方", baseUrl + "/ajax/breakingnews/local/"),
-            ("生活", baseUrl + "/ajax/breakingnews/life/"),
-            ("國際", baseUrl + "/ajax/breakingnews/world/"),
+            ("熱門", base_url + "/ajax/breakingnews/popular/"),
+            ("政治", base_url + "/ajax/breakingnews/politics/"),
+            ("社會", base_url + "/ajax/breakingnews/society/"),
+            ("地方", base_url + "/ajax/breakingnews/local/"),
+            ("生活", base_url + "/ajax/breakingnews/life/"),
+            ("國際", base_url + "/ajax/breakingnews/world/"),
         ]
 
         try:
@@ -63,7 +63,7 @@ class LibertyTimes(BaseSource):
                 for (title, url) in sections:
                     url = url + str(page)
                     # for each section, insert a title...
-                    resultList.append(self.create_section(title))
+                    result_list.append(self.create_section(title))
                     # ... then parse the page and extract article links
                     result = json.loads(read_http_page(url + str(page)).decode("UTF-8"))
                     if result.get("code", 0) == 200:
@@ -73,17 +73,17 @@ class LibertyTimes(BaseSource):
                             url = data[key].get("url", None)
                             abstract = data[key].get("summary", None)
                             if title and url:
-                                resultList.append(
+                                result_list.append(
                                     self.create_article(title, url, abstract)
                                 )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing LibertyTimes: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class UnitedDailyNewsRSS(RSSBase):
@@ -118,28 +118,28 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
         return "經濟日報-聯合新聞網"
 
     def get_articles(self):
-        siteBaseUrl = "https://money.udn.com"
-        baseUrl = siteBaseUrl + "/money/cate/"
+        site_base_url = "https://money.udn.com"
+        base_url = site_base_url + "/money/cate/"
 
-        resultList = []
+        result_list = []
         sections = [
-            ("要聞", baseUrl + "10846"),
-            ("國際", baseUrl + "5588"),
-            ("兩岸", baseUrl + "5589"),
-            ("產業", baseUrl + "5591"),
-            ("證券", baseUrl + "5590"),
-            ("金融", baseUrl + "12017"),
-            ("期貨", baseUrl + "11111"),
-            ("理財", baseUrl + "5592"),
-            ("房市", baseUrl + "5593"),
-            ("專欄", baseUrl + "5595"),
-            ("商情", baseUrl + "5597"),
+            ("要聞", base_url + "10846"),
+            ("國際", base_url + "5588"),
+            ("兩岸", base_url + "5589"),
+            ("產業", base_url + "5591"),
+            ("證券", base_url + "5590"),
+            ("金融", base_url + "12017"),
+            ("期貨", base_url + "11111"),
+            ("理財", base_url + "5592"),
+            ("房市", base_url + "5593"),
+            ("專欄", base_url + "5595"),
+            ("商情", base_url + "5597"),
         ]
 
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
                 for topic in doc.xpath('//section[contains(@class, "cate-main__section")]/div[contains(@class, "story-headline-wrapper")]'):
@@ -156,10 +156,10 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
                     title_text = title[0].text if title else None
 
                     if title and title_text and link:
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
                                 title_text.strip(),
-                                siteBaseUrl + link[0].get("href"),
+                                site_base_url + link[0].get("href"),
                                 intro[0].text.strip() if intro and intro[0].text else None,
                             )
                         )
@@ -172,106 +172,21 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
                     for title in titles:
                         title_text = title.text
                         if title_text:
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(
                                     title_text.strip(),
-                                    siteBaseUrl + title.get("href"),
+                                    site_base_url + title.get("href"),
                                     None,
                                 )
                             )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing MoneyUnitedDailyNewsRSS: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
-
-
-class AppleDailyTaiwan(BaseSource):
-    _base_url = "https://tw.appledaily.com"
-
-    def _find_date_id(self, raw_page):
-        m_d = re.search(r"Fusion\.deployment\=\"([0-9]+)\"", str(raw_page))
-
-        result_d = 0
-        if m_d:
-            result_d = m_d.group(1)
-
-        return result_d
-
-    def _get_collection(self, section_id, d):
-        payload_query = {
-            "feedOffset": 0,
-            "feedQuery": 'taxonomy.primary_section._id:"{}" AND type:story AND display_date:[now-24h/h TO now] AND NOT taxonomy.tags.text.raw:_no_show_for_web AND NOT taxonomy.tags.text.raw:_nohkad'.format(
-                section_id
-            ),
-            "feedSize": 100,
-            "sort": "display_date:desc",
-        }
-        payload_query = urllib.parse.quote(json.dumps(payload_query))
-
-        query_url = (
-            self._base_url
-            + "/pf/api/v3/content/fetch/query-feed?query={}&d={}&_website=tw-appledaily".format(
-                payload_query, d
-            )
-        )
-        return read_http_page(query_url)
-
-    def get_id(self):
-        return "appledailytw"
-
-    def get_desc(self):
-        return "蘋果日報(台灣)"
-
-    def get_articles(self):
-        resultList = []
-        sections = [
-            ("國際", "/realtime/international", self._base_url + "/realtime/international/"),
-            ("娛樂時尚", "/realtime/entertainment", self._base_url + "/realtime/entertainment/"),
-            ("社會", "/realtime/local", self._base_url + "/realtime/local"),
-            ("生活", "/realtime/life", self._base_url + "/realtime/life"),
-            ("財經地產", "/realtime/property", self._base_url + "/realtime/property/"),
-            ("吃喝玩樂", "/realtime/supplement", self._base_url + "/realtime/supplement/"),
-            ("體育", "/realtime/sports", self._base_url + "/realtime/sports/"),
-        ]
-
-        try:
-            for (title, section_id, url) in sections:
-                # for each section, insert a title...
-                resultList.append(self.create_section(title))
-                # ... then retrieve the json content
-                raw_page = read_http_page(url)
-                d = self._find_date_id(raw_page)
-                if d:
-                    raw_result = self._get_collection(section_id, d)
-                    result = json.loads(raw_result)
-                    for article in result["content_elements"]:
-                        desc = article["headlines"]["basic"]
-                        href = article["website_url"]
-                        abstract = None
-                        if (
-                            "content_elements" in article
-                            and len(article["content_elements"]) > 1
-                            and "content" in article["content_elements"][0]
-                        ):
-                            abstract = article["content_elements"][0]["content"]
-                        if desc and href:
-                            resultList.append(
-                                self.create_article(
-                                    desc.strip(), self._base_url + href, abstract
-                                )
-                            )
-
-        except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
-            logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
-            )
-
-        return resultList
+        return result_list
 
 
 class TaipeiTimes(RDFBase):
@@ -295,48 +210,48 @@ class ChinaTimes(BaseSource):
         return "中國時報"
 
     def get_articles(self):
-        resultList = []
-        baseUrl = "https://www.chinatimes.com"
+        result_list = []
+        base_url = "https://www.chinatimes.com"
 
         sections = [
-            ("政治", baseUrl + "/politic/?chdtv"),
-            ("言論", baseUrl + "/opinion/?chdtv"),
-            ("生活", baseUrl + "/life/?chdtv"),
-            ("娛樂", baseUrl + "/star/?chdtv"),
-            ("財經", baseUrl + "/money/?chdtv"),
-            ("社會", baseUrl + "/society/?chdtv"),
-            ("話題", baseUrl + "/hottopic/?chdtv"),
-            ("國際", baseUrl + "/world/?chdtv"),
-            ("軍事", baseUrl + "/armament/?chdtv"),
-            ("兩岸", baseUrl + "/chinese/?chdtv"),
-            ("時尚", baseUrl + "/fashion/?chdtv"),
-            ("體育", baseUrl + "/sports/?chdtv"),
-            ("科技", baseUrl + "/technologynews/?chdtv"),
-            ("玩食", baseUrl + "/travel/?chdtv"),
-            ("新聞專輯", baseUrl + "/album/?chdtv"),
+            ("政治", base_url + "/politic/?chdtv"),
+            ("言論", base_url + "/opinion/?chdtv"),
+            ("生活", base_url + "/life/?chdtv"),
+            ("娛樂", base_url + "/star/?chdtv"),
+            ("財經", base_url + "/money/?chdtv"),
+            ("社會", base_url + "/society/?chdtv"),
+            ("話題", base_url + "/hottopic/?chdtv"),
+            ("國際", base_url + "/world/?chdtv"),
+            ("軍事", base_url + "/armament/?chdtv"),
+            ("兩岸", base_url + "/chinese/?chdtv"),
+            ("時尚", base_url + "/fashion/?chdtv"),
+            ("體育", base_url + "/sports/?chdtv"),
+            ("科技", base_url + "/technologynews/?chdtv"),
+            ("玩食", base_url + "/travel/?chdtv"),
+            ("新聞專輯", base_url + "/album/?chdtv"),
         ]
 
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
                 for topic in doc.xpath(
                     '//section[contains(@class, "article-list")]/ul//li//h3[contains(@class, "title")]//a'
                 ):
                     if topic.text and topic.get("href"):
-                        resultList.append(
+                        result_list.append(
                             self.create_article(topic.text.strip(), topic.get("href"))
                         )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing ChinaTimes: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class CommercialTimes(RSSBase):
@@ -360,7 +275,7 @@ class Storm(BaseSource):
         return "風傳媒"
 
     def get_articles(self):
-        resultList = []
+        result_list = []
 
         pages = 3
         sections = [
@@ -375,7 +290,7 @@ class Storm(BaseSource):
 
         try:
             for (title, url) in sections:
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 for page in range(1, pages + 1):
                     # for each section, insert a title...
                     # ... then parse the page and extract article links
@@ -396,7 +311,7 @@ class Storm(BaseSource):
                         )
                         title_text = title[0].xpath("h2/text()") if title else None
                         if title and title_text and title[0].get("href"):
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(
                                     title_text[0].strip(),
                                     title[0].get("href"),
@@ -418,7 +333,7 @@ class Storm(BaseSource):
                         title_text = title[0].xpath("h3/text()") if title else None
 
                         if title and title_text and title[0].get("href"):
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(
                                     title_text[0].strip(),
                                     title[0].get("href"),
@@ -429,9 +344,9 @@ class Storm(BaseSource):
                             )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing Storm: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list

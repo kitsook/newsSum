@@ -53,7 +53,7 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     try:
         resp = http.request(method, url, headers=the_headers, body=body)
         return resp.data
-    except (Exception, Warning):
+    except (Exception):
         pass
 
     return None
