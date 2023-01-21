@@ -20,14 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
-from datetime import datetime, timedelta
 from lxml import html
 import json
-import urllib
 from urllib.parse import urlparse
 import traceback
-import pytz
 
 from logger import logger
 from fetcher import read_http_page
@@ -337,9 +333,7 @@ class Storm(BaseSource):
                                 self.create_article(
                                     title_text[0].strip(),
                                     title[0].get("href"),
-                                    intro[0].text.strip()
-                                    if intro and intro[0].text
-                                    else None,
+                                    intro[0].text.strip() if intro and intro[0].text else None,
                                 )
                             )
 

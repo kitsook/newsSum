@@ -23,7 +23,6 @@
 import re
 from datetime import datetime, timedelta
 from lxml import html
-from lxml import etree
 import traceback
 import pytz
 from abc import ABCMeta, abstractmethod
@@ -44,116 +43,67 @@ class MingPaoVancouver(BaseSource):
 
     def get_articles(self):
         # get date first
-        dateUrl = "http://www.mingpaocanada.com/Van/"
+        date_url = "http://www.mingpaocanada.com/Van/"
         van_time = datetime.now(pytz.timezone("America/Vancouver"))
         if van_time.hour < 4:
             van_time = van_time - timedelta(days=1)
-        theDate = van_time.strftime("%Y%m%d")
+        the_date = van_time.strftime("%Y%m%d")
 
         try:
-            doc = html.document_fromstring(read_http_page(dateUrl))
-            for aLink in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
-                if aLink.text_content() == u"明報首頁":
-                    href = aLink.attrib["href"]
-                    match = re.match(r"htm\/News\/([0-9]{8})\/main_r\.htm", href)
+            doc = html.document_fromstring(read_http_page(date_url))
+            for a_link in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
+                if a_link.text_content() == u"明報首頁":
+                    href = a_link.attrib["href"]
+                    match = re.match(r"htm\/News\/(\d{8})\/main_r\.htm", href)
                     if match and match.lastindex == 1:
-                        theDate = match.group(1)
+                        the_date = match.group(1)
                     else:
-                        logger.info("no date found. using system date: " + theDate)
+                        logger.info("no date found. using system date: " + the_date)
         except Exception as e:
             logger.exception("Problem getting date: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        resultList = []
+        result_list = []
+        news_url = "http://www.mingpaocanada.com/Van/htm/News/"
         sections = [
-            (
-                "要聞",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VAindex_r.htm",
-            ),
-            (
-                "加國新聞",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VBindex_r.htm",
-            ),
-            (
-                "社區新聞",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VDindex_r.htm",
-            ),
-            (
-                "港聞",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/HK-VGindex_r.htm",
-            ),
-            (
-                "國際",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VTindex_r.htm",
-            ),
-            (
-                "中國",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VCindex_r.htm",
-            ),
-            (
-                "經濟",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VEindex_r.htm",
-            ),
-            (
-                "體育",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/VSindex_r.htm",
-            ),
-            (
-                "影視",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/HK-MAindex_r.htm",
-            ),
-            (
-                "副刊",
-                "http://www.mingpaocanada.com/Van/htm/News/"
-                + theDate
-                + "/WWindex_r.htm",
-            ),
+            ("要聞", news_url + the_date + "/VAindex_r.htm",),
+            ("加國新聞", news_url + the_date + "/VBindex_r.htm",),
+            ("社區新聞", news_url + the_date + "/VDindex_r.htm",),
+            ("港聞", news_url + the_date + "/HK-VGindex_r.htm",),
+            ("國際", news_url + the_date + "/VTindex_r.htm",),
+            ("中國", news_url + the_date + "/VCindex_r.htm",),
+            ("經濟", news_url + the_date + "/VEindex_r.htm",),
+            ("體育", news_url + the_date + "/VSindex_r.htm",),
+            ("影視", news_url + the_date + "/HK-MAindex_r.htm",),
+            ("副刊", news_url + the_date + "/WWindex_r.htm",),
         ]
 
-        baseUrl = "http://www.mingpaocanada.com/Van/htm/News/" + theDate + "/"
+        base_url = news_url + the_date + "/"
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(
                     read_http_page(url).decode("big5-hkscs", errors="ignore")
                 )
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get("href"):
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
-                                topic.text.strip(), baseUrl + topic.get("href")
+                                topic.text.strip(), base_url + topic.get("href")
                             )
                         )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing MingPaoVancouver: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class SingTaoCanada(BaseSource):
 
@@ -164,13 +114,13 @@ class SingTaoCanada(BaseSource):
         pass
 
     def get_articles(self):
-        resultList = []
+        result_list = []
         sections = self.get_sections();
 
         try:
             for (title, url, pages) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 for page in range(1, pages+1):
                     # ... then parse the page and extract article links
                     doc = html.document_fromstring(
@@ -185,7 +135,7 @@ class SingTaoCanada(BaseSource):
                         '(//div[@class="td-ss-main-content"])[1]/div[@class="cat-header-image"]/a/div/h3'
                     )
                     if top_story_link and top_story_text:
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
                                 top_story_text[0].text.strip(),
                                 top_story_link[0].get("href"),
@@ -196,17 +146,17 @@ class SingTaoCanada(BaseSource):
                         '(//div[@class="td-ss-main-content"])[1]/div[contains(@class, "td-animation-stack")]/div[@class="item-details"]/h3/a'
                     ):
                         if topic.text and topic.get("href"):
-                            resultList.append(
+                            result_list.append(
                                 self.create_article(topic.text.strip(), topic.get("href"))
                             )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing SingTaoCanada: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 class SingTaoVancouver(SingTaoCanada):
     def get_id(self):
@@ -429,110 +379,66 @@ class MingPaoToronto(BaseSource):
 
     def get_articles(self):
         # get date first
-        dateUrl = "http://www.mingpaocanada.com/TOR/"
+        date_url = "http://www.mingpaocanada.com/TOR/"
         tor_time = datetime.now(pytz.timezone("America/Toronto"))
         if tor_time.hour < 4:
             tor_time = tor_time - timedelta(days=1)
-        theDate = tor_time.strftime("%Y%m%d")
+        the_date = tor_time.strftime("%Y%m%d")
 
         try:
-            doc = html.document_fromstring(read_http_page(dateUrl))
-            for aLink in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
-                if aLink.text_content() == u"明報首頁":
-                    href = aLink.attrib["href"]
-                    match = re.match(r"htm\/News\/([0-9]{8})\/main_r\.htm", href)
+            doc = html.document_fromstring(read_http_page(date_url))
+            for a_link in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
+                if a_link.text_content() == u"明報首頁":
+                    href = a_link.attrib["href"]
+                    match = re.match(r"htm\/News\/(\d{8})\/main_r\.htm", href)
                     if match and match.lastindex == 1:
-                        theDate = match.group(1)
+                        the_date = match.group(1)
                     else:
-                        logger.info("no date found. using system date: " + theDate)
+                        logger.info("no date found. using system date: " + the_date)
         except Exception as e:
             logger.exception("Problem getting date: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        resultList = []
+        result_list = []
+        news_url = "http://www.mingpaocanada.com/TOR/htm/News/"
         sections = [
-            (
-                "要聞",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/TAindex_r.htm",
-            ),
-            (
-                "加國新聞",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/TDindex_r.htm",
-            ),
-            (
-                "中國",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/TCAindex_r.htm",
-            ),
-            (
-                "國際",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/TTAindex_r.htm",
-            ),
-            (
-                "港聞",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/HK-GAindex_r.htm",
-            ),
-            (
-                "經濟",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/THindex_r.htm",
-            ),
-            (
-                "體育",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/TSindex_r.htm",
-            ),
-            (
-                "影視",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/HK-MAindex_r.htm",
-            ),
-            (
-                "副刊",
-                "http://www.mingpaocanada.com/TOR/htm/News/"
-                + theDate
-                + "/WWindex_r.htm",
-            ),
+            ("要聞", news_url + the_date + "/TAindex_r.htm",),
+            ("加國新聞", news_url + the_date + "/TDindex_r.htm",),
+            ("中國", news_url + the_date + "/TCAindex_r.htm",),
+            ("國際", news_url + the_date + "/TTAindex_r.htm",),
+            ("港聞", news_url + the_date + "/HK-GAindex_r.htm",),
+            ("經濟", news_url + the_date + "/THindex_r.htm",),
+            ("體育", news_url + the_date + "/TSindex_r.htm",),
+            ("影視", news_url + the_date + "/HK-MAindex_r.htm",),
+            ("副刊", news_url + the_date + "/WWindex_r.htm",),
         ]
 
-        baseUrl = "http://www.mingpaocanada.com/TOR/htm/News/" + theDate + "/"
+        base_url = news_url + the_date + "/"
         try:
             for (title, url) in sections:
                 # for each section, insert a title...
-                resultList.append(self.create_section(title))
+                result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(
                     read_http_page(url).decode("big5-hkscs", errors="ignore")
                 )
                 for topic in doc.xpath('//h4[contains(@class, "listing-link")]/a'):
                     if topic.text and topic.get("href"):
-                        resultList.append(
+                        result_list.append(
                             self.create_article(
-                                topic.text.strip(), baseUrl + topic.get("href")
+                                topic.text.strip(), base_url + topic.get("href")
                             )
                         )
 
         except Exception as e:
-            logger.exception("Problem processing url: " + str(e))
+            logger.exception("Problem processing MingPaoToronto: " + str(e))
             logger.exception(
                 traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
             )
 
-        return resultList
+        return result_list
 
 
 class TorontoStar(RSSBase):
@@ -588,3 +494,21 @@ class TorontoStar(RSSBase):
 #             ("Life", "http://news.nationalpost.com/category/life/feed"),
 #             ("Health", "http://news.nationalpost.com/category/health/feed"),
 #         ]
+
+class TorontoSun(RSSBase):
+    def get_id(self):
+        return "torontosun"
+
+    def get_desc(self):
+        return "Toronto Sun"
+
+    def get_rss_links(self):
+        return [
+            ("Toronto & GTA", "https://torontosun.com/category/news/local-news/feed"),
+            ("Ontario", "https://torontosun.com/category/news/provincial/feed"),
+            ("Canada", "https://torontosun.com/category/news/national/feed"),
+            ("World", "https://torontosun.com/category/news/world/feed"),
+            ("Business", "https://torontosun.com/category/business/feed"),
+            ("Sports", "https://torontosun.com/category/sports/feed"),
+            ("Entertainment", "https://torontosun.com/category/entertainment/feed"),
+        ]

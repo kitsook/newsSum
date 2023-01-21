@@ -21,13 +21,10 @@
 # SOFTWARE.
 
 import re
-from datetime import datetime, timedelta
 from lxml import html
 import traceback
 import json
-import urllib
 from urllib.parse import urlparse
-import pytz
 
 from logger import logger
 from fetcher import read_http_page
