@@ -511,3 +511,15 @@ class AM730(BaseSource):
             )
 
         return result_list
+
+class PointsMedia(RSSBase):
+    def get_id(self):
+        return "points-media"
+
+    def get_desc(self):
+        return "Points Media 棱角媒體"
+
+    def get_rss_links(self):
+        return [
+            ("最新", "https://points-media.com/feed/"),
+        ]
