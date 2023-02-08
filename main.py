@@ -20,8 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+
 from flask import jsonify, send_from_directory
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 
 from util import get_sources
@@ -35,18 +37,18 @@ CORS(app)
 # route for source listing
 @app.route("/list", methods=["GET"])
 def route_list():
-    src = []
-    for id in allSources:
-        src.append({"path": id, "desc": allSources[id].get_desc()})
+    sources = [ { "path": id, "desc": allSources[id].get_desc() } for id in allSources ]
+    return jsonify(sources)
 
-    return jsonify(src)
+
+@app.route("/about", methods=["GET"])
+def route_about():
+    return jsonify(_get_app_properties())
 
 
 # route for sources
 def route_source():
     articles = []
-
-    from flask import request
 
     the_path = request.path.strip("/")
     if the_path in allSources:
@@ -55,17 +57,28 @@ def route_source():
     return jsonify(articles)
 
 
-# register routes for available sources
-for id in allSources:
-    app.route("/" + id, methods=["GET"])(route_source)
-
-
 # since we don't have memcache in GCP py3, tell browsers / proxy servers to cache everything to minimize our computation cost
 @app.after_request
 def add_header(response):
+    if (request.path in ["/list", "/about"]):
+        return response
+
     response.cache_control.public = True
     response.cache_control.max_age = 900
     return response
+
+
+def _get_app_properties():
+    return { key: os.environ.get(key) for key in [
+        "GOOGLE_CLOUD_PROJECT",
+        "GAE_VERSION",
+        "GAE_RUNTIME",
+    ] }
+
+
+# register routes for available sources
+for id in allSources:
+    app.route("/" + id, methods=["GET"])(route_source)
 
 
 if __name__ == "__main__":
