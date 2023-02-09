@@ -2,6 +2,7 @@
   <div id="app">
     <NewsPages :sources="this.newsSources"
         :subscriptions="subscriptions"
+        :appVersion="appVersion"
         @subscriptionChanged="subscriptionChanged"
         :showTab="showTab" />
   </div>
@@ -23,6 +24,7 @@ import NewsSource from "./models/NewsSource";
 export default class App extends Vue {
   newsSources = [] as NewsSource[];
   subscriptions = new Set<string>();
+  appVersion = "";
   showTab = Subscriptions.getLastRead();
 
   created() {
@@ -33,6 +35,10 @@ export default class App extends Vue {
       this.newsSources = sources;
     }).catch((resp) => {
       Logger.log("Got errors when trying to retrieve news sources");
+    });
+
+    NewsSumApi.getAppProperties().then((props) => {
+      this.appVersion = props.get("GAE_VERSION")? props.get("GAE_VERSION")! : "";
     });
   }
 

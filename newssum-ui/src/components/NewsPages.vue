@@ -10,6 +10,12 @@
           :srcUrl="source.path"
           :isActive="showTab === source.path" />
     </b-tabs>
+    <div
+        class="footer"
+        v-if="appVersion"
+    >
+        Version: {{ appVersion }}
+    </div>
   </div>
 </template>
 
@@ -30,6 +36,7 @@ import { BvEvent } from 'bootstrap-vue';
 export default class NewsPages extends Vue {
   @Prop({ default: new Set<string>() }) subscriptions!: Set<string>;
   @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
+  @Prop({ default: "" }) appVersion!: string;
   @Prop({ default: ''}) showTab!: string;
 
   showingSources = [] as NewsSource[];
@@ -122,5 +129,8 @@ export default class NewsPages extends Vue {
 }
 .tabbable .nav-tabs .nav-link {
   white-space: nowrap;
+}
+.footer {
+    font-size: 10px;
 }
 </style>

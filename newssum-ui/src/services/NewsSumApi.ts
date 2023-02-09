@@ -5,7 +5,7 @@ import Logger from "./Logger";
 export default class NewsSumApi {
   static async getSources(): Promise<NewsSource[]> {
     try {
-      // TODO use relative url
+      // TODO setup url for dev
       const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/list" : "/list", {
         "method": "GET",
       });
@@ -29,7 +29,7 @@ export default class NewsSumApi {
 
   static async getArticles(path: string): Promise<NewsArticle[]> {
     try {
-      // TODO use relative url
+      // TODO setup url for dev
       const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/" + path : "/" + path, {
         "method": "GET",
       })
@@ -48,5 +48,27 @@ export default class NewsSumApi {
     }
 
     return Promise.reject("Failed to load content");
+  }
+
+  static async getAppProperties(): Promise<Map<string, string>> {
+    try {
+        // TODO setup url for dev
+        const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/about" : "/about", {
+          "method": "GET",
+        });
+        if (response.ok) {
+            return new Map<string, string>(Object.entries(await response.json()));
+        } else {
+          Logger.log("Failed to fetch app properties " + response.status + ": " + response.statusText);
+        }
+      } catch (err: unknown) {
+        Logger.log("Failed to fetch app properties: ");
+        if (typeof err === "string") {
+          Logger.log(err);
+        } else if (err instanceof Error) {
+          Logger.log(err.message);
+        }
+      }
+      return Promise.reject("Failed to retrieve app properties");
   }
 }
