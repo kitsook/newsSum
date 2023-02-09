@@ -37,7 +37,7 @@ CORS(app)
 # route for source listing
 @app.route("/list", methods=["GET"])
 def route_list():
-    sources = [ { "path": id, "desc": allSources[id].get_desc() } for id in allSources ]
+    sources = [{"path": id, "desc": allSources[id].get_desc()} for id in allSources]
     return jsonify(sources)
 
 
@@ -60,7 +60,7 @@ def route_source():
 # since we don't have memcache in GCP py3, tell browsers / proxy servers to cache everything to minimize our computation cost
 @app.after_request
 def add_header(response):
-    if (request.path in ["/list", "/about"]):
+    if request.path in ["/list", "/about"]:
         return response
 
     response.cache_control.public = True
@@ -69,11 +69,14 @@ def add_header(response):
 
 
 def _get_app_properties():
-    return { key: os.environ.get(key) for key in [
-        "GOOGLE_CLOUD_PROJECT",
-        "GAE_VERSION",
-        "GAE_RUNTIME",
-    ] }
+    return {
+        key: os.environ.get(key)
+        for key in [
+            "GOOGLE_CLOUD_PROJECT",
+            "GAE_VERSION",
+            "GAE_RUNTIME",
+        ]
+    }
 
 
 # register routes for available sources

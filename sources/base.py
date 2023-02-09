@@ -29,7 +29,6 @@ from fetcher import read_http_page
 
 
 class BaseSource:
-
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -52,7 +51,6 @@ class BaseSource:
 
 
 class RSSBase(BaseSource):
-
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -61,7 +59,7 @@ class RSSBase(BaseSource):
 
     def get_articles(self):
         result_list = []
-        for (name, url) in self.get_rss_links():
+        for name, url in self.get_rss_links():
             try:
                 # for each section, insert a title...
                 result_list.append(self.create_section(name))
@@ -87,12 +85,11 @@ class RSSBase(BaseSource):
 
 
 class RDFBase(RSSBase):
-
     __metaclass__ = ABCMeta
 
     def get_articles(self):
         result_list = []
-        for (name, url) in self.get_rss_links():
+        for name, url in self.get_rss_links():
             try:
                 # for each section, insert a title...
                 result_list.append(self.create_section(name))

@@ -32,6 +32,7 @@ from fetcher import read_http_page
 from .base import BaseSource
 from .base import RSSBase
 
+
 class MingPaoHK(RSSBase):
     def get_id(self):
         return "mingpaohk"
@@ -65,41 +66,31 @@ class OrientalDaily(BaseSource):
     def get_articles(self):
         top_url = "http://orientaldaily.on.cc"
         sections = {
-            'news': {
-                'title': '要聞港聞',
-                'url': ''
-            },
-            'china_world': {
-                'title': '兩岸國際',
-                'url': ''
-            },
-            'finance': {
-                'title': '產經',
-                'url': ''
-            },
-            'entertainment': {
-                'title': '娛樂',
-                'url': ''
-            },
-            'lifestyle': {
-                'title': '副刊',
-                'url': ''
-            },
-            'sport': {
-                'title': '體育',
-                'url': ''
-            }
+            "news": {"title": "要聞港聞", "url": ""},
+            "china_world": {"title": "兩岸國際", "url": ""},
+            "finance": {"title": "產經", "url": ""},
+            "entertainment": {"title": "娛樂", "url": ""},
+            "lifestyle": {"title": "副刊", "url": ""},
+            "sport": {"title": "體育", "url": ""},
         }
 
         try:
             doc = html.document_fromstring(read_http_page(top_url))
             if doc is not None:
-                menu = doc.xpath('//*[@id="pageCTN"]/header/div[contains(@class, "middle")]/ul[contains(@class, "menuList")]')
+                menu = doc.xpath(
+                    '//*[@id="pageCTN"]/header/div[contains(@class, "middle")]/ul[contains(@class, "menuList")]'
+                )
                 if menu:
-                    for the_link in menu[0].xpath('li/a'):
-                        the_class = the_link.xpath('@class')
-                        if the_link.xpath('@href') and the_class and the_class[0] in sections:
-                            sections[the_class[0]]['url'] = top_url + the_link.xpath('@href')[0]
+                    for the_link in menu[0].xpath("li/a"):
+                        the_class = the_link.xpath("@class")
+                        if (
+                            the_link.xpath("@href")
+                            and the_class
+                            and the_class[0] in sections
+                        ):
+                            sections[the_class[0]]["url"] = (
+                                top_url + the_link.xpath("@href")[0]
+                            )
         except Exception as e:
             logger.exception("Problem getting OrientalDaily sections: " + str(e))
             logger.exception(
@@ -111,22 +102,27 @@ class OrientalDaily(BaseSource):
 
         try:
             for _, section in sections.items():
-                title = section['title']
-                section_url = section['url']
+                title = section["title"]
+                section_url = section["url"]
                 if section_url:
                     # for each section, insert a title...
                     result_list.append(self.create_section(title))
                     # ... then parse the page and extract article links
                     doc = html.document_fromstring(read_http_page(section_url))
                     if doc is not None:
-                        articles = doc.xpath('//div[contains(@class, "sectionList")]/div[contains(@class, "subsection")]/ul[contains(@class, "items")]/li[@articleid]')
+                        articles = doc.xpath(
+                            '//div[contains(@class, "sectionList")]/div[contains(@class, "subsection")]/ul[contains(@class, "items")]/li[@articleid]'
+                        )
                         for article in articles:
-                            article_urls = article.xpath('a/@href')
-                            article_texts = article.xpath('a/div[contains(@class, "text")]/text()')
+                            article_urls = article.xpath("a/@href")
+                            article_texts = article.xpath(
+                                'a/div[contains(@class, "text")]/text()'
+                            )
                             if article_urls and article_texts:
                                 result_list.append(
                                     self.create_article(
-                                        article_texts[0].strip(), base_url + article_urls[0]
+                                        article_texts[0].strip(),
+                                        base_url + article_urls[0],
                                     )
                                 )
 
@@ -161,7 +157,7 @@ class SingPao(BaseSource):
         base_url = "http://www.singpao.com.hk/"
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -238,7 +234,7 @@ class TaKungPao(BaseSource):
         ]
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -247,15 +243,21 @@ class TaKungPao(BaseSource):
                 for topic in doc.xpath(
                     '//div[contains(@class, "list_tuwen")]/div[contains(@class, "content")]'
                 ):
-                    title = topic.xpath('ul[contains(@class, "txt")]/li[contains(@class, "title")]/a')
-                    intro = topic.xpath('ul[contains(@class, "txt")]/li[contains(@class, "intro")]/a')
+                    title = topic.xpath(
+                        'ul[contains(@class, "txt")]/li[contains(@class, "title")]/a'
+                    )
+                    intro = topic.xpath(
+                        'ul[contains(@class, "txt")]/li[contains(@class, "intro")]/a'
+                    )
 
                     if title and title[0].text and title[0].get("href"):
                         result_list.append(
                             self.create_article(
                                 title[0].text.strip(),
                                 title[0].get("href"),
-                                intro[0].text.strip() if intro and intro[0].text else None,
+                                intro[0].text.strip()
+                                if intro and intro[0].text
+                                else None,
                             )
                         )
 
@@ -325,7 +327,7 @@ class HkEt(BaseSource):
         seen_url = {}
 
         try:
-            for (title, base_url, url, pages) in sections:
+            for title, base_url, url, pages in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then get page and parse
@@ -356,6 +358,7 @@ class HkEt(BaseSource):
 
         return result_list
 
+
 class CitizenNewss(BaseSource):
     def get_id(self):
         return "hkcnews"
@@ -366,35 +369,54 @@ class CitizenNewss(BaseSource):
     def get_articles(self):
         result_list = []
         sections = [
-            ("眾聞", "https://www.hkcnews.com", "https://www.hkcnews.com/data/newsposts", 3),
+            (
+                "眾聞",
+                "https://www.hkcnews.com",
+                "https://www.hkcnews.com/data/newsposts",
+                3,
+            ),
         ]
 
         try:
-            for (title, base_url, data_url, pages) in sections:
+            for title, base_url, data_url, pages in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then get page and parse
                 for page in range(1, pages + 1):
                     raw_result = read_http_page(data_url + "?page={}".format(page))
                     result = json.loads(raw_result)
-                    for item in result['items']:
+                    for item in result["items"]:
                         doc = html.document_fromstring(item)
-                        for article in doc.xpath('//div[contains(@class, "article-block")]'):
-                            article_link = article.xpath('div[contains(@class, "article-block-body")]/a')
-                            article_text = article.xpath('div[contains(@class, "article-block-body")]/a/p')
+                        for article in doc.xpath(
+                            '//div[contains(@class, "article-block")]'
+                        ):
+                            article_link = article.xpath(
+                                'div[contains(@class, "article-block-body")]/a'
+                            )
+                            article_text = article.xpath(
+                                'div[contains(@class, "article-block-body")]/a/p'
+                            )
                             if article_link and article_text:
                                 url = base_url + article_link[0].get("href")
                                 text = article_text[0].text
                                 if url and text:
-                                    footer = article.xpath('a[contains(@class, "article-block-footer")]')
-                                    date_str = ''
+                                    footer = article.xpath(
+                                        'a[contains(@class, "article-block-footer")]'
+                                    )
+                                    date_str = ""
                                     if footer:
-                                        divs = footer[0].xpath('div/div[contains(@class, "text-box")]/div')
+                                        divs = footer[0].xpath(
+                                            'div/div[contains(@class, "text-box")]/div'
+                                        )
                                         for div in divs:
-                                            if div.text and re.match(r"\d{2}\.\d{2}\.\d{2}", div.text.strip()):
+                                            if div.text and re.match(
+                                                r"\d{2}\.\d{2}\.\d{2}", div.text.strip()
+                                            ):
                                                 date_str = div.text.strip()
                                     result_list.append(
-                                        self.create_article(text.strip() + ' - {}'.format(date_str), url)
+                                        self.create_article(
+                                            text.strip() + " - {}".format(date_str), url
+                                        )
                                     )
 
         except Exception as e:
@@ -417,6 +439,7 @@ class HKFP(RSSBase):
         return [
             ("Hong Kong Free Press", "https://www.hongkongfp.com/feed/"),
         ]
+
 
 class HKEJ(BaseSource):
     def get_id(self):
@@ -441,13 +464,11 @@ class HKEJ(BaseSource):
             ("副刊文化", "/dailynews/culture"),
         ]
         try:
-            for (title, base_url) in sections:
+            for title, base_url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then get page and parse
-                doc = html.document_fromstring(
-                    read_http_page(root_url + base_url)
-                )
+                doc = html.document_fromstring(read_http_page(root_url + base_url))
                 for article in doc.xpath(
                     '//div[contains(@class, "more-articles-dd-wrapper")]/form/select/option'
                 ):
@@ -463,6 +484,7 @@ class HKEJ(BaseSource):
             )
 
         return result_list
+
 
 class AM730(BaseSource):
     def get_id(self):
@@ -485,24 +507,32 @@ class AM730(BaseSource):
             ("專欄", "/column", 5),
         ]
         try:
-            for (title, base_url, num_pages) in sections:
+            for title, base_url, num_pages in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
-                for page in range(1, num_pages+1):
+                for page in range(1, num_pages + 1):
                     # ... then get page and parse
-                    resp = json.loads(read_http_page(root_url + base_url,
-                        method="POST",
-                        headers = { "Accept": "application/json",
-                            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                            "X-Requested-With": "XMLHttpRequest" },
-                        body = "page={}".format(page)))
+                    resp = json.loads(
+                        read_http_page(
+                            root_url + base_url,
+                            method="POST",
+                            headers={
+                                "Accept": "application/json",
+                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                "X-Requested-With": "XMLHttpRequest",
+                            },
+                            body="page={}".format(page),
+                        )
+                    )
 
                     for article in resp["data"]["data"]:
                         article_title = article["title"]
                         article_url = article["url"]
                         if article_title and article_url:
                             result_list.append(
-                                self.create_article(article_title.strip(), root_url + article_url)
+                                self.create_article(
+                                    article_title.strip(), root_url + article_url
+                                )
                             )
         except Exception as e:
             logger.exception("Problem processing AM730: " + str(e))
@@ -511,6 +541,7 @@ class AM730(BaseSource):
             )
 
         return result_list
+
 
 class PointsMedia(RSSBase):
     def get_id(self):

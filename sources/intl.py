@@ -29,6 +29,7 @@ from .base import BaseSource
 from .base import RSSBase
 from .base import RDFBase
 
+
 class BBCWorld(RSSBase):
     def get_id(self):
         return "bbcworld"
@@ -85,6 +86,7 @@ class WSJChinese(RSSBase):
             ("華爾街日報", "https://cn.wsj.com/zh-hant/rss"),
         ]
 
+
 class AP(BaseSource):
     def get_id(self):
         return "ap"
@@ -108,14 +110,17 @@ class AP(BaseSource):
             ("Lifestyle", "/lifestyle.json.gz"),
         ]
         try:
-            for (title, section_url) in sections:
+            for title, section_url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then get page and parse
-                resp = json.loads(read_http_page(api_url_base + section_url,
-                    method="GET",
-                    headers = { "Accept": "application/json, text/plain, */*" },
-                    ))
+                resp = json.loads(
+                    read_http_page(
+                        api_url_base + section_url,
+                        method="GET",
+                        headers={"Accept": "application/json, text/plain, */*"},
+                    )
+                )
 
                 for card in resp["cards"]:
                     for article in card["contents"]:
@@ -124,7 +129,9 @@ class AP(BaseSource):
                         article_abstract = article["firstWords"]
                         if article_title and article_url:
                             result_list.append(
-                                self.create_article(article_title.strip(), article_url, article_abstract)
+                                self.create_article(
+                                    article_title.strip(), article_url, article_abstract
+                                )
                             )
         except Exception as e:
             logger.exception("Problem processing AP: " + str(e))
@@ -133,6 +140,7 @@ class AP(BaseSource):
             )
 
         return result_list
+
 
 class Reuters(RSSBase):
     def get_id(self):
@@ -143,5 +151,8 @@ class Reuters(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("Reuters", "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com"),
+            (
+                "Reuters",
+                "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com",
+            ),
         ]

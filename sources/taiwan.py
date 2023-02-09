@@ -22,7 +22,6 @@
 
 from lxml import html
 import json
-from urllib.parse import urlparse
 import traceback
 
 from logger import logger
@@ -56,7 +55,7 @@ class LibertyTimes(BaseSource):
 
         try:
             for page in range(1, num_pages):
-                for (title, url) in sections:
+                for title, url in sections:
                     url = url + str(page)
                     # for each section, insert a title...
                     result_list.append(self.create_section(title))
@@ -133,22 +132,18 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
         ]
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = html.document_fromstring(read_http_page(url))
-                for topic in doc.xpath('//section[contains(@class, "cate-main__section")]/div[contains(@class, "story-headline-wrapper")]'):
+                for topic in doc.xpath(
+                    '//section[contains(@class, "cate-main__section")]/div[contains(@class, "story-headline-wrapper")]'
+                ):
                     # main stories first...
-                    link = topic.xpath(
-                        'div[contains(@class, "story__content")]/a'
-                    )
-                    title = topic.xpath(
-                        'div[contains(@class, "story__content")]/a/h3'
-                    )
-                    intro = topic.xpath(
-                        'div[contains(@class, "story__content")]/a/p'
-                    )
+                    link = topic.xpath('div[contains(@class, "story__content")]/a')
+                    title = topic.xpath('div[contains(@class, "story__content")]/a/h3')
+                    intro = topic.xpath('div[contains(@class, "story__content")]/a/p')
                     title_text = title[0].text if title else None
 
                     if title and title_text and link:
@@ -156,15 +151,17 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
                             self.create_article(
                                 title_text.strip(),
                                 site_base_url + link[0].get("href"),
-                                intro[0].text.strip() if intro and intro[0].text else None,
+                                intro[0].text.strip()
+                                if intro and intro[0].text
+                                else None,
                             )
                         )
 
-                for topic in doc.xpath('//section[contains(@class, "cate-main__section")]/ul[contains(@class, "story-flex-bt-wrapper")]'):
+                for topic in doc.xpath(
+                    '//section[contains(@class, "cate-main__section")]/ul[contains(@class, "story-flex-bt-wrapper")]'
+                ):
                     # ... then other stories
-                    titles = topic.xpath(
-                        'li[contains(@class, "story__item")]/a'
-                    )
+                    titles = topic.xpath('li[contains(@class, "story__item")]/a')
                     for title in titles:
                         title_text = title.text
                         if title_text:
@@ -228,7 +225,7 @@ class ChinaTimes(BaseSource):
         ]
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -285,7 +282,7 @@ class Storm(BaseSource):
         ]
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 result_list.append(self.create_section(title))
                 for page in range(1, pages + 1):
                     # for each section, insert a title...
@@ -333,7 +330,9 @@ class Storm(BaseSource):
                                 self.create_article(
                                     title_text[0].strip(),
                                     title[0].get("href"),
-                                    intro[0].text.strip() if intro and intro[0].text else None,
+                                    intro[0].text.strip()
+                                    if intro and intro[0].text
+                                    else None,
                                 )
                             )
 

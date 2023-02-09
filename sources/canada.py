@@ -52,7 +52,7 @@ class MingPaoVancouver(BaseSource):
         try:
             doc = html.document_fromstring(read_http_page(date_url))
             for a_link in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
-                if a_link.text_content() == u"明報首頁":
+                if a_link.text_content() == "明報首頁":
                     href = a_link.attrib["href"]
                     match = re.match(r"htm\/News\/(\d{8})\/main_r\.htm", href)
                     if match and match.lastindex == 1:
@@ -68,21 +68,51 @@ class MingPaoVancouver(BaseSource):
         result_list = []
         news_url = "http://www.mingpaocanada.com/Van/htm/News/"
         sections = [
-            ("要聞", news_url + the_date + "/VAindex_r.htm",),
-            ("加國新聞", news_url + the_date + "/VBindex_r.htm",),
-            ("社區新聞", news_url + the_date + "/VDindex_r.htm",),
-            ("港聞", news_url + the_date + "/HK-VGindex_r.htm",),
-            ("國際", news_url + the_date + "/VTindex_r.htm",),
-            ("中國", news_url + the_date + "/VCindex_r.htm",),
-            ("經濟", news_url + the_date + "/VEindex_r.htm",),
-            ("體育", news_url + the_date + "/VSindex_r.htm",),
-            ("影視", news_url + the_date + "/HK-MAindex_r.htm",),
-            ("副刊", news_url + the_date + "/WWindex_r.htm",),
+            (
+                "要聞",
+                news_url + the_date + "/VAindex_r.htm",
+            ),
+            (
+                "加國新聞",
+                news_url + the_date + "/VBindex_r.htm",
+            ),
+            (
+                "社區新聞",
+                news_url + the_date + "/VDindex_r.htm",
+            ),
+            (
+                "港聞",
+                news_url + the_date + "/HK-VGindex_r.htm",
+            ),
+            (
+                "國際",
+                news_url + the_date + "/VTindex_r.htm",
+            ),
+            (
+                "中國",
+                news_url + the_date + "/VCindex_r.htm",
+            ),
+            (
+                "經濟",
+                news_url + the_date + "/VEindex_r.htm",
+            ),
+            (
+                "體育",
+                news_url + the_date + "/VSindex_r.htm",
+            ),
+            (
+                "影視",
+                news_url + the_date + "/HK-MAindex_r.htm",
+            ),
+            (
+                "副刊",
+                news_url + the_date + "/WWindex_r.htm",
+            ),
         ]
 
         base_url = news_url + the_date + "/"
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -105,8 +135,8 @@ class MingPaoVancouver(BaseSource):
 
         return result_list
 
-class SingTaoCanada(BaseSource):
 
+class SingTaoCanada(BaseSource):
     __metaclass__ = ABCMeta
 
     @abstractmethod
@@ -115,16 +145,18 @@ class SingTaoCanada(BaseSource):
 
     def get_articles(self):
         result_list = []
-        sections = self.get_sections();
+        sections = self.get_sections()
 
         try:
-            for (title, url, pages) in sections:
+            for title, url, pages in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
-                for page in range(1, pages+1):
+                for page in range(1, pages + 1):
                     # ... then parse the page and extract article links
                     doc = html.document_fromstring(
-                        read_http_page(url + "&page=" + str(page), {"edition": "vancouver"}).decode("utf-8")
+                        read_http_page(
+                            url + "&page=" + str(page), {"edition": "vancouver"}
+                        ).decode("utf-8")
                     )
 
                     # top story
@@ -147,7 +179,9 @@ class SingTaoCanada(BaseSource):
                     ):
                         if topic.text and topic.get("href"):
                             result_list.append(
-                                self.create_article(topic.text.strip(), topic.get("href"))
+                                self.create_article(
+                                    topic.text.strip(), topic.get("href")
+                                )
                             )
 
         except Exception as e:
@@ -157,6 +191,7 @@ class SingTaoCanada(BaseSource):
             )
 
         return result_list
+
 
 class SingTaoVancouver(SingTaoCanada):
     def get_id(self):
@@ -202,7 +237,6 @@ class SingTaoVancouver(SingTaoCanada):
                 "https://www.singtao.ca/category/2054189-%E6%BA%AB%E5%93%A5%E8%8F%AF%E7%A7%91%E6%8A%80/?variant=zh-hk",
                 1,
             ),
-
             (
                 "財經",
                 "https://www.singtao.ca/category/61-%E6%BA%AB%E5%93%A5%E8%8F%AF%E8%B2%A1%E7%B6%93/?variant=zh-hk",
@@ -219,6 +253,7 @@ class SingTaoVancouver(SingTaoCanada):
                 1,
             ),
         ]
+
 
 class SingTaoToronto(SingTaoCanada):
     def get_id(self):
@@ -271,6 +306,7 @@ class SingTaoToronto(SingTaoCanada):
             ),
         ]
 
+
 class SingTaoCalgary(SingTaoCanada):
     def get_id(self):
         return "singtaocalgary"
@@ -321,6 +357,7 @@ class SingTaoCalgary(SingTaoCanada):
                 1,
             ),
         ]
+
 
 class TheProvince(RSSBase):
     def get_id(self):
@@ -388,7 +425,7 @@ class MingPaoToronto(BaseSource):
         try:
             doc = html.document_fromstring(read_http_page(date_url))
             for a_link in doc.get_element_by_id("mp-menu").xpath("//div/ul/li/a"):
-                if a_link.text_content() == u"明報首頁":
+                if a_link.text_content() == "明報首頁":
                     href = a_link.attrib["href"]
                     match = re.match(r"htm\/News\/(\d{8})\/main_r\.htm", href)
                     if match and match.lastindex == 1:
@@ -404,20 +441,47 @@ class MingPaoToronto(BaseSource):
         result_list = []
         news_url = "http://www.mingpaocanada.com/TOR/htm/News/"
         sections = [
-            ("要聞", news_url + the_date + "/TAindex_r.htm",),
-            ("加國新聞", news_url + the_date + "/TDindex_r.htm",),
-            ("中國", news_url + the_date + "/TCAindex_r.htm",),
-            ("國際", news_url + the_date + "/TTAindex_r.htm",),
-            ("港聞", news_url + the_date + "/HK-GAindex_r.htm",),
-            ("經濟", news_url + the_date + "/THindex_r.htm",),
-            ("體育", news_url + the_date + "/TSindex_r.htm",),
-            ("影視", news_url + the_date + "/HK-MAindex_r.htm",),
-            ("副刊", news_url + the_date + "/WWindex_r.htm",),
+            (
+                "要聞",
+                news_url + the_date + "/TAindex_r.htm",
+            ),
+            (
+                "加國新聞",
+                news_url + the_date + "/TDindex_r.htm",
+            ),
+            (
+                "中國",
+                news_url + the_date + "/TCAindex_r.htm",
+            ),
+            (
+                "國際",
+                news_url + the_date + "/TTAindex_r.htm",
+            ),
+            (
+                "港聞",
+                news_url + the_date + "/HK-GAindex_r.htm",
+            ),
+            (
+                "經濟",
+                news_url + the_date + "/THindex_r.htm",
+            ),
+            (
+                "體育",
+                news_url + the_date + "/TSindex_r.htm",
+            ),
+            (
+                "影視",
+                news_url + the_date + "/HK-MAindex_r.htm",
+            ),
+            (
+                "副刊",
+                news_url + the_date + "/WWindex_r.htm",
+            ),
         ]
 
         base_url = news_url + the_date + "/"
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -494,6 +558,7 @@ class TorontoStar(RSSBase):
 #             ("Life", "http://news.nationalpost.com/category/life/feed"),
 #             ("Health", "http://news.nationalpost.com/category/health/feed"),
 #         ]
+
 
 class TorontoSun(RSSBase):
     def get_id(self):

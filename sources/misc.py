@@ -33,6 +33,7 @@ from fetcher import read_http_page
 from .base import BaseSource
 from .base import RSSBase
 
+
 class HackerNews(BaseSource):
     def get_id(self):
         return "hackernews"
@@ -79,6 +80,7 @@ class HackerNews(BaseSource):
 
         return result_list
 
+
 class RFACantonese(BaseSource):
     def get_id(self):
         return "rfa_cantonese"
@@ -100,26 +102,32 @@ class RFACantonese(BaseSource):
         ]
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
                 doc = fromstring(read_http_page(url))
-                for topic in doc.xpath('//div[contains(@id, "topstorywidefull")]'\
-                        '|//div[contains(@class, "sectionteaser")]'\
-                        '|//div[contains(@class, "single_column_teaser")]'\
-                        '|//div[contains(@class, "two_featured")]'):
-                    title = topic.xpath('h2/a')
-                    intro = topic.xpath('p')
+                for topic in doc.xpath(
+                    '//div[contains(@id, "topstorywidefull")]'
+                    '|//div[contains(@class, "sectionteaser")]'
+                    '|//div[contains(@class, "single_column_teaser")]'
+                    '|//div[contains(@class, "two_featured")]'
+                ):
+                    title = topic.xpath("h2/a")
+                    intro = topic.xpath("p")
 
                     if title:
-                        title_text = title[0].xpath('span')
+                        title_text = title[0].xpath("span")
 
                         result_list.append(
                             self.create_article(
-                              title_text[0].text.strip(),
-                              title[0].get("href"),
-                              intro[0].text.strip() if intro and intro[0].text else None))
+                                title_text[0].text.strip(),
+                                title[0].get("href"),
+                                intro[0].text.strip()
+                                if intro and intro[0].text
+                                else None,
+                            )
+                        )
 
         except Exception as e:
             logger.exception("Problem processing RFACantonese: " + str(e))
@@ -128,6 +136,7 @@ class RFACantonese(BaseSource):
             )
 
         return result_list
+
 
 class RFACantoneseRSS(RSSBase):
     def get_id(self):
@@ -141,6 +150,7 @@ class RFACantoneseRSS(RSSBase):
             ("RFA 自由亞洲電台粵語部", "https://www.rfa.org/cantonese/rss2.xml"),
         ]
 
+
 class RFAEnglishRSS(RSSBase):
     def get_id(self):
         return "rfa_english_rss"
@@ -152,6 +162,7 @@ class RFAEnglishRSS(RSSBase):
         return [
             ("Radio Free Asia", "https://www.rfa.org/english/rss2.xml"),
         ]
+
 
 class TheInitium(BaseSource):
     def get_id(self):
@@ -177,11 +188,13 @@ class TheInitium(BaseSource):
             ("廣場", api_url + "/?language=zh-hant&slug=notes-and-letters"),
         ]
 
-        headers = urllib3.make_headers(basic_auth="anonymous:GiCeLEjxnqBcVpnp6cLsUvJievvRQcAXLv")
-        headers['Accept'] = "application/json"
+        headers = urllib3.make_headers(
+            basic_auth="anonymous:GiCeLEjxnqBcVpnp6cLsUvJievvRQcAXLv"
+        )
+        headers["Accept"] = "application/json"
 
         try:
-            for (title, url) in sections:
+            for title, url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then parse the page and extract article links
@@ -193,7 +206,9 @@ class TheInitium(BaseSource):
                             self.create_article(
                                 article["headline"].strip(),
                                 base_url + article["url"],
-                                article["lead"]))
+                                article["lead"],
+                            )
+                        )
 
         except Exception as e:
             logger.exception("Problem processing TheInitium: " + str(e))

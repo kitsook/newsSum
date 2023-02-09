@@ -20,6 +20,7 @@
 
 import sys
 
+
 class MyLogger:
     def info(self, msg):
         print(msg, file=sys.stderr)

@@ -35,7 +35,10 @@ class TheIndependent(RSSBase):
             ("News", "https://www.independent.co.uk/news/rss"),
             ("Sport", "https://www.independent.co.uk/sport/rss"),
             ("Life & Style", "https://www.independent.co.uk/life-style/rss"),
-            ("Arts & Entertainment", "https://www.independent.co.uk/arts-entertainment/rss"),
+            (
+                "Arts & Entertainment",
+                "https://www.independent.co.uk/arts-entertainment/rss",
+            ),
             ("Travel", "https://www.independent.co.uk/travel/rss"),
             ("Money", "https://www.independent.co.uk/money/rss"),
         ]

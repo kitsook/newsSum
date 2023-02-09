@@ -28,12 +28,13 @@ URL_TIMEOUT = 15
 
 ctx = create_urllib3_context()
 # change the TLS signature, so that cloudflare won't consider us as bot and block us for some sites
-ctx.set_ciphers('ECDHE+CHACHA20:ECDHE+AESGCM')
+ctx.set_ciphers("ECDHE+CHACHA20:ECDHE+AESGCM")
 ctx.load_default_certs()
 ctx.options |= ssl.OP_NO_TLSv1_3
 if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
     ctx.options ^= ssl.OP_NO_COMPRESSION
 http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
+
 
 def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     the_headers = {
