@@ -94,7 +94,7 @@ class OrientalDaily(BaseSource):
         except Exception as e:
             logger.exception("Problem getting OrientalDaily sections: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         result_list = []
@@ -129,7 +129,7 @@ class OrientalDaily(BaseSource):
         except Exception as e:
             logger.exception("Problem processing OrientalDaily: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -192,7 +192,7 @@ class SingPao(BaseSource):
         except Exception as e:
             logger.exception("Problem processing SingPao: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -264,7 +264,7 @@ class TaKungPao(BaseSource):
         except Exception as e:
             logger.exception("Problem processing TaKungPao: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -353,7 +353,7 @@ class HkEt(BaseSource):
         except Exception as e:
             logger.exception("Problem processing HkEt: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -422,7 +422,7 @@ class CitizenNewss(BaseSource):
         except Exception as e:
             logger.exception("Problem processing CitizenNewss: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -480,7 +480,7 @@ class HKEJ(BaseSource):
         except Exception as e:
             logger.exception("Problem processing HKEJ: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -537,7 +537,7 @@ class AM730(BaseSource):
         except Exception as e:
             logger.exception("Problem processing AM730: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list

@@ -62,7 +62,7 @@ class MingPaoVancouver(BaseSource):
         except Exception as e:
             logger.exception("Problem getting date: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         result_list = []
@@ -130,7 +130,7 @@ class MingPaoVancouver(BaseSource):
         except Exception as e:
             logger.exception("Problem processing MingPaoVancouver: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -187,7 +187,7 @@ class SingTaoCanada(BaseSource):
         except Exception as e:
             logger.exception("Problem processing SingTaoCanada: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -435,7 +435,7 @@ class MingPaoToronto(BaseSource):
         except Exception as e:
             logger.exception("Problem getting date: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         result_list = []
@@ -499,7 +499,7 @@ class MingPaoToronto(BaseSource):
         except Exception as e:
             logger.exception("Problem processing MingPaoToronto: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list

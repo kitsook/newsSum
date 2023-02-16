@@ -136,7 +136,7 @@ class AP(BaseSource):
         except Exception as e:
             logger.exception("Problem processing AP: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list

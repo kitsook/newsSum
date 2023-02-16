@@ -75,7 +75,7 @@ class LibertyTimes(BaseSource):
         except Exception as e:
             logger.exception("Problem processing LibertyTimes: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -176,7 +176,7 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
         except Exception as e:
             logger.exception("Problem processing MoneyUnitedDailyNewsRSS: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -241,7 +241,7 @@ class ChinaTimes(BaseSource):
         except Exception as e:
             logger.exception("Problem processing ChinaTimes: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -339,7 +339,7 @@ class Storm(BaseSource):
         except Exception as e:
             logger.exception("Problem processing Storm: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list

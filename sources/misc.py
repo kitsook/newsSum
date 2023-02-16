@@ -75,7 +75,7 @@ class HackerNews(BaseSource):
         except Exception as e:
             logger.exception("Problem processing HackerNews: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -132,7 +132,7 @@ class RFACantonese(BaseSource):
         except Exception as e:
             logger.exception("Problem processing RFACantonese: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
@@ -213,7 +213,7 @@ class TheInitium(BaseSource):
         except Exception as e:
             logger.exception("Problem processing TheInitium: " + str(e))
             logger.exception(
-                traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+                traceback.format_exception(e)
             )
 
         return result_list
