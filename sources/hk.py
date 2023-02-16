@@ -317,7 +317,7 @@ class HkEt(BaseSource):
     def get_articles(self):
         result_list = []
         sections = [
-            ("金融經濟", "https://inews.hket.com", "/sran009/金融經濟", 3),
+            ("即市財經", "https://inews.hket.com", "/sran009/即市財經", 2),
             ("理財", "https://wealth.hket.com", "/", 1),
             ("科技", "https://inews.hket.com", "/sran010/科技", 2),
             ("中國", "https://china.hket.com", "/", 1),

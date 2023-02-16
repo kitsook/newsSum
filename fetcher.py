@@ -33,6 +33,8 @@ ctx.load_default_certs()
 ctx.options |= ssl.OP_NO_TLSv1_3
 if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
     ctx.options ^= ssl.OP_NO_COMPRESSION
+# OP_LEGACY_SERVER_CONNECT (0x4). to handle servers that don't support secure renegotiation (e.g. hket)
+ctx.options |= 0x4
 http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
 
 
