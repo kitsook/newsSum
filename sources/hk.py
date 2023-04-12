@@ -554,3 +554,15 @@ class PointsMedia(RSSBase):
         return [
             ("最新", "https://points-media.com/feed/"),
         ]
+
+class PhotonMedia(RSSBase):
+    def get_id(self):
+        return "photon-media"
+
+    def get_desc(self):
+        return "Photon Media 光傳媒"
+
+    def get_rss_links(self):
+        return [
+            ("光傳媒", "https://photonmedia.net/feed/"),
+        ]
