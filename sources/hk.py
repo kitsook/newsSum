@@ -497,3 +497,15 @@ class PhotonMedia(RSSBase):
         return [
             ("光傳媒", "https://photonmedia.net/feed/"),
         ]
+
+class ChannelC(RSSBase):
+    def get_id(self):
+        return "channel-c"
+
+    def get_desc(self):
+        return "Channel C HK"
+
+    def get_rss_links(self):
+        return [
+            ("Channel C HK", "https://channelchk.com/rss"),
+        ]
