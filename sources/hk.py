@@ -509,3 +509,15 @@ class ChannelC(RSSBase):
         return [
             ("Channel C HK", "https://channelchk.com/rss"),
         ]
+
+class HkCourtNews(RSSBase):
+    def get_id(self):
+        return "hk-court-news"
+
+    def get_desc(self):
+        return "庭刊"
+
+    def get_rss_links(self):
+        return [
+            ("庭刊", "https://hkcourtnews.com/feed/"),
+        ]
