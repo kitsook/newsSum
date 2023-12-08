@@ -18,8 +18,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import urllib3
 import ssl
+
+import urllib3
+from urllib3.exceptions import HTTPError, HTTPWarning
 from urllib3.util.ssl_ import create_urllib3_context
 
 from logger import logger
@@ -39,6 +41,7 @@ http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
 
 
 def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
+    """Fetch a http page"""
     the_headers = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
         "Pragma": "no-cache",
@@ -48,17 +51,17 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     }
 
     if cookies:
-        the_headers["Cookie"] = ";".join(
-            ["%s=%s" % (key, value) for (key, value) in cookies.items()]
+        the_headers["Cookie"] = "; ".join(
+            [f"{key}={value}" for (key, value) in cookies.items()]
         )
 
     if headers:
         the_headers.update(headers)
-
+    logger.info(the_headers)
     try:
         resp = http.request(method, url, headers=the_headers, body=body)
         return resp.data
-    except Exception as e:
+    except (HTTPError, HTTPWarning) as e:
         logger.exception("Problem reading http page: " + str(e))
 
     return None
