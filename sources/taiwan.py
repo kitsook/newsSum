@@ -20,16 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from lxml import html
 import json
 import traceback
 
-from logger import logger
-from fetcher import read_http_page
+from lxml import html
 
-from .base import BaseSource
-from .base import RSSBase
-from .base import RDFBase
+from fetcher import read_http_page
+from logger import logger
+
+from .base import BaseSource, RDFBase, RSSBase
 
 
 class LibertyTimes(BaseSource):

@@ -57,7 +57,7 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
 
     if headers:
         the_headers.update(headers)
-    logger.info(the_headers)
+
     try:
         resp = http.request(method, url, headers=the_headers, body=body)
         return resp.data
