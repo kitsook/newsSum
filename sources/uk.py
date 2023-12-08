@@ -24,6 +24,8 @@ from .base import RSSBase
 
 
 class TheIndependent(RSSBase):
+    """The Independent"""
+
     def get_id(self):
         return "the_independent"
 

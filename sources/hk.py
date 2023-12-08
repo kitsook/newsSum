@@ -20,17 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
-from lxml import html
-import traceback
 import json
+import re
+import traceback
 from urllib.parse import urlparse
 
-from logger import logger
-from fetcher import read_http_page
+from lxml import html
 
-from .base import BaseSource
-from .base import RSSBase
+from fetcher import read_http_page
+from logger import logger
+
+from .base import BaseSource, RSSBase
 
 
 class MingPaoHK(RSSBase):

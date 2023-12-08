@@ -22,10 +22,14 @@ import sys
 
 
 class MyLogger:
+    """Class for logging"""
+
     def info(self, msg):
+        """Log info """
         print(msg, file=sys.stderr)
 
     def exception(self, msg):
+        """Log exception"""
         print(msg, file=sys.stderr)
 
 
