@@ -20,12 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from abc import ABCMeta, abstractmethod
-from lxml import etree
 import traceback
+from abc import ABCMeta, abstractmethod
 
-from logger import logger
+from lxml import etree
+
 from fetcher import read_http_page
+from logger import logger
 
 
 class BaseSource:

@@ -22,12 +22,11 @@
 
 import json
 import traceback
-from logger import logger
-from fetcher import read_http_page
 
-from .base import BaseSource
-from .base import RSSBase
-from .base import RDFBase
+from fetcher import read_http_page
+from logger import logger
+
+from .base import BaseSource, RDFBase, RSSBase
 
 
 class BBCWorld(RSSBase):

@@ -20,18 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from lxml import html
-from lxml.html.soupparser import fromstring
-import traceback
 import json
+import traceback
 
 import urllib3
+from lxml import html
+from lxml.html.soupparser import fromstring
 
-from logger import logger
 from fetcher import read_http_page
+from logger import logger
 
-from .base import BaseSource
-from .base import RSSBase
+from .base import BaseSource, RSSBase
 
 
 class HackerNews(BaseSource):

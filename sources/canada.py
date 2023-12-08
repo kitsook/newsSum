@@ -21,17 +21,17 @@
 # SOFTWARE.
 
 import re
-from datetime import datetime, timedelta
-from lxml import html
 import traceback
-import pytz
 from abc import ABCMeta, abstractmethod
+from datetime import datetime, timedelta
 
-from logger import logger
+import pytz
+from lxml import html
+
 from fetcher import read_http_page
+from logger import logger
 
-from .base import BaseSource
-from .base import RSSBase
+from .base import BaseSource, RSSBase
 
 
 class MingPaoVancouver(BaseSource):
