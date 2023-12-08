@@ -203,11 +203,11 @@ class HeadlineDaily(RSSBase):
         return "stheadline"
 
     def get_desc(self):
-        return "頭條日報"
+        return "星島頭條"
 
     def get_rss_links(self):
         return [
-            ("頭條日報", "http://hd.stheadline.com/rss/news/daily/"),
+            ("星島頭條", "https://www.stheadline.com/rss"),
         ]
 
 
