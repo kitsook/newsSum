@@ -317,12 +317,12 @@ class HkEt(BaseSource):
     def get_articles(self):
         result_list = []
         sections = [
-            ("即市財經", "https://inews.hket.com", "/sran009/即市財經", 2),
+            ("即市財經", "https://inews.hket.com", "/sran009/即市財經", 1),
             ("理財", "https://wealth.hket.com", "/", 1),
-            ("科技", "https://inews.hket.com", "/sran010/科技", 2),
+            ("科技", "https://inews.hket.com", "/sran010/科技", 1),
             ("中國", "https://china.hket.com", "/", 1),
-            ("國際", "https://inews.hket.com", "/sran011/國際", 2),
-            ("商業", "https://inews.hket.com", "/sran012/商業", 2),
+            ("國際", "https://inews.hket.com", "/sran011/國際", 1),
+            ("商業", "https://inews.hket.com", "/sran012/商業", 1),
         ]
         seen_url = {}
 
