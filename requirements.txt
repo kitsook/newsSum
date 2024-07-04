@@ -4,4 +4,4 @@ lxml==5.2.2
 beautifulsoup4==4.12.3
 pytz==2024.1
 six==1.16.0
-urllib3[brotli]==2.2.0
+urllib3[brotli]==2.2.2
