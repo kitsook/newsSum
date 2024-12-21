@@ -24,7 +24,7 @@ export default class NewsTab extends Vue {
   @Prop({ default: "" }) title!: string;
   @Prop({ default: "" }) srcUrl!: string;
   @Prop({ default: false }) isActive!: boolean;
-  @Prop({ default: false}) isSuggestionAvail!: boolean;
+  @Prop({ default: false }) isSuggestionAvail!: boolean;
 
   newsArticles = [] as NewsArticle[];
   tabIsActive = false;

@@ -39,7 +39,7 @@ export default class NewsPages extends Vue {
   @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
   @Prop({ default: "" }) appVersion!: string;
   @Prop({ default: ''}) showTab!: string;
-  @Prop({ default: false}) isSuggestionAvail!: boolean;
+  @Prop({ default: false }) isSuggestionAvail!: boolean;
 
   showingSources = [] as NewsSource[];
   showTabIndex = 0;

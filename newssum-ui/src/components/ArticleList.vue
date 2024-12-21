@@ -59,7 +59,7 @@ import Loading from "../components/Loading.vue";
 })
 export default class ArticleList extends Vue {
   @Prop({ default: [] as NewsArticle[] }) articles!: NewsArticle[];
-  @Prop({ default: false}) isSuggestionAvail!: boolean;
+  @Prop({ default: false }) isSuggestionAvail!: boolean;
 
   re = /(<([^>]+)>)/g
 

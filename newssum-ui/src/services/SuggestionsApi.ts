@@ -14,7 +14,12 @@ export default class SuggestionsApi {
         return true;
       }
     } catch (err: unknown) {
-      Logger.log("Failed to fetch suggestions: ");
+      Logger.log("Failed to check if suggestion is available: ");
+      if (typeof err === "string") {
+        Logger.log(err);
+      } else if (err instanceof Error) {
+        Logger.log(err.message);
+      }
     }
     return false;
   }
