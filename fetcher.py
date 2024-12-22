@@ -48,7 +48,12 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
         "Cache-Control": "no-cache",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Encoding": "br;q=1.0, gzip;q=0.5, *;q=0.1",
+        "Accept-Language": "*",
         "Sec-Ch-Ua": '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        "Sec-Ch-Ua-Platform": '"Linux"',
+        "Sec-Fetch-User": "?1",
+        "Priority": "u=0, i",
+        "Sec-Ch-Ua-Mobile": "?0",
     }
 
     if cookies:
