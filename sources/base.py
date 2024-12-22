@@ -44,6 +44,10 @@ class BaseSource:
     def get_articles(self):
         pass
 
+    @abstractmethod
+    def get_icon_url(self):
+        return None
+
     def create_section(self, title):
         return {"title": title}
 

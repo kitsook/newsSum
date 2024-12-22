@@ -135,6 +135,9 @@ class MingPaoVancouver(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://news.mingpao.com/favicon.ico"
+
 
 class SingTaoCanada(BaseSource):
     __metaclass__ = ABCMeta
@@ -406,6 +409,9 @@ class CBCNews(RSSBase):
             ("Aboriginal", "http://www.cbc.ca/cmlink/rss-cbcaboriginal"),
         ]
 
+    def get_icon_url(self):
+        return "https://rss.cbc.ca/favicon.ico"
+
 
 class MingPaoToronto(BaseSource):
     def get_id(self):
@@ -504,6 +510,9 @@ class MingPaoToronto(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://news.mingpao.com/favicon.ico"
+
 
 class TorontoStar(RSSBase):
     def get_id(self):
@@ -514,27 +523,15 @@ class TorontoStar(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("Top stories", "http://www.thestar.com/feeds.topstories.rss"),
-            (
-                "Vancouver stories",
-                "http://www.thestar.com/feeds.articles.vancouver.rss",
-            ),
-            ("Calgary stories", "http://www.thestar.com/feeds.articles.calgary.rss"),
-            ("Edmonton stories", "http://www.thestar.com/feeds.articles.edmonton.rss"),
-            ("Halifax stories", "http://www.thestar.com/feeds.articles.halifax.rss"),
-            ("News", "http://www.thestar.com/feeds.articles.news.rss"),
-            ("World", "http://www.thestar.com/feeds.articles.news.world.rss"),
-            ("Your Toronto", "http://www.thestar.com/feeds.articles.yourtoronto.rss"),
-            ("Opinion", "http://www.thestar.com/feeds.articles.opinion.rss"),
-            ("Sports", "http://www.thestar.com/feeds.articles.sports.rss"),
-            ("Business", "http://www.thestar.com/feeds.articles.business.rss"),
-            (
-                "Entertainment",
-                "http://www.thestar.com/feeds.articles.entertainment.rss",
-            ),
-            ("Life", "http://www.thestar.com/feeds.articles.life.rss"),
-            ("Autos", "http://www.thestar.com/feeds.articles.autos.rss"),
+            ("Canada", "https://www.thestar.com/search/?f=rss&t=article&c=news/canada*&l=50&s=start_time&sd=desc"),
+            ("World", "https://www.thestar.com/search/?f=rss&t=article&c=news/world*&l=50&s=start_time&sd=desc"),
+            ("GTA", "https://www.thestar.com/search/?f=rss&t=article&c=news/gta*&l=50&s=start_time&sd=desc"),
+            ("Business", "https://www.thestar.com/search/?f=rss&t=article&c=business*&l=50&s=start_time&sd=desc"),
+            ("Entertainment", "https://www.thestar.com/search/?f=rss&t=article&c=entertainment*&l=50&s=start_time&sd=desc"),
         ]
+
+    def get_icon_url(self):
+        return "https://www.thestar.com/favicon.ico"
 
 
 # class NationalPost(RSSBase):

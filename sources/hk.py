@@ -55,6 +55,9 @@ class MingPaoHK(RSSBase):
             ("偵查報道", "http://news.mingpao.com/rss/pns/s00287.xml"),
         ]
 
+    def get_icon_url(self):
+        return "https://news.mingpao.com/favicon.ico"
+
 
 class OrientalDaily(BaseSource):
     def get_id(self):
@@ -134,6 +137,9 @@ class OrientalDaily(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "http://orientaldaily.on.cc/favicon.ico"
+
 
 class SingPao(BaseSource):
     def get_id(self):
@@ -210,6 +216,9 @@ class HeadlineDaily(RSSBase):
             ("星島頭條", "https://www.stheadline.com/rss"),
         ]
 
+    def get_icon_url(self):
+        return "https://www.stheadline.com/favicon.ico"
+
 
 class TaKungPao(BaseSource):
     def get_id(self):
@@ -269,6 +278,9 @@ class TaKungPao(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://www.takungpao.com.hk/favicon.ico"
+
 
 class Scmp(RSSBase):
     def get_id(self):
@@ -287,6 +299,9 @@ class Scmp(RSSBase):
             ("Sport", "https://www.scmp.com/rss/95/feed"),
         ]
 
+    def get_icon_url(self):
+        return "https://www.scmp.com/favicon.ico"
+
 
 class Etnet(RSSBase):
     def get_id(self):
@@ -302,6 +317,9 @@ class Etnet(RSSBase):
             ("股市傳聞 	", "http://www.etnet.com.hk/www/tc/news/rss.php?section=rumour"),
             ("股票評論", "http://www.etnet.com.hk/www/tc/news/rss.php?section=commentary"),
         ]
+
+    def get_icon_url(self):
+        return "http://www.etnet.com.hk/favicon.ico"
 
 
 class HkEt(BaseSource):
@@ -358,6 +376,9 @@ class HkEt(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://inews.hket.com/favicon.ico"
+
 
 class HKFP(RSSBase):
     def get_id(self):
@@ -370,6 +391,9 @@ class HKFP(RSSBase):
         return [
             ("Hong Kong Free Press", "https://www.hongkongfp.com/feed/"),
         ]
+
+    def get_icon_url(self):
+        return "https://hongkongfp.com/favicon.ico"
 
 
 class HKEJ(BaseSource):
@@ -415,6 +439,9 @@ class HKEJ(BaseSource):
             )
 
         return result_list
+
+    def get_icon_url(self):
+        return "https://www1.hkej.com/favicon.ico"
 
 
 class AM730(BaseSource):
@@ -473,6 +500,9 @@ class AM730(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://www.am730.com.hk/favicon.ico"
+
 
 class PointsMedia(RSSBase):
     def get_id(self):
@@ -485,6 +515,10 @@ class PointsMedia(RSSBase):
         return [
             ("最新", "https://points-media.com/feed/"),
         ]
+
+    def get_icon_url(self):
+        return "https://points-media.com/favicon.ico"
+
 
 class PhotonMedia(RSSBase):
     def get_id(self):
@@ -510,6 +544,10 @@ class ChannelC(RSSBase):
             ("Channel C HK", "https://channelchk.com/rss"),
         ]
 
+    def get_icon_url(self):
+        return "https://channelchk.com/favicon.ico"
+
+
 class HkCourtNews(RSSBase):
     def get_id(self):
         return "hk-court-news"
@@ -521,3 +559,6 @@ class HkCourtNews(RSSBase):
         return [
             ("庭刊", "https://hkcourtnews.com/feed/"),
         ]
+
+    def get_icon_url(self):
+        return "https://hkcourtnews.com/favicon.ico"

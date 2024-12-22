@@ -8,6 +8,7 @@
           :key="source.path"
           :title="source.desc"
           :srcUrl="source.path"
+          :icon="source.icon"
           :isActive="showTab === source.path"
           :isSuggestionAvail="isSuggestionAvail" />
     </b-tabs>

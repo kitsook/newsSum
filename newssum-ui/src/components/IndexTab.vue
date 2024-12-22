@@ -10,7 +10,7 @@
             :value="source.path"
             v-model="checkedSources"
             @change="changeSubscription()">
-        {{ source.desc }}
+        <img :src="source.icon" v-if="source.icon" width="16" height="16" /><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" v-else height="16" width="16" />&nbsp;{{ source.desc }}
       </li>
     </ul>
   </b-tab>

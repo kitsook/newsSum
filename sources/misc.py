@@ -79,6 +79,9 @@ class HackerNews(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "http://www.daemonology.net/favicon.ico"
+
 
 class RFACantonese(BaseSource):
     def get_id(self):
@@ -136,6 +139,9 @@ class RFACantonese(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://www.rfa.org/favicon.ico"
+
 
 class RFACantoneseRSS(RSSBase):
     def get_id(self):
@@ -149,6 +155,9 @@ class RFACantoneseRSS(RSSBase):
             ("RFA 自由亞洲電台粵語部", "https://www.rfa.org/cantonese/rss2.xml"),
         ]
 
+    def get_icon_url(self):
+        return "https://www.rfa.org/favicon.ico"
+
 
 class RFAEnglishRSS(RSSBase):
     def get_id(self):
@@ -161,6 +170,9 @@ class RFAEnglishRSS(RSSBase):
         return [
             ("Radio Free Asia", "https://www.rfa.org/english/rss2.xml"),
         ]
+
+    def get_icon_url(self):
+        return "https://www.rfa.org/favicon.ico"
 
 
 class TheInitium(BaseSource):
@@ -216,3 +228,6 @@ class TheInitium(BaseSource):
             )
 
         return result_list
+
+    def get_icon_url(self):
+        return "https://theinitium.com/favicon.ico"

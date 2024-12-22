@@ -43,6 +43,9 @@ class BBCWorld(RSSBase):
             ("Asia", "http://feeds.bbci.co.uk/news/world/asia/rss.xml"),
         ]
 
+    def get_icon_url(self):
+        return "https://www.bbc.com/favicon.ico"
+
 
 class FTChinese(RSSBase):
     def get_id(self):
@@ -60,6 +63,9 @@ class FTChinese(RSSBase):
             ("《馬丁 沃爾夫》", "http://big5.ftchinese.com/rss/column/007000012"),
         ]
 
+    def get_icon_url(self):
+        return "http://big5.ftchinese.com/favicon.ico"
+
 
 class DeutscheWelle(RDFBase):
     def get_id(self):
@@ -73,6 +79,9 @@ class DeutscheWelle(RDFBase):
             ("德國之聲", "http://rss.dw.com/rdf/rss-chi-all"),
         ]
 
+    def get_icon_url(self):
+        return "https://rss.dw.com/favicon.ico"
+
 
 class WSJChinese(RSSBase):
     def get_id(self):
@@ -85,6 +94,9 @@ class WSJChinese(RSSBase):
         return [
             ("華爾街日報", "https://cn.wsj.com/zh-hant/rss"),
         ]
+
+    def get_icon_url(self):
+        return "https://www.wsj.com/favicon.ico"
 
 
 class AP(BaseSource):
@@ -139,6 +151,9 @@ class AP(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://apnews.com/favicon.ico"
+
 
 class Reuters(RSSBase):
     def get_id(self):
@@ -153,4 +168,11 @@ class Reuters(RSSBase):
                 "Reuters",
                 "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com",
             ),
+            (
+                "Reuters Agency",
+                "https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best"
+            ),
         ]
+
+    def get_icon_url(self):
+        return "https://www.reuters.com/favicon.ico"

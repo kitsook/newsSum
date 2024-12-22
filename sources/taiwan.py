@@ -103,6 +103,9 @@ class UnitedDailyNewsRSS(RSSBase):
             ("數位", "http://udn.com/rssfeed/news/2/7226?ch=news"),
         ]
 
+    def get_icon_url(self):
+        return "https://udn.com/favicon.ico"
+
 
 class MoneyUnitedDailyNewsRSS(RSSBase):
     def get_id(self):
@@ -180,6 +183,9 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
 
         return result_list
 
+    def get_icon_url(self):
+        return "https://money.udn.com/favicon.ico"
+
 
 class TaipeiTimes(RDFBase):
     def get_id(self):
@@ -244,6 +250,9 @@ class ChinaTimes(BaseSource):
             )
 
         return result_list
+
+    def get_icon_url(self):
+        return "https://www.chinatimes.com/favicon.ico"
 
 
 class CommercialTimes(RSSBase):
