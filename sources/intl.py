@@ -25,6 +25,7 @@ import traceback
 
 from fetcher import read_http_page
 from logger import logger
+from lxml import html
 
 from .base import BaseSource, RDFBase, RSSBase
 
@@ -95,43 +96,41 @@ class AP(BaseSource):
 
     def get_articles(self):
         result_list = []
-        api_url_base = "https://storage.googleapis.com/afs-prod/feeds"
+
+        root_url = "https://apnews.com"
         sections = [
-            ("World News", "/world-news.json.gz"),
-            ("U.S. News", "/us-news.json.gz"),
-            ("Politics", "/politics.json.gz"),
-            ("Sports", "/sports.json.gz"),
-            ("Entertainment", "/sports.json.gz"),
-            ("Business", "/business.json.gz"),
-            ("Technology", "/technology.json.gz"),
-            ("Health", "/health.json.gz"),
-            ("Science", "/science.json.gz"),
-            ("Lifestyle", "/lifestyle.json.gz"),
+            ("World", "/world-news"),
+            ("US", "/us-news"),
+            ("Politics", "/politics"),
+            ("Sports", "/sports"),
+            ("Entertainment", "/entertainment"),
+            ("Business", "/business"),
+            ("Science", "/science"),
         ]
         try:
-            for title, section_url in sections:
+            for title, base_url in sections:
                 # for each section, insert a title...
                 result_list.append(self.create_section(title))
                 # ... then get page and parse
-                resp = json.loads(
-                    read_http_page(
-                        api_url_base + section_url,
-                        method="GET",
-                        headers={"Accept": "application/json, text/plain, */*"},
-                    )
-                )
+                doc = html.document_fromstring(read_http_page(root_url + base_url))
+                for article in doc.xpath(
+                    '//*[self::h1 or self::h2 or self::h3][contains(@class, "PagePromo-title")]'
+                    ):
+                    the_link = None
+                    the_text = None
 
-                for card in resp["cards"]:
-                    for article in card["contents"]:
-                        article_title = article["headline"]
-                        article_url = article["localLinkUrl"]
-                        article_abstract = article["firstWords"]
-                        if article_title and article_url:
-                            result_list.append(
-                                self.create_article(
-                                    article_title.strip(), article_url, article_abstract
-                                )
-                            )
+                    link_element = article.xpath('a[contains(@class, "Link")]')
+                    if link_element and len(link_element) > 0:
+                        the_link = link_element[0].xpath("@href")[0]
+
+                    text_element = article.xpath('a/span[contains(@class, "PagePromoContentIcons-text")]')
+                    if text_element and len(text_element) > 0:
+                        the_text = text_element[0].text
+
+                    if the_link and the_text:
+                        result_list.append(
+                            self.create_article(the_text.strip(), the_link)
+                        )
         except Exception as e:
             logger.exception("Problem processing AP: " + str(e))
             logger.exception(
