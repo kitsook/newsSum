@@ -4,6 +4,7 @@
         :subscriptions="subscriptions"
         :appVersion="appVersion"
         @subscriptionChanged="subscriptionChanged"
+        :isSuggestionAvail="this.isSuggestionAvail"
         :showTab="showTab" />
   </div>
 </template>
@@ -13,6 +14,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import NewsPages from './components/NewsPages.vue';
 import Subscriptions from './services/Subscriptions';
 import NewsSumApi from "./services/NewsSumApi";
+import SuggestionsApi from "./services/SuggestionsApi";
 import Logger from "./services/Logger";
 import NewsSource from "./models/NewsSource";
 
@@ -26,9 +28,14 @@ export default class App extends Vue {
   subscriptions = new Set<string>();
   appVersion = "";
   showTab = Subscriptions.getLastRead();
+  isSuggestionAvail = false;
 
   created() {
     this.subscriptions = Subscriptions.subscriptions;
+
+    SuggestionsApi.isAvailable().then((isAvailable) => {
+      this.isSuggestionAvail = isAvailable;
+    });
 
     NewsSumApi.getSources().then((sources) => {
       Logger.log("Loaded news sources");

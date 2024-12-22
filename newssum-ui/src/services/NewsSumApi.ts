@@ -24,7 +24,7 @@ export default class NewsSumApi {
         Logger.log(err.message);
       }
     }
-    return Promise.reject("Failed to retrieve news sources");
+    return Promise.reject(new Error("Failed to retrieve news sources"));
   }
 
   static async getArticles(path: string): Promise<NewsArticle[]> {
@@ -47,7 +47,7 @@ export default class NewsSumApi {
       }
     }
 
-    return Promise.reject("Failed to load content");
+    return Promise.reject(new Error("Failed to load content"));
   }
 
   static async getAppProperties(): Promise<Map<string, string>> {
@@ -69,6 +69,6 @@ export default class NewsSumApi {
           Logger.log(err.message);
         }
       }
-      return Promise.reject("Failed to retrieve app properties");
+      return Promise.reject(new Error("Failed to retrieve app properties"));
   }
 }

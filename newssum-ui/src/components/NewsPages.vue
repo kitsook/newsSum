@@ -8,7 +8,8 @@
           :key="source.path"
           :title="source.desc"
           :srcUrl="source.path"
-          :isActive="showTab === source.path" />
+          :isActive="showTab === source.path"
+          :isSuggestionAvail="isSuggestionAvail" />
     </b-tabs>
     <div
         class="footer"
@@ -38,6 +39,7 @@ export default class NewsPages extends Vue {
   @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
   @Prop({ default: "" }) appVersion!: string;
   @Prop({ default: ''}) showTab!: string;
+  @Prop({ default: false }) isSuggestionAvail!: boolean;
 
   showingSources = [] as NewsSource[];
   showTabIndex = 0;

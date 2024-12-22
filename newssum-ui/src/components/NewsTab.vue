@@ -1,7 +1,8 @@
 <template>
   <b-tab :title="title" :active.sync="tabIsActive">
     <Loading v-if="newsArticles.length == 0" />
-    <ArticleList :articles="newsArticles" />
+    <ArticleList :articles="newsArticles"
+      :isSuggestionAvail="isSuggestionAvail"/>
   </b-tab>
 </template>
 
@@ -23,6 +24,7 @@ export default class NewsTab extends Vue {
   @Prop({ default: "" }) title!: string;
   @Prop({ default: "" }) srcUrl!: string;
   @Prop({ default: false }) isActive!: boolean;
+  @Prop({ default: false }) isSuggestionAvail!: boolean;
 
   newsArticles = [] as NewsArticle[];
   tabIsActive = false;

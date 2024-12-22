@@ -43,11 +43,12 @@ http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
 def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     """Fetch a http page"""
     the_headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
         "Pragma": "no-cache",
         "Cache-Control": "no-cache",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Encoding": "br;q=1.0, gzip;q=0.5, *;q=0.1",
+        "Sec-Ch-Ua": '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
     }
 
     if cookies:
