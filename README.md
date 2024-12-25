@@ -27,3 +27,32 @@ cd ..
 # run local server
 python main.py
 ```
+
+## News Suggestions
+
+Optionally, setup a suggestion service to return additional articles to display.
+The service should expose the following endpoints:
+
+- [GET] /health
+    - return ok status (2xx) if suggestion service is available
+
+- [POST] /search
+    - search for suggestions of a given string
+    - example payload: `{query_str: "tell me more about this"}`
+    - response:
+    ```
+    {
+        "result": [
+            {
+                "abstract": "......",
+                "title": "......",
+                "url": "......",
+            },
+            {
+                ......
+            }
+        ]
+    }
+    ```
+
+URL to the suggestion service is defined in `newssum-ui/src/services/SuggestionsApi.ts`
