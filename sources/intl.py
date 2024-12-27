@@ -274,3 +274,21 @@ class CNBC(RSSBase):
 
     def get_icon_url(self):
         return "https://www.cnbc.com/favicon.ico"
+
+class TheWashingtonTimes(RSSBase):
+    def get_id(self):
+        return "washingtontimes"
+
+    def get_desc(self):
+        return "The Washington Times"
+
+    def get_rss_links(self):
+        return [
+            (
+                "News",
+                "https://www.washingtontimes.com/rss/headlines/news/",
+            ),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.washingtontimes.com/favicon.ico"
