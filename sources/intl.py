@@ -176,3 +176,101 @@ class Reuters(RSSBase):
 
     def get_icon_url(self):
         return "https://www.reuters.com/favicon.ico"
+
+class CNBC(RSSBase):
+    def get_id(self):
+        return "cnbc"
+
+    def get_desc(self):
+        return "CNBC"
+
+    def get_rss_links(self):
+        return [
+            (
+                "Top News",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114",
+            ),
+            (
+                "World News",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362",
+            ),
+            (
+                "US News",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15837362",
+            ),
+            (
+                "Asia News",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19832390",
+            ),
+            (
+                "Europe News",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19794221",
+            ),
+            (
+                "Business",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147",
+            ),
+            (
+                "Earnings",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839135",
+            ),
+            (
+                "Commentary",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100370673",
+            ),
+            (
+                "Economy",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258",
+            ),
+            (
+                "Finance",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
+            ),
+            (
+                "Technology",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19854910",
+            ),
+            (
+                "Politics",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000113",
+            ),
+            (
+                "Health Care",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000108",
+            ),
+            (
+                "Real Estate",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000115",
+            ),
+            (
+                "Wealth",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001054",
+            ),
+            (
+                "Autos",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000101",
+            ),
+            (
+                "Energy",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=19836768",
+            ),
+            (
+                "Media",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000110",
+            ),
+            (
+                "Retail",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000116",
+            ),
+            (
+                "Travel",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000739",
+            ),
+            (
+                "Small Business",
+                "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=44877279",
+            ),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.cnbc.com/favicon.ico"
