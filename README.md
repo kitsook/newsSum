@@ -55,4 +55,4 @@ The service should expose the following endpoints:
     }
     ```
 
-URL to the suggestion service is defined in `newssum-ui/src/services/SuggestionsApi.ts`
+URL to the suggestion service is defined in [newssum-ui/src/services/SuggestionsApi.ts](newssum-ui/src/services/SuggestionsApi.ts)
