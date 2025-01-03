@@ -2,9 +2,11 @@ import Logger from "./Logger";
 import Suggestion from "../models/Suggestion";
 
 export default class SuggestionsApi {
+  static readonly baseUrl = "https://news-sum-sug.uc.r.appspot.com";
+
   static async isAvailable(): Promise<boolean> {
     try {
-      const response = await fetch("https://news-sum-sug.uc.r.appspot.com/health", {
+      const response = await fetch(SuggestionsApi.baseUrl + "/health", {
         "headers": {
           "Content-Type": "application/json",
         },
@@ -26,7 +28,7 @@ export default class SuggestionsApi {
 
   static async getSuggestions(query_str: string): Promise<Suggestion[]> {
     try {
-      const response = await fetch("https://news-sum-sug.uc.r.appspot.com/search", {
+      const response = await fetch(SuggestionsApi.baseUrl + "/search", {
         "headers": {
           "Content-Type": "application/json",
         },
