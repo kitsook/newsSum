@@ -292,3 +292,41 @@ class TheWashingtonTimes(RSSBase):
 
     def get_icon_url(self):
         return "https://www.washingtontimes.com/favicon.ico"
+
+class Npr(RSSBase):
+    def get_id(self):
+        return "npr"
+
+    def get_desc(self):
+        return "NPR"
+
+    def get_rss_links(self):
+        return [
+            (
+                "News",
+                "https://feeds.npr.org/1001/rss.xml",
+            ),
+            (
+                "World",
+                "https://feeds.npr.org/1004/rss.xml",
+            ),
+            (
+                "Business",
+                "https://feeds.npr.org/1006/rss.xml",
+            ),
+            (
+                "Science",
+                "https://feeds.npr.org/1007/rss.xml",
+            ),
+            (
+                "Economy",
+                "https://feeds.npr.org/1017/rss.xml",
+            ),
+            (
+                "Technology",
+                "https://feeds.npr.org/1019/rss.xml",
+            ),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.npr.org/favicon.ico"
