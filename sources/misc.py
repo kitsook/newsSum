@@ -92,15 +92,19 @@ class RFACantonese(BaseSource):
 
     def get_articles(self):
         result_list = []
-        base_url = "https://www.rfa.org/cantonese"
+        site_url = "https://www.rfa.org/"
+        base_url = site_url + "cantonese"
 
         sections = [
-            ("新聞", base_url + "/news"),
-            ("港澳台新聞", base_url + "/news/htm"),
-            ("評論", base_url + "/commentaries"),
-            ("聚言堂", base_url + "/talkshows"),
-            ("專題", base_url + "/features/hottopic"),
-            ("多媒體", base_url + "/multimedia"),
+            ("港澳台新聞", base_url + "/htm"),
+            ("世界新聞", base_url + "/world"),
+            ("專題", base_url + "/in-depth"),
+            ("司法", base_url + "/law-justice"),
+            ("觀點", base_url + "/opinion"),
+            ("事實查核", base_url + "/fact-check"),
+            ("科技", base_url + "/technology"),
+            ("影片", base_url + "/video"),
+
         ]
 
         try:
@@ -110,21 +114,20 @@ class RFACantonese(BaseSource):
                 # ... then parse the page and extract article links
                 doc = fromstring(read_http_page(url))
                 for topic in doc.xpath(
-                    '//div[contains(@id, "topstorywidefull")]'
-                    '|//div[contains(@class, "sectionteaser")]'
-                    '|//div[contains(@class, "single_column_teaser")]'
-                    '|//div[contains(@class, "two_featured")]'
+                    '//article/div[contains(@class, "c-sm-text")]'
+                    '|//article/div[contains(@class, "c-md-text")]'
+                    '|//article/div/div[contains(@class, "c-xl-text")]'
                 ):
                     title = topic.xpath("h2/a")
                     intro = topic.xpath("p")
 
                     if title:
-                        title_text = title[0].xpath("span")
+                        title_text = title[0].text
 
                         result_list.append(
                             self.create_article(
-                                title_text[0].text.strip(),
-                                title[0].get("href"),
+                                title_text.strip(),
+                                site_url + title[0].get("href"),
                                 intro[0].text.strip()
                                 if intro and intro[0].text
                                 else None,
