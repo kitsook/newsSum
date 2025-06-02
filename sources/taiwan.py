@@ -255,19 +255,6 @@ class ChinaTimes(BaseSource):
         return "https://www.chinatimes.com/favicon.ico"
 
 
-class CommercialTimes(RSSBase):
-    def get_id(self):
-        return "commercialtimes"
-
-    def get_desc(self):
-        return "工商時報"
-
-    def get_rss_links(self):
-        return [
-            ("財經要聞", "https://ctee.com.tw/feed"),
-        ]
-
-
 class Storm(BaseSource):
     def get_id(self):
         return "storm"
