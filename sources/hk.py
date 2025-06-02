@@ -393,7 +393,7 @@ class HKFP(RSSBase):
         ]
 
     def get_icon_url(self):
-        return "https://hongkongfp.com/favicon.ico"
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAA6lBMVEUBSpkASpkDSZsATJYASp8CSZ8ATJIAS5gHRaAGR5kATZMATo0ARpQARZoARZ4AQZ8ARJMCRqguX5U7aZskWJoASJFKcKcSUowAQYpWfaYGUJlQeKRVep9MfaEAPaCQs9C61uQAPJB5nLfO6PQAPXj1//9HZJkANZmnvtPN4fUAK4Wot8zo9fmvzuC7y9yp0OsANHvK29/Z5vTE4eiWrcW90NkANpA2Wo2yw816lrYAInZZjLO6vdFUfJdMZJ9ke5YATJg6b6uVr8IAM4Hw+P+busauxMmXw9y73ekAMaGRqMp3o8MoYadIcp1yIsk7AAABNklEQVR4Ae2KxWFcQRBEq3rw8/Kame0gJgA5aEMCBjEza1nMOuomOOo1dxUeuAXktfuiRBShjXUGyjofa6VgjYtj46w2TABRTtLMMU+hldUeUZEXJRMV6YWhDFCgvWYLlTMhNxvkfgRyuey5ZzZEjghjqyRbFV7jyOLfGY6EClG9bj+gSFHu6oU+0hPftXAn7qBOgdKH9AmzjSdbTlJWOl78+tZJN9veetzuHqgTjfBT4SB9tYUqD0CcPKd57P1O8z33TnEAOfmdIIefTbA6P9xeefN1cS3p/O1hvTV+3AcgEqM13R3eW8djfDt+P1jFWX92H/J5c7GlTqtnCKYehhr1tNaoP47x+nGlWk1E0u9DqUgIDnBSD1mmJM+UDykjlefiXSjpIAIIriBBAgR5VQRI4oF75RzAclTMSCwV7QAAAABJRU5ErkJggg=="
 
 
 class HKEJ(BaseSource):
@@ -531,6 +531,10 @@ class PhotonMedia(RSSBase):
         return [
             ("光傳媒", "https://photonmedia.net/feed/"),
         ]
+
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAgVBMVEVHcEwFBQUXFxcRERENDQ0GBgYGBgYFBQUHBwcNDQ0HBweampoJCQkLCwsLCwsLCwsICAj////09PQAAAA/Pz/////ExMQrKyshISGLi4sHBwdISEhmZma8vLx8fHxVVVUXFxezs7Opqak3NzeEhITw8PDk5OTY2NgQEBD29vZxcXHMexriAAAAE3RSTlMAzx43XOK/8dhHjvqmbJ9pqhyWyhxdYAAAAT9JREFUOI2VU9t2gyAQJKlRU9Om6YKgcvGuyf9/YGOUmzk8dB44sjPu7AKLkMHxekkTgCT9+Tqid0QpODhFO/rjBDskZ5f/tERpvr4NfRsqE51rq81umyDmOdXBmhm+wAeTH2f6R9ZZHuDyqm/Z0cfmTSuHB1gqXeuvN6JTLg8JQmdd/WqO+WuT6UQRiv0GK7msrdLBA/KPp1TFc224jfgChnuBZ+HwvoAp2UxSSAgIykq24zC1igUElLcTIYOQ+E1QzjWjVZGP5Ilhytu2EfkKz0IV452MLQ9ZlLRpxDD1qg4IoOBcZqSiEBD0GCimYw+eIHb55bwr4vIHc1nw0M0J4Qgifd2grPPdHmWiHwx0TmuUmMs46yddz65xR7Yc28OOYQ92F2uFKKSAhhSW9wbH2OS//xm9t+FN98MbHv8/0EFDmNgvo7UAAAAASUVORK5CYII="
+
 
 class ChannelC(RSSBase):
     def get_id(self):

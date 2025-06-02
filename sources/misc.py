@@ -191,4 +191,4 @@ class TheInitium(RSSBase):
         ]
 
     def get_icon_url(self):
-        return "https://theinitium.com/favicon.ico"
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAKlBMVEVHcEwos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8Mos8MhE2vAAAAADXRSTlMA7WfCQFAxEt+dh/aaB6A6SwAAAMNJREFUKJF9k1kSxCAIRAE1bsP9rzugcSlD2T8xPOmAEgCgxPgDeIpDZnTlgSXHqpp4CmkwWrFMIVCWdE6xw5kRxvZHvXxb8gcC+EFxQL/VESuzOv8GhF1RvqvP+nF9nWlWdDDtEKU2AcGfqMUfKLrDEnKR9GzDzE42kA1JLI1auoJ0d4VX22tB11Zas4Z6HCXdUDs+HQXj9N6D15OPJxtXpot60HHZsE3F5rkC+uJmzduAdZtkj+YrmoO2D/Xq+vs7/AG3ngrWRgkWkgAAAABJRU5ErkJggg=="

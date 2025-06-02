@@ -44,3 +44,6 @@ class TheIndependent(RSSBase):
             ("Travel", "https://www.independent.co.uk/travel/rss"),
             ("Money", "https://www.independent.co.uk/money/rss"),
         ]
+
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAS1BMVEVHcEzsHzHuKzvsHzHtIDHsHS/sHjDsHC/sIDLsHC//+/vsGS3+6+383eDrAR76w8b70tTvSVTsDyb3qq71lpvyeoHuMD/xYmvrAAceMjFuAAAACnRSTlMAwA3/LqHffkpiO8fdzwAAAUBJREFUKJFtkouOhSAMRFVQoAXKW///SxcQH9fsJBrCSVtn7DQ94koIxad/JGc2NMsP4ht7afspV+wj8TDh8Qch4nrX+cxeFIv3fh+1vOREAR+256g9nnO3PWpHxeJgOUWdLGPdQ8jGGTKxdBr2FJ076klVOCMzjozWYE9GBDk0QxXWi+ycAwd0sOCj0wBHn7BMvL7tHmupgWx9IgAazuTpH0Pq1EcAnQ68khDn4aA2VkN7yJ536wWxkDPQuXGj7XrHim1cba012rstv5Kxx+5qofbhupHNSlfI0FX9h4GXGsKYaUybSFAwp964hSDPwhRjylZnY2oc0D5J9eAbLMxaT6bFYyj2nM9fdn1AporSfljb2o5NGlZZ1BBvH/cqrMOMDRdi82uJ2Efr9BL/Zd/NVffmbuqfnV+kWFchl+fmD510FLQDWTohAAAAAElFTkSuQmCC"

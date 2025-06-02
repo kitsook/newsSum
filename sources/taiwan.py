@@ -79,6 +79,9 @@ class LibertyTimes(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAVCAMAAABi3H5uAAAAmVBMVEWkAgKnAgKuAgKxAgK0AgK3AgK5AgK7AgK9AgK+AgK/AgK4AgLBAgLEAgKlAgLKAACvAgLLAADFJyfLPDzNFBTTQ0PTPDzQJyfKMjLjpqb////ZYGD89vbhmZnjkJDVVFTyzs767+/NAADOAAD019fvxcXnoKD13NzsuLj56enTKyvUMzPkk5Prr6/hhYXUS0v23NzZbm7OGhrX+W8fAAABQElEQVR4AWzR1ZaEMAwAUJxSYENHcBtscPv/j9u065LXe+KSJMmKomq6YRKLYljENHRNVRRZ4iaj2SahjivCocS0UWXUF2HEEgQg2CLvKiueppuYhsIwhFOia57CUUW7XF243X3/HgQ+QHihpq4iYqJNaBS7LInjOM3yuHDLiIrCEk+0nOwBVc2yBqr8kbpt5liYKpA4LmJd192zqvN+6PrMdYhAzf6J7Ri3iFhXkTzNQOyGmz8JnEvWxRwNzeNoYWaaxkvVNTyzZgOiJVBkAlQV1q1qEQDvmW89oWD1WyR17cNF9PTep80zrNiv1bI+C2i2Xkz7sWefzJO/t6yMlnEeju5jT4/XzdaO9Q3iUlbnfizXtwvJInU7Fki2oqrOHqa8D0Oe+PMr8P4Vh39F4D//pB//fB1mSuCBpwS8aQgAzxklGzuYV2oAAAAASUVORK5CYII="
+
 
 class UnitedDailyNewsRSS(RSSBase):
     def get_id(self):
@@ -199,6 +202,9 @@ class TaipeiTimes(RDFBase):
             ("Taipei Times", "https://www.taipeitimes.com/xml/index.rss"),
         ]
 
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAk1BMVEX////8/Pzq6ury8vLv7+/4+Pj19fXZ2dnDwsKnpqaGhIXNzMzHxsazsrNBPj+ioaF2dHVIRUZsaWplY2SFhIWTkpK5uLmcm5zj4+PEw8OPjo6trKxaV1hfXV3w3N3dt7jp0tLNlJXOjI6jHB+sNDfGenu1bW6/cXOnOTqwQUS6dnenKS20UFK0WlrCbW/ft7jNm5ySIOF/AAAA/klEQVR4AbWRA6JFIRQA51x06lXPtq39b+7b5uQmx/8hSZpmuQhixKQpV+mqxi1qXcGHEEmLuJIrlW00lZR7vANXhRo2UG9kUOWpNM1W+0p2XFO7rRJVeSpj7HVvZ1LI5JksUYC+DLBNqCe51Hig09Me2NjIbYSSc0kj4xsMR1eM35GT6Wy+WL4jp6v1ZrV9b+Z6N9+/K8eH4/C9ZU+H1epw5htkzRCs+lxSyCT1HcVH4Za2CSXRAe0GdBMGolbb5tmXldG+SF+pQqjDC2mj9S4wiJFeX17IUl5vao8qQIwPstmACnUKPilTaQebRH2QSZtUM01zRI16TW2b/+MSqy0PJ4pdskwAAAAASUVORK5CYII="
+
 
 class ChinaTimes(BaseSource):
     def get_id(self):
@@ -276,3 +282,6 @@ class Storm(RSSBase):
             ("旅遊", "https://www.storm.mg/api/getRss/channel_id/69?path=https%3A%2F%2Fwww.storm.mg/article"),
             ("新新聞", "https://www.storm.mg/api/getRss/channel_id/109?path=https%3A%2F%2Fwww.storm.mg/article"),
         ]
+
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAh1BMVEX/////6en/xcX//Pz/ycn/qKj/g4P/VFT/AAD/PT3/c3P/HBz/JSX/Kir/ERH/jY3/ODj/MjL/0dH/8vL/mpr/lpb6+vrr6+v/UFD/KSn1///AwL+gn555eHc1My//XFzR1tYrKCQdGhT/uLg7OTZZWFXNzs0MBQAoJiFsa2m4t7aurazj4+O+JNzhAAAAfklEQVR4AdXJxQHEMBAEwTEzM1t0nH98579WAbie3bg7y3bI7Hp+EEYWdHGSpFmWF6AkZVlWqQtKnZZlGjQgtVmZdLj0AzRjNtXzsm771muvCQ+cjDG+QCc6rFwyNYDQzIpJvoL0YPu+nyANT/l696B9GP/CZJM/mCfMHNzfH/zYCFXy5W+PAAAAAElFTkSuQmCC"

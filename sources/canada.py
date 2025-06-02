@@ -195,6 +195,9 @@ class SingTaoCanada(BaseSource):
 
         return result_list
 
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAflBMVEU2THk2THk2THk2THk2THk2THkySXd8iKN0gJ1LWH4rRHQkQ3RRZ4wAA0ceO25CR3CIkKi1h5rDdYTXg4w2THllcJD////BxtK3vMvEAB/RSVjT1t9/c5DEDy2TnLKgqbzNMkPrur7RXGnk5uv57u/kp62rssLxzc/DorEFLWeqHjCtAAAAFXRSTlMCK6X/42f//////////////////9iJg58gAAAByklEQVR4AYWTh2KbMBBAMXK0rZ6HpCO4Og+ihP//wR5hdLePLb0brKZpdq34M/t21zAv4h+8cDwf5Mrvxq6Z8iu9YKSQ1m1wQNtwvDeHQ/gyAd7642nl7KW4sCBYiCkjYk7ZnbuNVxb2SwZI/UTqr93XjVUQn0LhRmASuk35MUOgUlKvr+p6uz+Y19ffMvTPNPRPhDS8McPQ/ZzBYMX0rJWuw0/CliFcIyeJESbhfr+/v/0oiHiA50yehImfBKn9YSGycJ/4OYP1eiHCuUtvt/OZe+gePMXChFxxJb2nYUjvQ9fdjm4TNqQ+Tnz0H6ejdlsGZxlnBW/BuTAGx2sIm+CQSBUsFjKRsCVX23uTKdtFCAmJR5OpgwYhxsHrnONzTHIRrIZEmeBJiSdlGHympH4UCqEuMKJGQiMtRjUW4PO1hAh25P7kZ2OSj9ZKbjeErcl+7KPyqqqohEE+0yrKqNRWgmpFVXWhQtpUQkkaQy3FrCU8RK08QFTgRQHtALRSCGIVuK50BYLj6lzb6RCklMZ+CnsxY+sISEAFSRNlnpSCuTTtKqAiQE+18EnF9Sdr+ddbDWElL7wKLiQW/vfz7hpm1172f+TS8uw3poU3cVjsnpwAAAAASUVORK5CYII="
+
 
 class SingTaoVancouver(SingTaoCanada):
     def get_id(self):
@@ -374,6 +377,9 @@ class TheProvince(RSSBase):
             ("The Province", "https://theprovince.com/feed"),
         ]
 
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAHlBMVEUAc60Ac60AbKpMiLinwNiCpslvm8L////K1+bo7vQ2JTR1AAAAAXRSTlP9g+pWxwAAAFtJREFUeAFjQAOCKIAMrpKSEhJX2MXFNQnBVS0HAiNUbhESt6K9vFQRwS1TKy9B5iqjclVRuJXTy8tQTZ6Ewq1QROKWGoNciTAKKEceV23mNGTvCykpoQcO5VwAakox2FOHH7sAAAAASUVORK5CYII="
+
 
 class VancouverSun(RSSBase):
     def get_id(self):
@@ -386,6 +392,9 @@ class VancouverSun(RSSBase):
         return [
             ("Vancouver News, Top Stories", "https://vancouversun.com/feed"),
         ]
+
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAaVBMVEUwZFAsYk0nX0o9bFlvjoJmiHpgg3VDcF4TVz+Pppw7a1g0Z1OEnpP////s8O60w70ZWULG0czc4+BJdGMAUjn4+vl+mY5Zfm/P2NQgXEa5x8HI0s4mX0p3k4ebr6YOVj6muLCYraTf5eOe0JixAAAA20lEQVR4Ac2Ph5EEIQwEpfVuWG9hbf5Bvri38AkcHnVNdYnedHDAbM/X4bEwiuOEOY6iNIvzoiwdWgEpc6rqpq3Tuuv5LxxGSKFphwkDD2p2YLMgX2ndBq0GMtXueNcDuuEkHxakAZWxk+QZ42muvtmgyoCYnHECQhrugbE3UvClWS3aCUAiSk/azrlEmkoou5ATqDu1xSYCrtWlGdA2RMUr+2Qe7LCJ0maGUZ2e9IK03jwCs8dPBjFY6upoJOk7aVWZ7eiZsmr0GfHM9jjv+jJM/+jnYVZD7zo+ADD1DZyObvrPAAAAAElFTkSuQmCC"
 
 
 class CBCNews(RSSBase):
@@ -574,3 +583,6 @@ class TorontoSun(RSSBase):
             ("Sports", "https://torontosun.com/category/sports/feed"),
             ("Entertainment", "https://torontosun.com/category/entertainment/feed"),
         ]
+
+    def get_icon_url(self):
+        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAjVBMVEX////8/Pz09PTo7Ozg4uLv9fX3/v7y+Pjc3d397u/rqKnbbW/YSU7XQ0jcZGjnmZv43N3+8fHed3nOAADQCxbRGSLRHSXQDxrPAAjSICjSIyrTKzHUOT7vwMHrr7Dzzc7kiozooaPstbblkZPQABDxw8TZWFvjh4n4+PjllJX24eLbbG3if4Lss7XVOT9MDU8xAAABU0lEQVR4Aa3SBZbCQBAE0Jr0xD09Qgx32L3/7XB98JyK5yfj+EmEQ+SIr0SSXM/zScoPdwIvjOIkzfICkt6NqKxYaWO05aTwgzdzi4Gt67ppmrrWHHkv6lDBddo2Xd2YrutO6tMDA1hT98N+FEWjqB/GmotHqxx3bBs7nkz7fDKdzaaZMSnk/UcxsCrlObPlc/TpMrqjXHAFYFkINRSRiHiCbEXriwnasMAMoy3mUwyBJMIu8eiCa3fPI4QrDm8YThBbyDvaNt9iugX/nTDCGrG+oaCcgT22I8y2yDGe4Vks5IgnOPESQF8h5y12M1rfx0DN22VjtVr+D9qurU3HhXwMQq5qcx5YY05H3dR2CfkcvtY0r+EwEHdcy3D+ojX3Lr1OZ9iou2leePJ9jWAzmFutreK4pDcD1oEr+nGW7YelFzj4XEWSXN8lSfiateOsBX6RIwQ1HfKKG9KPAAAAAElFTkSuQmCC"
