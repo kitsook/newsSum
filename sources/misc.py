@@ -178,59 +178,17 @@ class RFAEnglishRSS(RSSBase):
         return "https://www.rfa.org/favicon.ico"
 
 
-class TheInitium(BaseSource):
+class TheInitium(RSSBase):
     def get_id(self):
         return "the_initium"
 
     def get_desc(self):
         return "端傳媒"
 
-    def get_articles(self):
-        result_list = []
-        base_url = "https://api.theinitium.com"
-        api_url = "https://api.theinitium.com/api/v2/channel/articles"
-
-        sections = [
-            ("最新", api_url + "/?language=zh-hant&slug=latest"),
-            ("香港", api_url + "/?language=zh-hant&slug=hongkong"),
-            ("國際", api_url + "/?language=zh-hant&slug=international"),
-            ("大陸", api_url + "/?language=zh-hant&slug=mainland"),
-            ("台灣", api_url + "/?language=zh-hant&slug=taiwan"),
-            ("評論", api_url + "/?language=zh-hant&slug=opinion"),
-            ("科技", api_url + "/?language=zh-hant&slug=technology"),
-            ("風物", api_url + "/?language=zh-hant&slug=culture"),
-            ("廣場", api_url + "/?language=zh-hant&slug=notes-and-letters"),
+    def get_rss_links(self):
+        return [
+            ("端傳媒", "https://theinitium.com/feed"),
         ]
-
-        headers = urllib3.make_headers(
-            basic_auth="anonymous:GiCeLEjxnqBcVpnp6cLsUvJievvRQcAXLv"
-        )
-        headers["Accept"] = "application/json"
-
-        try:
-            for title, url in sections:
-                # for each section, insert a title...
-                result_list.append(self.create_section(title))
-                # ... then parse the page and extract article links
-                contents = json.loads(read_http_page(url, headers=headers))
-                for digest in contents["digests"]:
-                    article = digest["article"]
-                    if article and article["headline"] and article["url"]:
-                        result_list.append(
-                            self.create_article(
-                                article["headline"].strip(),
-                                base_url + article["url"],
-                                article["lead"],
-                            )
-                        )
-
-        except Exception as e:
-            logger.exception("Problem processing TheInitium: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
-
-        return result_list
 
     def get_icon_url(self):
         return "https://theinitium.com/favicon.ico"
