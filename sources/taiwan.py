@@ -255,86 +255,24 @@ class ChinaTimes(BaseSource):
         return "https://www.chinatimes.com/favicon.ico"
 
 
-class Storm(BaseSource):
+class Storm(RSSBase):
     def get_id(self):
         return "storm"
 
     def get_desc(self):
         return "風傳媒"
 
-    def get_articles(self):
-        result_list = []
-
-        pages = 3
-        sections = [
-            ("新聞", "https://www.storm.mg/articles"),
-            ("評論", "https://www.storm.mg/all-comment"),
-            ("財經", "https://www.storm.mg/category/23083"),
-            ("生活", "https://www.storm.mg/category/104"),
-            ("人物", "https://www.storm.mg/category/171151"),
-            ("華爾街日報", "https://www.storm.mg/category/173479"),
-            ("新新聞", "https://www.storm.mg/category/87726"),
+    def get_rss_links(self):
+        return [
+            ("新聞", "https://www.storm.mg/api/getRss/channel_id/2?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("國內", "https://www.storm.mg/api/getRss/channel_id/9?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("國際", "https://www.storm.mg/api/getRss/channel_id/10?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("兩岸", "https://www.storm.mg/api/getRss/channel_id/11?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("財經", "https://www.storm.mg/api/getRss/channel_id/4?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("風生活", "https://www.storm.mg/api/getRss/channel_id/5?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("政治", "https://www.storm.mg/api/getRss/channel_id/8?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("藝文", "https://www.storm.mg/api/getRss/channel_id/17?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("娛樂", "https://www.storm.mg/api/getRss/channel_id/62?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("旅遊", "https://www.storm.mg/api/getRss/channel_id/69?path=https%3A%2F%2Fwww.storm.mg/article"),
+            ("新新聞", "https://www.storm.mg/api/getRss/channel_id/109?path=https%3A%2F%2Fwww.storm.mg/article"),
         ]
-
-        try:
-            for title, url in sections:
-                result_list.append(self.create_section(title))
-                for page in range(1, pages + 1):
-                    # for each section, insert a title...
-                    # ... then parse the page and extract article links
-                    doc = html.document_fromstring(
-                        read_http_page(url + "/" + str(page))
-                    )
-
-                    # get the first featured article
-                    topic = doc.xpath(
-                        '//div[contains(@class, "category_top_card")]/div[contains(@class, "card_img_wrapper")]'
-                    )
-                    if topic:
-                        title = topic[0].xpath(
-                            'div[contains(@class, "card_inner_wrapper")]/a[contains(@class, "link_title")]'
-                        )
-                        intro = topic[0].xpath(
-                            'div[contains(@class, "card_inner_wrapper")]/a[contains(@class, "card_substance")]'
-                        )
-                        title_text = title[0].xpath("h2/text()") if title else None
-                        if title and title_text and title[0].get("href"):
-                            result_list.append(
-                                self.create_article(
-                                    title_text[0].strip(),
-                                    title[0].get("href"),
-                                    intro[0].text.strip()
-                                    if intro and intro[0].text
-                                    else None,
-                                )
-                            )
-
-                    for topic in doc.xpath(
-                        '//div[contains(@class, "category_cards_wrapper")]/div[contains(@class, "category_card")]'
-                    ):
-                        title = topic.xpath(
-                            'div[contains(@class, "card_inner_wrapper")]/a[contains(@class, "link_title")]'
-                        )
-                        intro = topic.xpath(
-                            'div[contains(@class, "card_inner_wrapper")]/a[contains(@class, "card_substance")]'
-                        )
-                        title_text = title[0].xpath("h3/text()") if title else None
-
-                        if title and title_text and title[0].get("href"):
-                            result_list.append(
-                                self.create_article(
-                                    title_text[0].strip(),
-                                    title[0].get("href"),
-                                    intro[0].text.strip()
-                                    if intro and intro[0].text
-                                    else None,
-                                )
-                            )
-
-        except Exception as e:
-            logger.exception("Problem processing Storm: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
-
-        return result_list
