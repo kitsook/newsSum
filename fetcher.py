@@ -32,7 +32,7 @@ ctx = create_urllib3_context()
 # change the TLS signature, so that cloudflare won't consider us as bot and block us for some sites
 ctx.set_ciphers("ECDHE+CHACHA20:ECDHE+AESGCM")
 ctx.load_default_certs()
-ctx.options |= ssl.OP_NO_TLSv1_3
+ctx.options |= ssl.OP_NO_TLSv1_2
 if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
     ctx.options ^= ssl.OP_NO_COMPRESSION
 # OP_LEGACY_SERVER_CONNECT (0x4). to handle servers that don't support secure renegotiation (e.g. hket)
