@@ -385,7 +385,6 @@ class Npr(RSSBase):
     def get_icon_url(self):
         return "https://www.npr.org/favicon.ico"
 
-
 class SeattleTimes(RSSBase):
     def get_id(self):
         return "seattletimes"
@@ -407,3 +406,22 @@ class SeattleTimes(RSSBase):
 
     def get_icon_url(self):
         return "https://www.seattletimes.com/favicon.ico"
+
+class BloombergNews(RSSBase):
+    def get_id(self):
+        return "bloombergnews"
+
+    def get_desc(self):
+        return "Bloomberg News"
+
+    def get_rss_links(self):
+        return [
+            ("Markets", "https://feeds.bloomberg.com/markets/news.rss"),
+            ("Economics", "https://feeds.bloomberg.com/economics/news.rss"),
+            ("Tech", "https://feeds.bloomberg.com/technology/news.rss"),
+            ("Politics", "https://feeds.bloomberg.com/politics/news.rss"),
+            ("Wealth", "https://feeds.bloomberg.com/wealth/news.rss"),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.bloomberg.com/favicon.ico"
