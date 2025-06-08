@@ -293,6 +293,60 @@ class TheWashingtonTimes(RSSBase):
     def get_icon_url(self):
         return "https://www.washingtontimes.com/favicon.ico"
 
+class WashingtonPost(RSSBase):
+    def get_id(self):
+        return "washingtonpost"
+
+    def get_desc(self):
+        return "Washington Post"
+
+    def get_rss_links(self):
+        return [
+            (
+                "Local",
+                "https://feeds.washingtonpost.com/rss/local",
+            ),
+            (
+                "National",
+                "http://feeds.washingtonpost.com/rss/national",
+            ),
+            (
+                "World",
+                "https://feeds.washingtonpost.com/rss/world",
+            ),
+            (
+                "Politics",
+                "https://www.washingtonpost.com/arcio/rss/category/politics/",
+            ),
+            (
+                "Opinions",
+                "https://www.washingtonpost.com/arcio/rss/category/opinions/",
+            ),
+            (
+                "Business",
+                "http://feeds.washingtonpost.com/rss/business",
+            ),
+            (
+                "Lifestyle",
+                "https://feeds.washingtonpost.com/rss/lifestyle",
+            ),
+            (
+                "Entertainment",
+                "http://feeds.washingtonpost.com/rss/entertainment",
+            ),
+            (
+                "Technology",
+                "https://feeds.washingtonpost.com/rss/business/technology",
+            ),
+            (
+                "Sport",
+                "https://feeds.washingtonpost.com/rss/sports"
+            )
+        ]
+
+    def get_icon_url(self):
+        return "https://www.washingtonpost.com/favicon.ico"
+
 class Npr(RSSBase):
     def get_id(self):
         return "npr"
