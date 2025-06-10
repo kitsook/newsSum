@@ -425,3 +425,22 @@ class BloombergNews(RSSBase):
 
     def get_icon_url(self):
         return "https://www.bloomberg.com/favicon.ico"
+
+class SFGate(RSSBase):
+    def get_id(self):
+        return "sfgate"
+
+    def get_desc(self):
+        return "SFGate"
+
+    def get_rss_links(self):
+        return [
+            ("Bay Area News", "https://www.sfgate.com/bayarea/feed/bay-area-news-429.php"),
+            ("Business and Technology News", "https://www.sfgate.com/rss/feed/business-and-technology-news-448.php"),
+            ("Entertainment", "https://www.sfgate.com/rss/feed/culture-530.php"),
+            ("Food & Dining", "https://www.sfgate.com/rss/feed/food-dining-550.php"),
+            ("Top Sports Stories", "https://www.sfgate.com/rss/feed/top-sports-stories-rss-feed-487.php"),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.sfgate.com/favicon.ico"
