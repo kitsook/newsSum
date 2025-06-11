@@ -425,3 +425,4 @@ class SFGate(RSSBase):
 
     def get_icon_url(self):
         return "https://www.sfgate.com/favicon.ico"
+

@@ -586,3 +586,23 @@ class TorontoSun(RSSBase):
 
     def get_icon_url(self):
         return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAjVBMVEX////8/Pz09PTo7Ozg4uLv9fX3/v7y+Pjc3d397u/rqKnbbW/YSU7XQ0jcZGjnmZv43N3+8fHed3nOAADQCxbRGSLRHSXQDxrPAAjSICjSIyrTKzHUOT7vwMHrr7Dzzc7kiozooaPstbblkZPQABDxw8TZWFvjh4n4+PjllJX24eLbbG3if4Lss7XVOT9MDU8xAAABU0lEQVR4Aa3SBZbCQBAE0Jr0xD09Qgx32L3/7XB98JyK5yfj+EmEQ+SIr0SSXM/zScoPdwIvjOIkzfICkt6NqKxYaWO05aTwgzdzi4Gt67ppmrrWHHkv6lDBddo2Xd2YrutO6tMDA1hT98N+FEWjqB/GmotHqxx3bBs7nkz7fDKdzaaZMSnk/UcxsCrlObPlc/TpMrqjXHAFYFkINRSRiHiCbEXriwnasMAMoy3mUwyBJMIu8eiCa3fPI4QrDm8YThBbyDvaNt9iugX/nTDCGrG+oaCcgT22I8y2yDGe4Vks5IgnOPESQF8h5y12M1rfx0DN22VjtVr+D9qurU3HhXwMQq5qcx5YY05H3dR2CfkcvtY0r+EwEHdcy3D+ojX3Lr1OZ9iou2leePJ9jWAzmFutreK4pDcD1oEr+nGW7YelFzj4XEWSXN8lSfiateOsBX6RIwQ1HfKKG9KPAAAAAElFTkSuQmCC"
+
+class LaPresse(RSSBase):
+    def get_id(self):
+        return "lapresse"
+
+    def get_desc(self):
+        return "La Presse"
+
+    def get_rss_links(self):
+        return [
+            ("Actualités", "https://www.lapresse.ca/actualites/rss"),
+            ("Actualités internationales", "https://www.lapresse.ca/international/rss"),
+            ("Dialogue", "https://www.lapresse.ca/dialogue/rss"),
+            ("Contexte", "https://www.lapresse.ca/contexte/rss"),
+            ("Actualités affaires", "https://www.lapresse.ca/affaires/rss"),
+            ("Actualités sports", "https://www.lapresse.ca/sports/rss"),
+        ]
+
+    def get_icon_url(self):
+        return "https://www.lapresse.ca/favicon.ico"
