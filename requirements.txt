@@ -1,7 +1,7 @@
 Flask==3.1.1
-Flask-Cors==6.0.0
+Flask-Cors==6.0.1
 lxml==5.4.0
 beautifulsoup4==4.13.4
 pytz==2025.2
 six==1.17.0
-urllib3[brotli]==2.4.0
+urllib3[brotli]==2.5.0
