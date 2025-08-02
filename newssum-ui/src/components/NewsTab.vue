@@ -8,7 +8,8 @@
     </template>
     <Loading v-if="newsArticles.length == 0" />
     <ArticleList :articles="newsArticles"
-      :isSuggestionAvail="isSuggestionAvail"/>
+      :isSuggestionAvail="isSuggestionAvail"
+      :iconDict="iconDict" />
   </b-tab>
 </template>
 
@@ -30,6 +31,7 @@ export default class NewsTab extends Vue {
   @Prop({ default: "" }) title!: string;
   @Prop({ default: "" }) srcUrl!: string;
   @Prop({ default: null }) icon!: string;
+  @Prop({ default: {}}) iconDict!: Record<string, string>;
   @Prop({ default: false }) isActive!: boolean;
   @Prop({ default: false }) isSuggestionAvail!: boolean;
 

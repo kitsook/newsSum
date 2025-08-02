@@ -9,6 +9,7 @@
           :title="source.desc"
           :srcUrl="source.path"
           :icon="source.icon"
+          :iconDict="iconDict"
           :isActive="showTab === source.path"
           :isSuggestionAvail="isSuggestionAvail" />
     </b-tabs>
@@ -38,6 +39,7 @@ import { BvEvent } from 'bootstrap-vue';
 export default class NewsPages extends Vue {
   @Prop({ default: new Set<string>() }) subscriptions!: Set<string>;
   @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
+  @Prop({ default: {}}) iconDict!: Record<string, string> ;
   @Prop({ default: "" }) appVersion!: string;
   @Prop({ default: ''}) showTab!: string;
   @Prop({ default: false }) isSuggestionAvail!: boolean;

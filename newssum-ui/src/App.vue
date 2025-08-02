@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <NewsPages :sources="this.newsSources"
+        :iconDict="iconDict"
         :subscriptions="subscriptions"
         :appVersion="appVersion"
         @subscriptionChanged="subscriptionChanged"
@@ -25,12 +26,14 @@ import NewsSource from "./models/NewsSource";
 })
 export default class App extends Vue {
   newsSources = [] as NewsSource[];
+  iconDict = {} as Record<string, string>;
   subscriptions = new Set<string>();
   appVersion = "";
-  showTab = Subscriptions.getLastRead();
+  showTab = "";
   isSuggestionAvail = false;
 
   created() {
+    this.showTab = Subscriptions.getLastRead();
     this.subscriptions = Subscriptions.subscriptions;
 
     SuggestionsApi.isAvailable().then((isAvailable) => {
@@ -40,6 +43,11 @@ export default class App extends Vue {
     NewsSumApi.getSources().then((sources) => {
       Logger.log("Loaded news sources");
       this.newsSources = sources;
+
+      sources.reduce((acc, source) => {
+            acc[source.path] = source.icon;
+            return acc;
+      }, this.iconDict);
     }).catch((resp) => {
       Logger.log("Got errors when trying to retrieve news sources");
     });

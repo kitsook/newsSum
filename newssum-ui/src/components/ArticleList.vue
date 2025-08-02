@@ -30,9 +30,10 @@
               <b-card class="border-0">
                 <Loading v-if="article.suggestions === undefined"/>
                 <div v-if="article.suggestions && article.suggestions.length == 0">No suggestions</div>
-                <ul>
+                <ul style="list-style: none;">
                   <li v-for="(suggestion, suggestion_idx) in article.suggestions" :key="suggestion_idx">
                     <a :href="suggestion.url" target="_blank">
+                      <img v-if="iconDict[suggestion.source_id]" :src="iconDict[suggestion.source_id]" height=15 :alt="suggestion.source_id" />
                       {{ suggestion.title }}
                     </a>
                   </li>
@@ -60,6 +61,7 @@ import Loading from "../components/Loading.vue";
 export default class ArticleList extends Vue {
   @Prop({ default: [] as NewsArticle[] }) articles!: NewsArticle[];
   @Prop({ default: false }) isSuggestionAvail!: boolean;
+  @Prop({ default: {}}) iconDict!: Record<string, string>;
 
   re = /(<([^>]+)>)/g
 
