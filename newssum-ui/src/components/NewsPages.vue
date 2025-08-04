@@ -15,9 +15,8 @@
     </b-tabs>
     <div
         class="footer"
-        v-if="appVersion"
-    >
-        Version: {{ appVersion }}
+        v-if="appVersion">
+      Version: {{ appVersion }}
     </div>
   </div>
 </template>
