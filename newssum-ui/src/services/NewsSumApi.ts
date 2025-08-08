@@ -6,7 +6,7 @@ export default class NewsSumApi {
   static async getSources(): Promise<NewsSource[]> {
     try {
       // TODO setup url for dev
-      const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/list" : "/list", {
+      const response = await fetch(import.meta.env.DEV? "https://news-sum.appspot.com/list" : "/list", {
         "method": "GET",
       });
       if (response.ok) {
@@ -30,7 +30,7 @@ export default class NewsSumApi {
   static async getArticles(path: string): Promise<NewsArticle[]> {
     try {
       // TODO setup url for dev
-      const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/" + path : "/" + path, {
+      const response = await fetch(import.meta.env.DEV? "https://news-sum.appspot.com/" + path : "/" + path, {
         "method": "GET",
       })
       if (response.ok) {
@@ -53,7 +53,7 @@ export default class NewsSumApi {
   static async getAppProperties(): Promise<Map<string, string>> {
     try {
         // TODO setup url for dev
-        const response = await fetch(process.env.NODE_ENV !== 'production'? "https://news-sum.appspot.com/about" : "/about", {
+        const response = await fetch(import.meta.env.DEV? "https://news-sum.appspot.com/about" : "/about", {
           "method": "GET",
         });
         if (response.ok) {

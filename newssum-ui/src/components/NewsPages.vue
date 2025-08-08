@@ -1,17 +1,30 @@
 <template>
   <div class="tabbable">
     <b-tabs content-class="" id="news-tabs" v-model="showTabIndex" @activate-tab="tabChanged" ref="newsTabs" lazy>
-      <IndexTab :subscriptions="subscriptions"
+      <b-tab>
+        <template #title>
+          <BIconCardChecklist/>
+        </template>
+        <IndexTab :subscriptions="subscriptions"
           :sources="sources"
           @subscriptionChanged="subscriptionChanged"/>
-      <NewsTab v-for="source of showingSources"
-          :key="source.path"
-          :title="source.desc"
+      </b-tab>
+      <b-tab v-for="source of showingSources" :key="source.path" :title="source.desc">
+        <template v-slot:title v-if="icon">
+          <div>
+            <img :src="icon" width="16" height="16" alt="" />
+            <span>&nbsp;{{ title }}</span>
+          </div>
+        </template>
+
+        <NewsTab
           :srcUrl="source.path"
           :icon="source.icon"
           :iconDict="iconDict"
           :isActive="showTab === source.path"
           :isSuggestionAvail="isSuggestionAvail" />
+      </b-tab>
+
     </b-tabs>
     <div
         class="footer"
@@ -21,70 +34,67 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, watch, defineProps, defineEmits } from 'vue';
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
 import NewsSource from "../models/NewsSource";
 import Subscriptions from '../services/Subscriptions';
-import { BvEvent } from 'bootstrap-vue';
+import { BvEvent } from 'bootstrap-vue-3';
 
-@Component({
-  components: {
-    IndexTab,
-    NewsTab,
-  },
-})
-export default class NewsPages extends Vue {
-  @Prop({ default: new Set<string>() }) subscriptions!: Set<string>;
-  @Prop({ default: [] as NewsSource[] }) sources!: NewsSource[];
-  @Prop({ default: {}}) iconDict!: Record<string, string> ;
-  @Prop({ default: "" }) appVersion!: string;
-  @Prop({ default: ''}) showTab!: string;
-  @Prop({ default: false }) isSuggestionAvail!: boolean;
+const props = defineProps<{
+  subscriptions: Set<string>,
+  sources: NewsSource[],
+  iconDict: Record<string, string>,
+  appVersion: string,
+  showTab: string | undefined,
+  isSuggestionAvail: boolean
+}>();
 
-  showingSources = [] as NewsSource[];
-  showTabIndex = 0;
-  firstTabChange = true;
+const showingSources = ref<NewsSource[]>([]);
+const showTabIndex = ref(0);
+const firstTabChange = ref(true);
+const newsTabs = ref(null);
 
-  @Watch('subscriptions')
-  onSubScriptionsChanged(newSubscriptions: Set<string>, oldSubscriptions: Set<string>) {
-    this.refreshShowingSources(newSubscriptions, this.sources);
+const emit = defineEmits(['subscriptionChanged']);
+
+watch(() => props.subscriptions, (newSubscriptions) => {
+  refreshShowingSources(newSubscriptions, props.sources);
+});
+
+watch(() => props.sources, (newSources) => {
+  refreshShowingSources(props.subscriptions, newSources);
+});
+
+function tabChanged(newTabIndex: number, prevTabIndex: number, bvEvent: BvEvent) {
+  if (!newsTabs.value) { // not mounted yet
+    return;
   }
 
-  @Watch('sources')
-  onSourcesChanged(newSources: NewsSource[], oldSources: NewsSource[]) {
-    this.refreshShowingSources(this.subscriptions, newSources);
-  }
-
-  private tabChanged(newTabIndex: number, prevTabIndex: number, bvEvent: BvEvent) {
-    if (this.firstTabChange) {
-      this.firstTabChange = false;
-      const theTabBar = this.$refs.newsTabs as Vue;
-      const theActiveTab = theTabBar.$el.querySelector(`a[aria-posinset="${newTabIndex+1}"]`) as Element;
-      if (theActiveTab) {
-        theActiveTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      }
-    } else if (newTabIndex > 0 && this.showingSources.length > newTabIndex-1) {
-        Subscriptions.setLastRead(this.showingSources[newTabIndex-1].path);
+  if (firstTabChange.value) {
+    firstTabChange.value = false;
+    const theTabBar = newsTabs.value as any;
+    const theActiveTab = theTabBar?.$el.querySelector(`a[aria-posinset="${newTabIndex+1}"]`) as Element;
+    if (theActiveTab) {
+      theActiveTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
+  } else if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+      Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
+}
 
-  private subscriptionChanged() {
-    this.$emit('subscriptionChanged');
-  }
+function subscriptionChanged() {
+  emit('subscriptionChanged');
+}
 
-  private refreshShowingSources(subscriptions: Set<string>, sources: NewsSource[]) {
-    this.showingSources = new Array<NewsSource>();
+function refreshShowingSources(subscriptions: Set<string>, sources: NewsSource[]) {
+  showingSources.value = new Array<NewsSource>();
 
-    sources.forEach(src => {
-      if (subscriptions.has(src.path)) {
-        this.showingSources.push(src);
-      }
-    });
-  }
-
-
+  sources.forEach(src => {
+    if (subscriptions.has(src.path)) {
+      showingSources.value.push(src);
+    }
+  });
 }
 </script>
 

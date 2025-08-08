@@ -1,8 +1,6 @@
-declare const process: any;
-
 export default class NewsSumApi {
   static log(message: String, level?: 'info' | 'warn' | 'error') {
-    if (process.env.NODE_ENV !== 'production') {
+    if (import.meta.env.DEV) {
         /* eslint-disable no-console */
         if (level === 'error') {
             console.error(message);

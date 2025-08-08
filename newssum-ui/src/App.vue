@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <NewsPages :sources="this.newsSources"
+    <NewsPages :sources="newsSources"
         :iconDict="iconDict"
         :subscriptions="subscriptions"
         :appVersion="appVersion"
         @subscriptionChanged="subscriptionChanged"
-        :isSuggestionAvail="this.isSuggestionAvail"
+        :isSuggestionAvail="isSuggestionAvail"
         :showTab="showTab" />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import NewsPages from './components/NewsPages.vue';
 import Subscriptions from './services/Subscriptions';
 import NewsSumApi from "./services/NewsSumApi";
@@ -19,47 +19,40 @@ import SuggestionsApi from "./services/SuggestionsApi";
 import Logger from "./services/Logger";
 import NewsSource from "./models/NewsSource";
 
-@Component({
-  components: {
-    NewsPages,
-  },
-})
-export default class App extends Vue {
-  newsSources = [] as NewsSource[];
-  iconDict = {} as Record<string, string>;
-  subscriptions = new Set<string>();
-  appVersion = "";
-  showTab = "";
-  isSuggestionAvail = false;
+const newsSources = ref<NewsSource[]>([]);
+const iconDict = ref<Record<string, string>>({});
+const subscriptions = ref(new Set<string>());
+const appVersion = ref("");
+const showTab = ref("");
+const isSuggestionAvail = ref(false);
 
-  created() {
-    this.showTab = Subscriptions.getLastRead();
-    this.subscriptions = Subscriptions.subscriptions;
+onMounted(() => {
+  showTab.value = Subscriptions.getLastRead();
+  subscriptions.value = Subscriptions.subscriptions;
 
-    SuggestionsApi.isAvailable().then((isAvailable) => {
-      this.isSuggestionAvail = isAvailable;
-    });
+  SuggestionsApi.isAvailable().then((isAvailable) => {
+    isSuggestionAvail.value = isAvailable;
+  });
 
-    NewsSumApi.getSources().then((sources) => {
-      Logger.log("Loaded news sources");
-      this.newsSources = sources;
+  NewsSumApi.getSources().then((sources) => {
+    Logger.log("Loaded news sources");
+    newsSources.value = sources;
 
-      sources.reduce((acc, source) => {
-            acc[source.path] = source.icon;
-            return acc;
-      }, this.iconDict);
-    }).catch((resp) => {
-      Logger.log("Got errors when trying to retrieve news sources");
-    });
+    sources.reduce((acc, source) => {
+      acc[source.path] = source.icon;
+      return acc;
+    }, iconDict.value);
+  }).catch((resp) => {
+    Logger.log("Got errors when trying to retrieve news sources: " + resp);
+  });
 
-    NewsSumApi.getAppProperties().then((props) => {
-      this.appVersion = props.get("GAE_VERSION")? props.get("GAE_VERSION")! : "";
-    });
-  }
+  NewsSumApi.getAppProperties().then((props) => {
+    appVersion.value = props.get("GAE_VERSION")? props.get("GAE_VERSION")! : "";
+  });
+});
 
-  private subscriptionChanged() {
-    this.subscriptions = Subscriptions.subscriptions;
-  }
+function subscriptionChanged() {
+  subscriptions.value = Subscriptions.subscriptions;
 }
 </script>
 
