@@ -1,31 +1,29 @@
 <template>
   <div class="tabbable">
-    <b-tabs content-class="" id="news-tabs" v-model="showTabIndex" @activate-tab="tabChanged" ref="newsTabs" lazy>
-      <b-tab>
+    <BTabs id="news-tabs" v-model:index="showTabIndex" @activate-tab="tabChanged" ref="newsTabs" lazy>
+      <BTab>
         <template #title>
           <BIconCardChecklist/>
         </template>
         <IndexTab :subscriptions="subscriptions"
           :sources="sources"
           @subscriptionChanged="subscriptionChanged"/>
-      </b-tab>
-      <b-tab v-for="source of showingSources" :key="source.path" :title="source.desc">
-        <template v-slot:title v-if="icon">
+      </BTab>
+      <BTab v-for="source of showingSources" :key="source.path" :title="source.desc">
+        <template v-slot:title v-if="source.icon">
           <div>
-            <img :src="icon" width="16" height="16" alt="" />
-            <span>&nbsp;{{ title }}</span>
+            <img :src="source.icon" width="16" height="16" alt="" />
+            <span>&nbsp;{{ source.desc }}</span>
           </div>
         </template>
-
         <NewsTab
           :srcUrl="source.path"
-          :icon="source.icon"
           :iconDict="iconDict"
           :isActive="showTab === source.path"
           :isSuggestionAvail="isSuggestionAvail" />
-      </b-tab>
+      </BTab>
 
-    </b-tabs>
+    </BTabs>
     <div
         class="footer"
         v-if="appVersion">
@@ -36,11 +34,12 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, defineEmits } from 'vue';
+import { BvEvent } from 'bootstrap-vue-next';
+import { BIconCardChecklist } from "bootstrap-icons-vue";
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
 import NewsSource from "../models/NewsSource";
 import Subscriptions from '../services/Subscriptions';
-import { BvEvent } from 'bootstrap-vue-3';
 
 const props = defineProps<{
   subscriptions: Set<string>,
@@ -66,7 +65,7 @@ watch(() => props.sources, (newSources) => {
   refreshShowingSources(props.subscriptions, newSources);
 });
 
-function tabChanged(newTabIndex: number, prevTabIndex: number, bvEvent: BvEvent) {
+function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number, _prevTabIndex: number, _bvEvent: BvEvent) {
   if (!newsTabs.value) { // not mounted yet
     return;
   }

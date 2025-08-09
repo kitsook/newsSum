@@ -13,6 +13,7 @@ import NewsSumApi from "../services/NewsSumApi";
 import Logger from "../services/Logger";
 import NewsArticle from "../models/NewsArticle";
 import ArticleList from "../components/ArticleList.vue";
+import Loading from "../components/LoadingSpinner.vue";
 
 const props = defineProps<{
   srcUrl: string,

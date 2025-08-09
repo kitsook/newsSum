@@ -10,9 +10,9 @@
           </b-col>
         </b-row>
         <b-row align-v="center" v-if="article.url">
-          <b-col cols="auto" v-b-toggle="'accordion-' + index" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
-            <i class="bi bi-chevron-down when-open"></i>
-            <i class="bi bi-chevron-right when-closed"></i>
+          <b-col cols="auto" v-b-toggle="`accordion-${index}`" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
+            <BIconChevronDown class="when-open"/>
+            <BIconChevronRight class="when-closed"/>
           </b-col>
           <b-col>
             <a :href="article.url"
@@ -52,8 +52,10 @@ import { defineProps } from 'vue';
 import NewsArticle from "../models/NewsArticle";
 import SuggestionsApi from "../services/SuggestionsApi";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+import { BIconChevronDown, BIconChevronRight } from "bootstrap-icons-vue";
 
-const props = defineProps<{ 
+
+const props = defineProps<{
   articles: NewsArticle[],
   isSuggestionAvail: boolean,
   iconDict: Record<string, string>
@@ -68,11 +70,21 @@ function toggle_article(index: number, article: NewsArticle) {
     });
   }
 }
+
 </script>
 
 <style scoped>
-  .collapsed > .when-open,
-  .not-collapsed > .when-closed {
+  [aria-expanded="true"] > .when-closed {
     display: none;
   }
+  [aria-expanded="false"] > .when-closed {
+    display: inline;
+  }
+  [aria-expanded="true"] > .when-open {
+    display: inline;
+  }
+  [aria-expanded="false"] > .when-open {
+    display: none;
+  }
+
 </style>
