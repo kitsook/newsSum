@@ -1,10 +1,8 @@
 <template>
-  <!-- <b-tab :title="title" :active.sync="tabIsActive"> -->
-    <Loading v-if="newsArticles.length == 0" />
-    <ArticleList :articles="newsArticles"
-      :isSuggestionAvail="isSuggestionAvail"
-      :iconDict="iconDict" />
-  <!-- </b-tab> -->
+  <Loading v-if="newsArticles.length == 0" />
+  <ArticleList :articles="newsArticles"
+    :isSuggestionAvail="isSuggestionAvail"
+    :iconDict="iconDict" />
 </template>
 
 <script setup lang="ts">
@@ -18,7 +16,6 @@ import Loading from "../components/LoadingSpinner.vue";
 const props = defineProps<{
   srcUrl: string,
   iconDict: Record<string, string>,
-  isActive: boolean,
   isSuggestionAvail: boolean
 }>();
 
@@ -31,6 +28,5 @@ onMounted(() => {
   }).catch(resp => {
     Logger.log("Got errors when trying to retrieve articles: " + resp);
   });
-  tabIsActive.value = props.isActive;
 });
 </script>

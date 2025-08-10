@@ -1,6 +1,6 @@
 <template>
   <div class="tabbable">
-    <BTabs id="news-tabs" v-model:index="showTabIndex" @activate-tab="tabChanged" ref="newsTabs" lazy>
+    <BTabs id="news-tabs" v-model:index="showTabIndex" @activate-tab="tabChanged" ref="newsTabs">
       <BTab>
         <template #title>
           <BIconCardChecklist/>
@@ -9,7 +9,7 @@
           :sources="sources"
           @subscriptionChanged="subscriptionChanged"/>
       </BTab>
-      <BTab v-for="source of showingSources" :key="source.path" :title="source.desc">
+      <BTab v-for="source of showingSources" :key="source.path" :title="source.desc" :active="showTab === source.path">
         <template v-slot:title v-if="source.icon">
           <div>
             <img :src="source.icon" width="16" height="16" alt="" />
@@ -19,7 +19,6 @@
         <NewsTab
           :srcUrl="source.path"
           :iconDict="iconDict"
-          :isActive="showTab === source.path"
           :isSuggestionAvail="isSuggestionAvail" />
       </BTab>
 
@@ -52,7 +51,6 @@ const props = defineProps<{
 
 const showingSources = ref<NewsSource[]>([]);
 const showTabIndex = ref(0);
-const firstTabChange = ref(true);
 const newsTabs = ref(null);
 
 const emit = defineEmits(['subscriptionChanged']);
@@ -66,18 +64,7 @@ watch(() => props.sources, (newSources) => {
 });
 
 function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number, _prevTabIndex: number, _bvEvent: BvEvent) {
-  if (!newsTabs.value) { // not mounted yet
-    return;
-  }
-
-  if (firstTabChange.value) {
-    firstTabChange.value = false;
-    const theTabBar = newsTabs.value as any;
-    const theActiveTab = theTabBar?.$el.querySelector(`a[aria-posinset="${newTabIndex+1}"]`) as Element;
-    if (theActiveTab) {
-      theActiveTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-  } else if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+  if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
       Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
 }
