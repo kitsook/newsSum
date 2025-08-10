@@ -55,7 +55,7 @@ import LoadingSpinner from "../components/LoadingSpinner.vue";
 import { BIconChevronDown, BIconChevronRight } from "bootstrap-icons-vue";
 
 
-const props = defineProps<{
+defineProps<{
   articles: NewsArticle[],
   isSuggestionAvail: boolean,
   iconDict: Record<string, string>

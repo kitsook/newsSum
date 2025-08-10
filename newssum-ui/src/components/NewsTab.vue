@@ -20,7 +20,6 @@ const props = defineProps<{
 }>();
 
 const newsArticles = ref<NewsArticle[]>([]);
-const tabIsActive = ref(false);
 
 onMounted(() => {
   NewsSumApi.getArticles(props.srcUrl).then((articles) => {
