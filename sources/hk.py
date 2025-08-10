@@ -536,22 +536,6 @@ class PhotonMedia(RSSBase):
         return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAgVBMVEVHcEwFBQUXFxcRERENDQ0GBgYGBgYFBQUHBwcNDQ0HBweampoJCQkLCwsLCwsLCwsICAj////09PQAAAA/Pz/////ExMQrKyshISGLi4sHBwdISEhmZma8vLx8fHxVVVUXFxezs7Opqak3NzeEhITw8PDk5OTY2NgQEBD29vZxcXHMexriAAAAE3RSTlMAzx43XOK/8dhHjvqmbJ9pqhyWyhxdYAAAAT9JREFUOI2VU9t2gyAQJKlRU9Om6YKgcvGuyf9/YGOUmzk8dB44sjPu7AKLkMHxekkTgCT9+Tqid0QpODhFO/rjBDskZ5f/tERpvr4NfRsqE51rq81umyDmOdXBmhm+wAeTH2f6R9ZZHuDyqm/Z0cfmTSuHB1gqXeuvN6JTLg8JQmdd/WqO+WuT6UQRiv0GK7msrdLBA/KPp1TFc224jfgChnuBZ+HwvoAp2UxSSAgIykq24zC1igUElLcTIYOQ+E1QzjWjVZGP5Ilhytu2EfkKz0IV452MLQ9ZlLRpxDD1qg4IoOBcZqSiEBD0GCimYw+eIHb55bwr4vIHc1nw0M0J4Qgifd2grPPdHmWiHwx0TmuUmMs46yddz65xR7Yc28OOYQ92F2uFKKSAhhSW9wbH2OS//xm9t+FN98MbHv8/0EFDmNgvo7UAAAAASUVORK5CYII="
 
 
-class ChannelC(RSSBase):
-    def get_id(self):
-        return "channel-c"
-
-    def get_desc(self):
-        return "Channel C HK"
-
-    def get_rss_links(self):
-        return [
-            ("Channel C HK", "https://channelchk.com/rss"),
-        ]
-
-    def get_icon_url(self):
-        return "https://channelchk.com/favicon.ico"
-
-
 class HkCourtNews(RSSBase):
     def get_id(self):
         return "hk-court-news"
