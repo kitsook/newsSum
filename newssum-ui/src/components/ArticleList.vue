@@ -10,9 +10,9 @@
           </b-col>
         </b-row>
         <b-row align-v="center" v-if="article.url">
-          <b-col cols="auto" v-b-toggle="'accordion-' + index" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
-            <b-icon icon="chevron-down" class="when-open"></b-icon>
-            <b-icon icon="chevron-right" class="when-closed"></b-icon>
+          <b-col cols="auto" v-b-toggle="`accordion-${index}`" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
+            <BIconChevronDown class="when-open"/>
+            <BIconChevronRight class="when-closed"/>
           </b-col>
           <b-col>
             <a :href="article.url"
@@ -28,7 +28,7 @@
           <b-col>
             <b-collapse :id="'accordion-' + index">
               <b-card class="border-0">
-                <Loading v-if="article.suggestions === undefined"/>
+                <LoadingSpinner v-if="article.suggestions === undefined"/>
                 <div v-if="article.suggestions && article.suggestions.length == 0">No suggestions</div>
                 <ul style="list-style: none;">
                   <li v-for="(suggestion, suggestion_idx) in article.suggestions" :key="suggestion_idx">
@@ -47,37 +47,44 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
+import { defineProps } from 'vue';
 import NewsArticle from "../models/NewsArticle";
 import SuggestionsApi from "../services/SuggestionsApi";
-import Loading from "../components/Loading.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
+import { BIconChevronDown, BIconChevronRight } from "bootstrap-icons-vue";
 
-@Component({
-  components: {
-    Loading,
-  },
-})
-export default class ArticleList extends Vue {
-  @Prop({ default: [] as NewsArticle[] }) articles!: NewsArticle[];
-  @Prop({ default: false }) isSuggestionAvail!: boolean;
-  @Prop({ default: {}}) iconDict!: Record<string, string>;
 
-  re = /(<([^>]+)>)/g
+const props = defineProps<{
+  articles: NewsArticle[],
+  isSuggestionAvail: boolean,
+  iconDict: Record<string, string>
+}>();
 
-  toggle_article(index: number, article: NewsArticle) {
-    if (article.suggestions === undefined) {
-      SuggestionsApi.getSuggestions(article.title).then((suggestions) => {
-        Vue.set(article, "suggestions", suggestions);
-      });
-    }
+const re = /(<([^>]+)>)/g;
+
+function toggle_article(index: number, article: NewsArticle) {
+  if (article.suggestions === undefined) {
+    SuggestionsApi.getSuggestions(article.title).then((suggestions) => {
+      article.suggestions = suggestions;
+    });
   }
 }
+
 </script>
 
 <style scoped>
-  .collapsed > .when-open,
-  .not-collapsed > .when-closed {
+  [aria-expanded="true"] > .when-closed {
     display: none;
   }
+  [aria-expanded="false"] > .when-closed {
+    display: inline;
+  }
+  [aria-expanded="true"] > .when-open {
+    display: inline;
+  }
+  [aria-expanded="false"] > .when-open {
+    display: none;
+  }
+
 </style>

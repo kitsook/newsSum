@@ -9,7 +9,7 @@ export default class Subscriptions {
         subs.add(key);
       }
     } catch(e) {
-      Logger.log("Problem retrieving subscription");
+      Logger.log("Problem retrieving subscription: " + e);
     }
     return subs;
   }
