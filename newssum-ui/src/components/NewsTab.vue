@@ -1,6 +1,8 @@
 <template>
   <Loading v-if="newsArticles.length == 0" />
-  <ArticleList :articles="newsArticles"
+  <ArticleList
+    :srcUrl="srcUrl"
+    :articles="newsArticles"
     :isSuggestionAvail="isSuggestionAvail"
     :iconDict="iconDict" />
 </template>

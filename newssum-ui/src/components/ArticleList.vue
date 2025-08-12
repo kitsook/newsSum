@@ -10,7 +10,7 @@
           </b-col>
         </b-row>
         <b-row align-v="center" v-if="article.url">
-          <b-col cols="auto" v-b-toggle="`accordion-${index}`" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
+          <b-col cols="auto" v-b-toggle="`accordion-${srcUrl}-${index}`" @click="toggle_article(index, article)" v-if="isSuggestionAvail">
             <BIconChevronDown class="when-open"/>
             <BIconChevronRight class="when-closed"/>
           </b-col>
@@ -26,7 +26,7 @@
         <b-row v-if="article.url">
           <b-col cols="auto"></b-col>
           <b-col>
-            <b-collapse :id="'accordion-' + index">
+            <b-collapse :id="'accordion-' + srcUrl + '-' + index">
               <b-card class="border-0">
                 <LoadingSpinner v-if="article.suggestions === undefined"/>
                 <div v-if="article.suggestions && article.suggestions.length == 0">No suggestions</div>
@@ -56,6 +56,7 @@ import { BIconChevronDown, BIconChevronRight } from "bootstrap-icons-vue";
 
 
 defineProps<{
+  srcUrl: string,
   articles: NewsArticle[],
   isSuggestionAvail: boolean,
   iconDict: Record<string, string>
