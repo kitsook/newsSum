@@ -26,9 +26,10 @@ const appVersion = ref("");
 const showTab = ref("");
 const isSuggestionAvail = ref(false);
 
+showTab.value = Subscriptions.getLastRead();
+subscriptions.value = Subscriptions.subscriptions;
+
 onMounted(() => {
-  showTab.value = Subscriptions.getLastRead();
-  subscriptions.value = Subscriptions.subscriptions;
 
   SuggestionsApi.isAvailable().then((isAvailable) => {
     isSuggestionAvail.value = isAvailable;

@@ -27,7 +27,7 @@ onMounted(() => {
   NewsSumApi.getArticles(props.srcUrl).then((articles) => {
     newsArticles.value = articles;
   }).catch(resp => {
-    Logger.log("Got errors when trying to retrieve articles: " + resp);
+    Logger.log(`Got errors when trying to retrieve articles for ${props.srcUrl}: ${resp}`);
   });
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="tabbable">
-    <BTabs id="news-tabs" v-model:index="showTabIndex" @activate-tab="tabChanged" ref="newsTabs">
+    <BTabs v-if="showingSources.length > 0" id="news-tabs" @activate-tab="tabChanged" ref="newsTabs">
       <BTab>
         <template #title>
           <BIconCardChecklist/>
@@ -10,8 +10,8 @@
           @subscriptionChanged="subscriptionChanged"/>
       </BTab>
       <BTab v-for="source of showingSources" :key="source.path" :title="source.desc" :active="showTab === source.path">
-        <template v-slot:title v-if="source.icon">
-          <div>
+        <template #title>
+          <div :ref="el => { if (el) tabTitleRefs.set(source.path, el); }">
             <img :src="source.icon" width="16" height="16" alt="" />
             <span>&nbsp;{{ source.desc }}</span>
           </div>
@@ -32,12 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits } from 'vue';
+import { ref, watch, defineProps, defineEmits, reactive } from 'vue';
 import { BIconCardChecklist } from "bootstrap-icons-vue";
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
 import NewsSource from "../models/NewsSource";
 import Subscriptions from '../services/Subscriptions';
+import { BTab } from 'bootstrap-vue-next';
 
 const props = defineProps<{
   subscriptions: Set<string>,
@@ -49,10 +50,10 @@ const props = defineProps<{
 }>();
 
 const showingSources = ref<NewsSource[]>([]);
-const showTabIndex = ref(0);
 const newsTabs = ref(null);
-
 const emit = defineEmits(['subscriptionChanged']);
+let firstTabChange = true;
+const tabTitleRefs = reactive(new Map());
 
 watch(() => props.subscriptions, (newSubscriptions) => {
   refreshShowingSources(newSubscriptions, props.sources);
@@ -63,9 +64,18 @@ watch(() => props.sources, (newSources) => {
 });
 
 function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number) {
-  if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
-      Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
+  if (!firstTabChange) {
+    if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+        Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
+    }
+    return;
   }
+  if (!tabTitleRefs.get(props.showTab)) {
+    return;
+  }
+
+  tabTitleRefs.get(props.showTab).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  firstTabChange = false;
 }
 
 function subscriptionChanged() {
