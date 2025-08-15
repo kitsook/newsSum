@@ -64,13 +64,11 @@ watch(() => props.sources, (newSources) => {
 });
 
 function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number) {
-  if (!firstTabChange) {
-    if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
-        Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
-    }
-    return;
+  if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+    Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
-  if (!tabTitleRefs.get(props.showTab)) {
+
+  if (!firstTabChange || !tabTitleRefs.get(props.showTab)) {
     return;
   }
 
