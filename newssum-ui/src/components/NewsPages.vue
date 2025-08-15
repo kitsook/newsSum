@@ -64,7 +64,9 @@ watch(() => props.sources, (newSources) => {
 });
 
 function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number) {
-  if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+  if (newTabIndex == 0) {
+    Subscriptions.setLastRead("");
+  } else if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
     Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
 
