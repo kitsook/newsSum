@@ -1,6 +1,6 @@
 <template>
   <div class="tabbable">
-    <BTabs v-if="showingSources.length > 0" id="news-tabs" @activate-tab="tabChanged" ref="newsTabs">
+    <BTabs id="news-tabs" @activate-tab="tabChanged" ref="newsTabs">
       <BTab>
         <template #title>
           <BIconCardChecklist/>
