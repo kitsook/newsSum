@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits, reactive } from 'vue';
+import { ref, watch, defineEmits, reactive } from 'vue';
 import { BIconCardChecklist } from "bootstrap-icons-vue";
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
@@ -66,7 +66,7 @@ watch(() => props.sources, (newSources) => {
 function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number) {
   if (newTabIndex == 0) {
     Subscriptions.setLastRead("");
-  } else if (newTabIndex > 0 && showingSources.value.length > newTabIndex-1) {
+  } else if (showingSources.value.length > newTabIndex-1) {
     Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
 

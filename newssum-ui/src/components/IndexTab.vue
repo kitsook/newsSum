@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits, onMounted } from 'vue';
+import { ref, watch, defineEmits, onMounted } from 'vue';
 import NewsSource from "../models/NewsSource";
 import Subscriptions from "../services/Subscriptions";
 

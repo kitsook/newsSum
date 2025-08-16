@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps } from 'vue';
+import { ref, onMounted } from 'vue';
 import NewsSumApi from "../services/NewsSumApi";
 import Logger from "../services/Logger";
 import NewsArticle from "../models/NewsArticle";

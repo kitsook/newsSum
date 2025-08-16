@@ -48,7 +48,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import NewsArticle from "../models/NewsArticle";
 import SuggestionsApi from "../services/SuggestionsApi";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
