@@ -70,12 +70,14 @@ function tabChanged(newTabId: string, prevTabId: string, newTabIndex: number) {
     Subscriptions.setLastRead(showingSources.value[newTabIndex-1].path);
   }
 
+  /*
   if (!firstTabChange || !tabTitleRefs.get(props.showTab)) {
     return;
   }
 
   tabTitleRefs.get(props.showTab).scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   firstTabChange = false;
+  */
 }
 
 function subscriptionChanged() {
