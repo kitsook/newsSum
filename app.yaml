@@ -1,4 +1,4 @@
-runtime: python310
+runtime: python313
 
 automatic_scaling:
   max_instances: 1
