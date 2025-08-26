@@ -52,7 +52,7 @@ const props = defineProps<{
 const showingSources = ref<NewsSource[]>([]);
 const newsTabs = ref(null);
 const emit = defineEmits(['subscriptionChanged']);
-let firstTabChange = true;
+//let firstTabChange = true;
 const tabTitleRefs = reactive(new Map());
 
 watch(() => props.subscriptions, (newSubscriptions) => {
