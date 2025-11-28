@@ -18,7 +18,7 @@
             <a :href="article.url"
               :class="index%2 == 0? 'list-group-item-secondary' : 'list-group-item-light'"
               class="list-group-item list-group-item-action" target="_blank">
-              <div class="text-primary">{{ article.title? article.title.replace(re, '') : '' }}</div>
+              <div class="article-title">{{ article.title? article.title.replace(re, '') : '' }}</div>
               <div>{{ article.abstract? article.abstract.replace(re, '') : '' }}</div>
             </a>
           </b-col>
@@ -87,4 +87,23 @@ function toggle_article(index: number, article: NewsArticle) {
     display: none;
   }
 
+  :global([data-bs-theme="dark"]) .list-group-item-light {
+    background-color: var(--bs-gray-900);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+  :global([data-bs-theme="dark"]) .list-group-item-secondary {
+    background-color: var(--bs-gray-800);
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+
+  .article-title {
+    color: var(--bs-primary);
+  }
+
+  [data-bs-theme="dark"] .article-title,
+  [data-bs-theme="dark"] a {
+    color: white !important;
+  }
 </style>
