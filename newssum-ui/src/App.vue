@@ -1,10 +1,28 @@
 <template>
   <div id="app">
-    <div class="position-absolute top-0 start-0 p-1">
-      <button class="btn btn-link" @click="toggleTheme" :aria-label="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+    <div class="position-absolute top-0 start-0 p-1 d-flex align-items-center">
+      <button class="btn btn-link me-2" @click="toggleTheme" :aria-label="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
         <BIconMoon v-if="theme === 'light'" class="fs-7" />
         <BIconSun v-else class="fs-7" />
       </button>
+      <div class="position-relative" v-if="isSuggestionAvail">
+        <BInputGroup size="sm" style="width: 200px;">
+          <BInputGroupText>
+            <BIconSearch />
+          </BInputGroupText>
+          <input type="text" class="form-control"
+                 v-model="searchQuery" @input="onSearchInput"
+                 @focus="handleFocus" @blur="handleBlur" />
+        </BInputGroup>
+        <ul v-if="searchResults.length > 0 && isSearchInputFocused" class="dropdown-menu show" style="position: absolute; width: 400px; max-height: 400px; overflow-y: auto;" @mousedown.prevent>
+            <li v-for="(suggestion, index) in searchResults" :key="index">
+                <a class="dropdown-item" :href="suggestion.url" target="_blank" @click="selectSuggestion(suggestion)">
+                    <img v-if="iconDict[suggestion.source_id]" :src="iconDict[suggestion.source_id]" height="15" :alt="suggestion.source_id" />&nbsp;
+                    {{ suggestion.title }}
+                </a>
+            </li>
+        </ul>
+      </div>
     </div>
     <NewsPages :sources="newsSources"
         :iconDict="iconDict"
@@ -24,7 +42,9 @@ import NewsSumApi from "./services/NewsSumApi";
 import SuggestionsApi from "./services/SuggestionsApi";
 import Logger from "./services/Logger";
 import NewsSource from "./models/NewsSource";
-import { BIconMoon, BIconSun } from 'bootstrap-icons-vue';
+import Suggestion from "./models/Suggestion";
+import { BIconMoon, BIconSun, BIconSearch } from 'bootstrap-icons-vue';
+import { BInputGroup, BInputGroupText } from 'bootstrap-vue-next';
 
 const newsSources = ref<NewsSource[]>([]);
 const iconDict = ref<Record<string, string>>({});
@@ -33,6 +53,11 @@ const appVersion = ref("");
 const showTab = ref("");
 const isSuggestionAvail = ref(false);
 const theme = ref('light');
+const searchQuery = ref("");
+const searchResults = ref<Suggestion[]>([]);
+const isSearchInputFocused = ref(false);
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+let blurTimeout: ReturnType<typeof setTimeout> | null = null;
 
 showTab.value = Subscriptions.getLastRead();
 subscriptions.value = Subscriptions.subscriptions;
@@ -41,6 +66,44 @@ function toggleTheme() {
   theme.value = theme.value === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-bs-theme', theme.value);
   localStorage.setItem('theme', theme.value);
+}
+
+function onSearchInput() {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+  if (!searchQuery.value || searchQuery.value.trim() === "") {
+    searchResults.value = [];
+    return;
+  }
+  searchTimeout = setTimeout(() => {
+    SuggestionsApi.getSuggestions(searchQuery.value).then((results) => {
+      searchResults.value = results;
+    }).catch((err) => {
+      Logger.log("Search failed: " + err);
+      searchResults.value = [];
+    });
+  }, 300);
+}
+
+function handleBlur() {
+  blurTimeout = setTimeout(() => {
+    isSearchInputFocused.value = false;
+  }, 100); // Small delay to allow click on dropdown item
+}
+
+function handleFocus() {
+  if (blurTimeout) {
+    clearTimeout(blurTimeout);
+    blurTimeout = null;
+  }
+  isSearchInputFocused.value = true;
+}
+
+function selectSuggestion(suggestion: Suggestion) {
+  // Opening in new tab is handled by target="_blank"
+  // hide dropdown after interaction
+  isSearchInputFocused.value = false; // Ensure dropdown is hidden
 }
 
 onMounted(() => {
