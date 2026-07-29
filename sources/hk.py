@@ -51,8 +51,6 @@ class MingPaoHK(RSSBase):
             ("國際", "https://news.mingpao.com/rss/pns/s00014.xml"),
             ("體育", "https://news.mingpao.com/rss/pns/s00015.xml"),
             ("副刊", "https://news.mingpao.com/rss/pns/s00005.xml"),
-            ("深度報道", "https://news.mingpao.com/rss/pns/s00285.xml"),
-            ("偵查報道", "https://news.mingpao.com/rss/pns/s00287.xml"),
         ]
 
     def get_icon_url(self):

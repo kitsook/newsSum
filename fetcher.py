@@ -18,59 +18,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import ssl
-
-import urllib3
-from urllib3.exceptions import HTTPError, HTTPWarning
-from urllib3.util.ssl_ import create_urllib3_context
-
+from urllib.parse import urlparse
+from curl_cffi import requests
 from logger import logger
 
 URL_TIMEOUT = 15
 
-ctx = create_urllib3_context()
-# change the TLS signature, so that cloudflare won't consider us as bot and block us for some sites
-ctx.set_ciphers("ECDHE+CHACHA20:ECDHE+AESGCM")
-ctx.load_default_certs()
-ctx.options |= ssl.OP_NO_TLSv1_1
-if ctx.options & ssl.OP_NO_COMPRESSION == ssl.OP_NO_COMPRESSION:
-    ctx.options ^= ssl.OP_NO_COMPRESSION
-# OP_LEGACY_SERVER_CONNECT (0x4). to handle servers that don't support secure renegotiation (e.g. hket)
-ctx.options |= 0x4
-http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
-
 
 def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
-    """Fetch a http page"""
-    the_headers = {
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "accept-language": "*",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "priority": "u=1, i",
-        "referer": "https://news-sum.appspot.com/",
-        "sec-ch-ua": '"Not;A=Brand";v="8", "Chromium";v="150", "Microsoft Edge";v="150"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Linux"',
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-    }
+    """Fetch a http page using curl_cffi to impersonate a browser"""
+    parsed_url = urlparse(url)
+    referer = f"{parsed_url.scheme}://{parsed_url.netloc}/"
 
-    if cookies:
-        the_headers["Cookie"] = "; ".join(
-            [f"{key}={value}" for (key, value) in cookies.items()]
-        )
+    the_headers = {
+        "referer": referer,
+    }
 
     if headers:
         the_headers.update(headers)
 
     try:
-        resp = http.request(method, url, headers=the_headers, body=body)
-        return resp.data
-    except (HTTPError, HTTPWarning) as e:
+        resp = requests.request(
+            method,
+            url,
+            headers=the_headers,
+            cookies=cookies,
+            data=body,
+            impersonate="chrome",
+            timeout=URL_TIMEOUT
+        )
+        if resp.status_code != 200:
+            logger.warning(f"HTTP {resp.status_code} when fetching {url}. Content: {resp.content[:500]}")
+        return resp.content
+    except Exception as e:
         logger.exception("Problem reading http page: " + str(e))
 
     return None
+

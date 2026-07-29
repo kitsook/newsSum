@@ -23,7 +23,6 @@
 import json
 import traceback
 
-import urllib3
 from lxml import html
 from lxml.html.soupparser import fromstring
 
