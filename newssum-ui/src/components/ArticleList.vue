@@ -32,12 +32,12 @@
                 <LoadingSpinner v-if="article.suggestions === undefined"/>
 
                 <!-- error state -->
-                 <div v-if="article.error" class="text-danger small">
+                <div v-else-if="article.error" class="text-danger small">
                   Failed to load suggestions. Please try again.
                 </div>
 
                 <!-- success state (empty) -->
-                <div v-else-if="article.suggestions && article.suggestions.length == 0">
+                <div v-else-if="article.suggestions.length == 0">
                   No suggestions
                 </div>
 
