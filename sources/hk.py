@@ -42,17 +42,17 @@ class MingPaoHK(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("要聞", "http://news.mingpao.com/rss/pns/s00001.xml"),
-            ("港聞", "http://news.mingpao.com/rss/pns/s00002.xml"),
-            ("經濟", "http://news.mingpao.com/rss/pns/s00004.xml"),
-            ("娛樂", "http://news.mingpao.com/rss/pns/s00016.xml"),
-            ("社評‧筆陣", "http://news.mingpao.com/rss/pns/s00003.xml"),
-            ("觀點", "http://news.mingpao.com/rss/pns/s00012.xml"),
-            ("國際", "http://news.mingpao.com/rss/pns/s00014.xml"),
-            ("體育", "http://news.mingpao.com/rss/pns/s00015.xml"),
-            ("副刊", "http://news.mingpao.com/rss/pns/s00005.xml"),
-            ("深度報道", "http://news.mingpao.com/rss/pns/s00285.xml"),
-            ("偵查報道", "http://news.mingpao.com/rss/pns/s00287.xml"),
+            ("要聞", "https://news.mingpao.com/rss/pns/s00001.xml"),
+            ("港聞", "https://news.mingpao.com/rss/pns/s00002.xml"),
+            ("經濟", "https://news.mingpao.com/rss/pns/s00004.xml"),
+            ("娛樂", "https://news.mingpao.com/rss/pns/s00016.xml"),
+            ("社評‧筆陣", "https://news.mingpao.com/rss/pns/s00003.xml"),
+            ("觀點", "https://news.mingpao.com/rss/pns/s00012.xml"),
+            ("國際", "https://news.mingpao.com/rss/pns/s00014.xml"),
+            ("體育", "https://news.mingpao.com/rss/pns/s00015.xml"),
+            ("副刊", "https://news.mingpao.com/rss/pns/s00005.xml"),
+            ("深度報道", "https://news.mingpao.com/rss/pns/s00285.xml"),
+            ("偵查報道", "https://news.mingpao.com/rss/pns/s00287.xml"),
         ]
 
     def get_icon_url(self):

@@ -43,17 +43,20 @@ http = urllib3.PoolManager(timeout=URL_TIMEOUT, ssl_context=ctx)
 def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
     """Fetch a http page"""
     the_headers = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
-        "Pragma": "no-cache",
-        "Cache-Control": "no-cache",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Encoding": "br;q=1.0, gzip;q=0.5, *;q=0.1",
-        "Accept-Language": "*",
-        "Sec-Ch-Ua": '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-        "Sec-Ch-Ua-Platform": '"Linux"',
-        "Sec-Fetch-User": "?1",
-        "Priority": "u=0, i",
-        "Sec-Ch-Ua-Mobile": "?0",
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0",
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "*",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "priority": "u=1, i",
+        "referer": "https://news-sum.appspot.com/",
+        "sec-ch-ua": '"Not;A=Brand";v="8", "Chromium";v="150", "Microsoft Edge";v="150"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Linux"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
     }
 
     if cookies:

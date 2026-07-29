@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits, reactive } from 'vue';
+import { ref, watch, reactive } from 'vue';
 import { BIconCardChecklist } from "bootstrap-icons-vue";
 import NewsTab from './NewsTab.vue';
 import IndexTab from './IndexTab.vue';
@@ -85,13 +85,7 @@ function subscriptionChanged() {
 }
 
 function refreshShowingSources(subscriptions: Set<string>, sources: NewsSource[]) {
-  showingSources.value = new Array<NewsSource>();
-
-  sources.forEach(src => {
-    if (subscriptions.has(src.path)) {
-      showingSources.value.push(src);
-    }
-  });
+  showingSources.value = sources.filter(src => subscriptions.has(src.path));
 }
 </script>
 

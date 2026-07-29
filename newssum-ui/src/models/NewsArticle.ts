@@ -1,8 +1,9 @@
 import Suggestion from "../models/Suggestion";
-
+ 
 export default interface NewsArticle {
   title: string;
   url: string;
   abstract: string;
-  suggestions: Suggestion[];
+  suggestions: Suggestion[] | undefined;
+  error?: boolean;
 }

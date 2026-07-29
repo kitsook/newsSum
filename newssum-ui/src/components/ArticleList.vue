@@ -28,9 +28,21 @@
           <b-col>
             <b-collapse :id="'accordion-' + srcUrl + '-' + index">
               <b-card class="border-0">
+                <!-- loading state -->
                 <LoadingSpinner v-if="article.suggestions === undefined"/>
-                <div v-if="article.suggestions && article.suggestions.length == 0">No suggestions</div>
-                <ul style="list-style: none;">
+
+                <!-- error state -->
+                 <div v-if="article.error" class="text-danger small">
+                  Failed to load suggestions. Please try again.
+                </div>
+
+                <!-- success state (empty) -->
+                <div v-else-if="article.suggestions && article.suggestions.length == 0">
+                  No suggestions
+                </div>
+
+                <!-- success state (populated) -->
+                <ul v-else style="list-style: none;">
                   <li v-for="(suggestion, suggestion_idx) in article.suggestions" :key="suggestion_idx">
                     <a :href="suggestion.url" target="_blank">
                       <img v-if="iconDict[suggestion.source_id]" :src="iconDict[suggestion.source_id]" height=15 :alt="suggestion.source_id" />
@@ -65,8 +77,13 @@ const re = /(<([^>]+)>)/g;
 
 function toggle_article(index: number, article: NewsArticle) {
   if (article.suggestions === undefined) {
+    article.error = false;
     SuggestionsApi.getSuggestions(article.title).then((suggestions) => {
       article.suggestions = suggestions;
+    }).catch((err) => {
+      console.error("Failed to fetch suggestions:", err);
+      article.error = true;
+      article.suggestions = [];
     });
   }
 }
