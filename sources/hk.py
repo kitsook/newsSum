@@ -553,3 +553,23 @@ class HkCourtNews(RSSBase):
 
     def get_icon_url(self):
         return "https://hkcourtnews.com/favicon.ico"
+
+
+class Rthk(RSSBase):
+    def get_id(self):
+        return "rthk"
+
+    def get_desc(self):
+        return "香港電台"
+
+    def get_rss_links(self):
+        return [
+            ("本地新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml"),
+            ("大中華新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml"),
+            ("國際新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml"),
+            ("財經新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml"),
+            ("體育新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_csport.xml"),
+        ]
+
+    def get_icon_url(self):
+        return "https://news.rthk.hk/favicon.ico"
