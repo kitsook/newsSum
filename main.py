@@ -36,7 +36,14 @@ CORS(app)
 # route for source listing
 @app.route("/list", methods=["GET"])
 def route_list():
-    sources = [{"path": id, "desc": allSources[id].get_desc(), "icon": allSources[id].get_icon_url()} for id in allSources]
+    sources = [
+        {
+            "path": id,
+            "desc": allSources[id].get_desc(),
+            "icon": allSources[id].get_icon_url(),
+        }
+        for id in allSources
+    ]
     return jsonify(sources)
 
 

@@ -20,12 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
 import traceback
-
+from lxml import html
 from fetcher import read_http_page
 from logger import logger
-from lxml import html
 
 from .base import BaseSource, RDFBase, RSSBase
 
@@ -127,7 +125,7 @@ class AP(BaseSource):
                 doc = html.document_fromstring(read_http_page(root_url + base_url))
                 for article in doc.xpath(
                     '//*[self::h1 or self::h2 or self::h3][contains(@class, "PagePromo-title")]'
-                    ):
+                ):
                     the_link = None
                     the_text = None
 
@@ -135,7 +133,9 @@ class AP(BaseSource):
                     if link_element and len(link_element) > 0:
                         the_link = link_element[0].xpath("@href")[0]
 
-                    text_element = article.xpath('a/span[contains(@class, "PagePromoContentIcons-text")]')
+                    text_element = article.xpath(
+                        'a/span[contains(@class, "PagePromoContentIcons-text")]'
+                    )
                     if text_element and len(text_element) > 0:
                         the_text = text_element[0].text
 
@@ -145,9 +145,7 @@ class AP(BaseSource):
                         )
         except Exception as e:
             logger.exception("Problem processing AP: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -172,6 +170,7 @@ class Reuters(RSSBase):
 
     def get_icon_url(self):
         return "https://www.reuters.com/favicon.ico"
+
 
 class CNBC(RSSBase):
     def get_id(self):
@@ -271,6 +270,7 @@ class CNBC(RSSBase):
     def get_icon_url(self):
         return "https://www.cnbc.com/favicon.ico"
 
+
 class TheWashingtonTimes(RSSBase):
     def get_id(self):
         return "washingtontimes"
@@ -288,6 +288,7 @@ class TheWashingtonTimes(RSSBase):
 
     def get_icon_url(self):
         return "https://www.washingtontimes.com/favicon.ico"
+
 
 class WashingtonPost(RSSBase):
     def get_id(self):
@@ -334,14 +335,12 @@ class WashingtonPost(RSSBase):
                 "Technology",
                 "https://feeds.washingtonpost.com/rss/business/technology",
             ),
-            (
-                "Sport",
-                "https://feeds.washingtonpost.com/rss/sports"
-            )
+            ("Sport", "https://feeds.washingtonpost.com/rss/sports"),
         ]
 
     def get_icon_url(self):
         return "https://www.washingtonpost.com/favicon.ico"
+
 
 class Npr(RSSBase):
     def get_id(self):
@@ -381,6 +380,7 @@ class Npr(RSSBase):
     def get_icon_url(self):
         return "https://www.npr.org/favicon.ico"
 
+
 class SeattleTimes(RSSBase):
     def get_id(self):
         return "seattletimes"
@@ -403,6 +403,7 @@ class SeattleTimes(RSSBase):
     def get_icon_url(self):
         return "data:image/webp;base64,UklGRloDAABXRUJQVlA4WAoAAAAQAAAAGgAAGgAAQUxQSAECAAARkC1Jtmlb3WvtY9u2ce+jbdu2bdu2bdu2bdv22nM8bNz7CRExAbCXBEiCIPHPhCVBEqQNkgRhm6ANhlRoUtJHg00SluEAHFq9UmJcaeCe2mJQ9yrpHhoB0nU8YOp2ft9LJfJ773OzKOPTqZmNsgP8c2fVAatvCzBF9Pss8uPp0y+GiIj6+uDhhxEmBN1YbgL0ah9P5nh5JtQYsvezElFP2zuBncw/2roCeovKoFvTZi75ToxZNrlSAAG/FSJ/VqdqcHSGz+JN7tU/qSoDCoEgywz7KyJPm7kSbss/59VWi6o0sCBAokCH7X+UyJ91CVoHY6+TvlVUxUEFAZCO7fuOe65E5EHjuzIE2kp74NRwcqtlX0Xkt1LNwYmiKg4uYAFASxs1qvtZQ0RUC6K/qIqDCoIgAcKx4Ixei36LyAiis5hLDC4EWOgJ2Z6ad4tei/6K7HTSh/1Z5zewEEDC1OzFl7NNPRzy9bgn8jqxxIrarhhYEABR+ouIGHsynDKOKTHPKONPYGAhUAN2KrMSkVctow89VPKtrg6gfyEWiwHWdK7fe9c3EePl2LgrIt/6B2jsW7bKVD/AldTcK1+VvyOckbj3t5jvLR5zZG9nfwIgCMZcmedEwLPy/LN3b+/onKDDTqb5wpK6i6eHg0ZYEiABAiQIS5IgaAWWJGxbI/4zAQAAVlA4IDIBAAAQBgCdASobABsAPpEepFIloSWlmACwEgljAKkUikmqN4FvkKsQ7N9D9FNqt7qtgF7rmqXNFCs06+AA/rn+auW9Kg7fCIlgcmrRMsrktsdRdkOGldcirAeSZPMDrSgVGeD81MfSSRa731mt5JVXIjXiFlSHvzrdvVrf0lnZUbWWqHe55M78sbeF3Tv6jKhW3BV4He0KSoh96yOPhCpEZ5ZCUyJ/VBx6FtEifhrBimjHyGcobzegJ8+z/g7K/KVDsOfySBO3AMj6EoCJQLE4teUD3phX1wF6vkjnYUGIZP0edd3ozhLo5RLtQVswF4TMlwGIxu23LYtr/f4FVB/UgDEGJe8rUtg03kvK5GjGbMi3Wb2grdlevv4OWow7StRJW89mFi6Bdd5RSJT9orwuR2QAAAA="
 
+
 class SFGate(RSSBase):
     def get_id(self):
         return "sfgate"
@@ -412,13 +413,21 @@ class SFGate(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("Bay Area News", "https://www.sfgate.com/bayarea/feed/bay-area-news-429.php"),
-            ("Business and Technology News", "https://www.sfgate.com/rss/feed/business-and-technology-news-448.php"),
+            (
+                "Bay Area News",
+                "https://www.sfgate.com/bayarea/feed/bay-area-news-429.php",
+            ),
+            (
+                "Business and Technology News",
+                "https://www.sfgate.com/rss/feed/business-and-technology-news-448.php",
+            ),
             ("Entertainment", "https://www.sfgate.com/rss/feed/culture-530.php"),
             ("Food & Dining", "https://www.sfgate.com/rss/feed/food-dining-550.php"),
-            ("Top Sports Stories", "https://www.sfgate.com/rss/feed/top-sports-stories-rss-feed-487.php"),
+            (
+                "Top Sports Stories",
+                "https://www.sfgate.com/rss/feed/top-sports-stories-rss-feed-487.php",
+            ),
         ]
 
     def get_icon_url(self):
         return "https://www.sfgate.com/favicon.ico"
-

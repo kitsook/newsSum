@@ -94,9 +94,7 @@ class OrientalDaily(BaseSource):
                             )
         except Exception as e:
             logger.exception("Problem getting OrientalDaily sections: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         result_list = []
         base_url = top_url
@@ -129,9 +127,7 @@ class OrientalDaily(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing OrientalDaily: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -195,9 +191,7 @@ class SingPao(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing SingPao: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -265,17 +259,17 @@ class TaKungPao(BaseSource):
                             self.create_article(
                                 title[0].text.strip(),
                                 title[0].get("href"),
-                                intro[0].text.strip()
-                                if intro and intro[0].text
-                                else None,
+                                (
+                                    intro[0].text.strip()
+                                    if intro and intro[0].text
+                                    else None
+                                ),
                             )
                         )
 
         except Exception as e:
             logger.exception("Problem processing TaKungPao: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -315,8 +309,14 @@ class Etnet(RSSBase):
         return [
             ("精選新聞", "http://www.etnet.com.hk/www/tc/news/rss.php?section=editor"),
             ("焦點專題", "http://www.etnet.com.hk/www/tc/news/rss.php?section=special"),
-            ("股市傳聞 	", "http://www.etnet.com.hk/www/tc/news/rss.php?section=rumour"),
-            ("股票評論", "http://www.etnet.com.hk/www/tc/news/rss.php?section=commentary"),
+            (
+                "股市傳聞 	",
+                "http://www.etnet.com.hk/www/tc/news/rss.php?section=rumour",
+            ),
+            (
+                "股票評論",
+                "http://www.etnet.com.hk/www/tc/news/rss.php?section=commentary",
+            ),
         ]
 
     def get_icon_url(self):
@@ -371,9 +371,7 @@ class HkEt(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing HkEt: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -435,9 +433,7 @@ class HKEJ(BaseSource):
                         )
         except Exception as e:
             logger.exception("Problem processing HKEJ: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -495,9 +491,7 @@ class AM730(BaseSource):
                             )
         except Exception as e:
             logger.exception("Problem processing AM730: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -563,8 +557,14 @@ class Rthk(RSSBase):
     def get_rss_links(self):
         return [
             ("本地新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml"),
-            ("大中華新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml"),
-            ("國際新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml"),
+            (
+                "大中華新聞",
+                "https://rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml",
+            ),
+            (
+                "國際新聞",
+                "https://rthk.hk/rthk/news/rss/c_expressnews_cinternational.xml",
+            ),
             ("財經新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_cfinance.xml"),
             ("體育新聞", "https://rthk.hk/rthk/news/rss/c_expressnews_csport.xml"),
         ]

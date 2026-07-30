@@ -20,18 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import re
 import traceback
 from abc import ABCMeta, abstractmethod
-from datetime import datetime, timedelta
 
-import pytz
 from lxml import html
 
 from fetcher import read_http_page
 from logger import logger
 
 from .base import BaseSource, RSSBase
+
 
 class SingTaoCanada(BaseSource):
     __metaclass__ = ABCMeta
@@ -83,9 +81,7 @@ class SingTaoCanada(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing SingTaoCanada: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -325,11 +321,26 @@ class TorontoStar(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("Canada", "https://www.thestar.com/search/?f=rss&t=article&c=news/canada*&l=50&s=start_time&sd=desc"),
-            ("World", "https://www.thestar.com/search/?f=rss&t=article&c=news/world*&l=50&s=start_time&sd=desc"),
-            ("GTA", "https://www.thestar.com/search/?f=rss&t=article&c=news/gta*&l=50&s=start_time&sd=desc"),
-            ("Business", "https://www.thestar.com/search/?f=rss&t=article&c=business*&l=50&s=start_time&sd=desc"),
-            ("Entertainment", "https://www.thestar.com/search/?f=rss&t=article&c=entertainment*&l=50&s=start_time&sd=desc"),
+            (
+                "Canada",
+                "https://www.thestar.com/search/?f=rss&t=article&c=news/canada*&l=50&s=start_time&sd=desc",
+            ),
+            (
+                "World",
+                "https://www.thestar.com/search/?f=rss&t=article&c=news/world*&l=50&s=start_time&sd=desc",
+            ),
+            (
+                "GTA",
+                "https://www.thestar.com/search/?f=rss&t=article&c=news/gta*&l=50&s=start_time&sd=desc",
+            ),
+            (
+                "Business",
+                "https://www.thestar.com/search/?f=rss&t=article&c=business*&l=50&s=start_time&sd=desc",
+            ),
+            (
+                "Entertainment",
+                "https://www.thestar.com/search/?f=rss&t=article&c=entertainment*&l=50&s=start_time&sd=desc",
+            ),
         ]
 
     def get_icon_url(self):
@@ -379,6 +390,7 @@ class TorontoSun(RSSBase):
 
     def get_icon_url(self):
         return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAjVBMVEX////8/Pz09PTo7Ozg4uLv9fX3/v7y+Pjc3d397u/rqKnbbW/YSU7XQ0jcZGjnmZv43N3+8fHed3nOAADQCxbRGSLRHSXQDxrPAAjSICjSIyrTKzHUOT7vwMHrr7Dzzc7kiozooaPstbblkZPQABDxw8TZWFvjh4n4+PjllJX24eLbbG3if4Lss7XVOT9MDU8xAAABU0lEQVR4Aa3SBZbCQBAE0Jr0xD09Qgx32L3/7XB98JyK5yfj+EmEQ+SIr0SSXM/zScoPdwIvjOIkzfICkt6NqKxYaWO05aTwgzdzi4Gt67ppmrrWHHkv6lDBddo2Xd2YrutO6tMDA1hT98N+FEWjqB/GmotHqxx3bBs7nkz7fDKdzaaZMSnk/UcxsCrlObPlc/TpMrqjXHAFYFkINRSRiHiCbEXriwnasMAMoy3mUwyBJMIu8eiCa3fPI4QrDm8YThBbyDvaNt9iugX/nTDCGrG+oaCcgT22I8y2yDGe4Vks5IgnOPESQF8h5y12M1rfx0DN22VjtVr+D9qurU3HhXwMQq5qcx5YY05H3dR2CfkcvtY0r+EwEHdcy3D+ojX3Lr1OZ9iou2leePJ9jWAzmFutreK4pDcD1oEr+nGW7YelFzj4XEWSXN8lSfiateOsBX6RIwQ1HfKKG9KPAAAAAElFTkSuQmCC"
+
 
 class LaPresse(RSSBase):
     def get_id(self):

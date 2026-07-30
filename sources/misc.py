@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
 import traceback
 
 from lxml import html
@@ -72,9 +71,7 @@ class HackerNews(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing HackerNews: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -103,7 +100,6 @@ class RFACantonese(BaseSource):
             ("事實查核", base_url + "/fact-check"),
             ("科技", base_url + "/technology"),
             ("影片", base_url + "/video"),
-
         ]
 
         try:
@@ -127,17 +123,17 @@ class RFACantonese(BaseSource):
                             self.create_article(
                                 title_text.strip(),
                                 site_url + title[0].get("href"),
-                                intro[0].text.strip()
-                                if intro and intro[0].text
-                                else None,
+                                (
+                                    intro[0].text.strip()
+                                    if intro and intro[0].text
+                                    else None
+                                ),
                             )
                         )
 
         except Exception as e:
             logger.exception("Problem processing RFACantonese: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 

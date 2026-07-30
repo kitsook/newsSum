@@ -73,9 +73,7 @@ class LibertyTimes(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing LibertyTimes: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -156,9 +154,11 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
                             self.create_article(
                                 title_text.strip(),
                                 site_base_url + link[0].get("href"),
-                                intro[0].text.strip()
-                                if intro and intro[0].text
-                                else None,
+                                (
+                                    intro[0].text.strip()
+                                    if intro and intro[0].text
+                                    else None
+                                ),
                             )
                         )
 
@@ -180,9 +180,7 @@ class MoneyUnitedDailyNewsRSS(RSSBase):
 
         except Exception as e:
             logger.exception("Problem processing MoneyUnitedDailyNewsRSS: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -251,9 +249,7 @@ class ChinaTimes(BaseSource):
 
         except Exception as e:
             logger.exception("Problem processing ChinaTimes: " + str(e))
-            logger.exception(
-                traceback.format_exception(e)
-            )
+            logger.exception(traceback.format_exception(e))
 
         return result_list
 
@@ -270,17 +266,50 @@ class Storm(RSSBase):
 
     def get_rss_links(self):
         return [
-            ("新聞", "https://www.storm.mg/api/getRss/channel_id/2?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("國內", "https://www.storm.mg/api/getRss/channel_id/9?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("國際", "https://www.storm.mg/api/getRss/channel_id/10?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("兩岸", "https://www.storm.mg/api/getRss/channel_id/11?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("財經", "https://www.storm.mg/api/getRss/channel_id/4?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("風生活", "https://www.storm.mg/api/getRss/channel_id/5?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("政治", "https://www.storm.mg/api/getRss/channel_id/8?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("藝文", "https://www.storm.mg/api/getRss/channel_id/17?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("娛樂", "https://www.storm.mg/api/getRss/channel_id/62?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("旅遊", "https://www.storm.mg/api/getRss/channel_id/69?path=https%3A%2F%2Fwww.storm.mg/article"),
-            ("新新聞", "https://www.storm.mg/api/getRss/channel_id/109?path=https%3A%2F%2Fwww.storm.mg/article"),
+            (
+                "新聞",
+                "https://www.storm.mg/api/getRss/channel_id/2?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "國內",
+                "https://www.storm.mg/api/getRss/channel_id/9?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "國際",
+                "https://www.storm.mg/api/getRss/channel_id/10?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "兩岸",
+                "https://www.storm.mg/api/getRss/channel_id/11?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "財經",
+                "https://www.storm.mg/api/getRss/channel_id/4?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "風生活",
+                "https://www.storm.mg/api/getRss/channel_id/5?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "政治",
+                "https://www.storm.mg/api/getRss/channel_id/8?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "藝文",
+                "https://www.storm.mg/api/getRss/channel_id/17?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "娛樂",
+                "https://www.storm.mg/api/getRss/channel_id/62?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "旅遊",
+                "https://www.storm.mg/api/getRss/channel_id/69?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
+            (
+                "新新聞",
+                "https://www.storm.mg/api/getRss/channel_id/109?path=https%3A%2F%2Fwww.storm.mg/article",
+            ),
         ]
 
     def get_icon_url(self):

@@ -25,7 +25,7 @@ class MyLogger:
     """Class for logging"""
 
     def info(self, msg):
-        """Log info """
+        """Log info"""
         print(msg, file=sys.stderr)
 
     def exception(self, msg):
