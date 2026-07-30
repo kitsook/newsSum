@@ -166,11 +166,7 @@ class Reuters(RSSBase):
         return [
             (
                 "Reuters",
-                "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com",
-            ),
-            (
-                "Reuters Agency",
-                "https://www.reutersagency.com/feed/?taxonomy=best-topics&post_type=best"
+                "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&ceid=US:en&gl=US",
             ),
         ]
 

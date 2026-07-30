@@ -48,7 +48,7 @@ def read_http_page(url, cookies=None, headers=None, method="GET", body=None):
             timeout=URL_TIMEOUT
         )
         if resp.status_code != 200:
-            logger.warning(f"HTTP {resp.status_code} when fetching {url}. Content: {resp.content[:500]}")
+            logger.exception(f"HTTP {resp.status_code} when fetching {url}. Content: {resp.content[:500]}")
         return resp.content
     except Exception as e:
         logger.exception("Problem reading http page: " + str(e))

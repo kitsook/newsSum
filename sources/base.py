@@ -24,6 +24,7 @@ import traceback
 from abc import ABCMeta, abstractmethod
 
 from lxml import etree
+import html
 
 from fetcher import read_http_page
 from logger import logger
@@ -75,7 +76,7 @@ class RSSBase(BaseSource):
                     for entry in doc.xpath("//rss/channel/item"):
                         title = entry.xpath("title")[0].text
                         link = entry.xpath("link")[0].text
-                        abstract = entry.xpath("description")[0].text
+                        abstract = html.unescape(entry.xpath("description")[0].text)
                         result_list.append(
                             self.create_article(title.strip(), link, abstract)
                         )
